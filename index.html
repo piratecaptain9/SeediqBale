@@ -523,10 +523,9 @@ function renderGuestTable(guests){
 }
 
 function filterGuestTable(){
-  const q=document.getElementById('guest-search').value.trim().toLowerCase();
-  renderGuestTable(q?allGuests.filter(g=>g.name.toLowerCase().includes(q)||g.id.toLowerCase().includes(q)):allGuests);
+  const q = document.getElementById('guest-search').value.trim().toLowerCase();
+  renderGuestTable(q ? allGuests.filter(g=>g.name.toLowerCase().includes(q)||g.id.toLowerCase().includes(q)) : allGuests);
 }
-
 function exportGuestCSV(){
   if(!allGuests.length){ alert('請先載入名單'); return; }
   const rows=allGuests.map(g=>[g.id,g.name,g.temple||'',g.note||'',checkedIds.has(g.id)?'已報到':'未報到'].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
