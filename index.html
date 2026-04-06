@@ -483,18 +483,42 @@ function renderGuestStats(){
 }
 
 function renderGuestTable(guests){
-  document.getElementById('guest-tbody').innerHTML=guests.map(g=>{
-    const done=checkedIds.has(g.id);
-    return `<tr>
-      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${g.id}</td>
-      <td style="font-weight:700;font-size:13px">${g.name}</td>
-      <td style="font-size:11px;color:var(--soft);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.temple||'—'}</td>
-      <td><span class="tag ${done?'tag-checked':'tag-pending'}">${done?'✓ 已到':'—'}</span></td>
-      <td>${done
-        ? `<button class="btn-rose-sm" onclick="cancelCheckin('${g.id}','${g.name}')">取消</button>`
-        : `<button class="btn-lime-sm" onclick="manualCheckinById('${g.id}','${g.name}')">報到</button>`
-      }</td>
-    </tr>`;
+  const tbody = document.getElementById('guest-tbody');
+  const table = document.getElementById('admin-table');
+
+  // 改為矩陣卡片模式，移除原本的 table thead
+  table.style.display = 'none';
+
+  // 找或建立矩陣容器
+  let grid = document.getElementById('guest-grid');
+  if(!grid){
+    grid = document.createElement('div');
+    grid.id = 'guest-grid';
+    table.parentNode.insertBefore(grid, table);
+  }
+
+  if(!guests.length){
+    grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;font-size:13px">查無資料</p>';
+    return;
+  }
+
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(5,1fr);gap:8px;';
+  grid.innerHTML = guests.map(g => {
+    const done = checkedIds.has(g.id);
+    const qr   = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&ecc=M&data=${encodeURIComponent('https://my-checkin-event.com?id='+g.id)}`;
+    return `
+      <div style="background:var(--card);border:1px solid ${done?'var(--lime-ring)':'var(--border)'};border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative">
+        ${done?'<span style="position:absolute;top:6px;right:6px;background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-ring);border-radius:100px;font-size:9px;font-weight:700;padding:1px 6px;font-family:\'DM Mono\',monospace">✓</span>':''}
+        <div style="background:#fff;border-radius:8px;padding:4px;border:2px solid ${done?'var(--lime)':'var(--gold)'}">
+          <img src="${qr}" width="72" height="72" loading="lazy" style="display:block;border-radius:4px" alt="${g.name}"/>
+        </div>
+        <p style="font-size:12px;font-weight:700;color:var(--white);text-align:center;line-height:1.3">${g.name}</p>
+        <p style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">${g.id}</p>
+        ${done
+          ? `<button class="btn-rose-sm" onclick="cancelCheckin('${g.id}','${g.name}')" style="font-size:10px;padding:3px 8px">取消</button>`
+          : `<button class="btn-lime-sm" onclick="manualCheckinById('${g.id}','${g.name}')" style="font-size:10px;padding:3px 8px">報到</button>`
+        }
+      </div>`;
   }).join('');
 }
 
