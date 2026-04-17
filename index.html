@@ -29,7 +29,6 @@
     @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}.rise{animation:rise .35s cubic-bezier(.34,1.5,.64,1) both}
     @keyframes spin{to{transform:rotate(360deg)}}.spinner{width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--lime);animation:spin .75s linear infinite}
     @keyframes shimmer{0%{box-shadow:0 0 0 0 var(--gold-ring)}70%{box-shadow:0 0 0 14px rgba(232,201,106,0)}100%{box-shadow:0 0 0 0 rgba(232,201,106,0)}}.shimmer{animation:shimmer 1.4s ease-out 2}
-    /* scanner */
     #qr-reader{width:100%!important}
     #qr-reader video{width:100%!important;height:100%!important;object-fit:cover!important}
     #qr-reader__scan_region{width:100%!important;height:100%!important}
@@ -42,11 +41,9 @@
     @keyframes laser{0%{top:13%;opacity:0}8%{opacity:1}92%{opacity:1}100%{top:87%;opacity:0}}
     .laser{position:absolute;left:13%;right:13%;height:1.5px;background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 6px rgba(125,219,140,.5);animation:laser 2.4s ease-in-out infinite}
     .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 50%,transparent 35%,rgba(8,11,16,.75) 100%)}
-    /* inputs */
     input[type="text"],input[type="password"]{background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:10px;padding:10px 14px;font-size:14px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;transition:border-color .2s}
     input[type="file"]{background:var(--card);border:1px solid var(--border2);color:var(--light);border-radius:10px;padding:9px 14px;font-size:13px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;cursor:pointer}
     input:focus{border-color:var(--gold)}input.lime-focus:focus{border-color:var(--lime)}input::placeholder{color:var(--muted)}
-    /* buttons */
     .btn-gold{background:var(--gold);color:#1a1400;border:none;border-radius:10px;padding:11px 22px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .18s;width:100%}
     .btn-gold:hover{background:#f0d880}.btn-gold:active{transform:scale(.97)}.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none}
     .btn-lime{background:var(--lime);color:#061208;border:none;border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
@@ -54,7 +51,7 @@
     .btn-lime-xs{background:var(--lime);color:#061208;border:none;border-radius:6px;padding:4px 10px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap}
     .btn-lime-xs:hover{background:#9aeaa7}.btn-lime-xs:active{transform:scale(.95)}.btn-lime-xs:disabled{opacity:.35;cursor:not-allowed}
     .btn-rose-xs{background:var(--rose-dim);color:var(--rose);border:1px solid var(--rose-ring);border-radius:6px;padding:4px 10px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap}
-    .btn-rose-xs:hover{background:rgba(240,112,112,.25)}.btn-rose-xs:active{transform:scale(.95)}.btn-rose-xs:disabled{opacity:.35;cursor:not-allowed}
+    .btn-rose-xs:hover{background:rgba(240,112,112,.25)}.btn-rose-xs:active{transform:scale(.95)}
     .btn-sky{background:var(--sky);color:#040e1a;border:none;border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
     .btn-sky:hover{background:#88c4f4}.btn-sky:active{transform:scale(.97)}.btn-sky:disabled{opacity:.4;cursor:not-allowed}
     .btn-sky-o{background:var(--sky-dim);color:var(--sky);border:1px solid var(--sky-ring);border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
@@ -63,20 +60,17 @@
     .btn-ghost:hover{background:var(--border);color:var(--light)}.btn-ghost:active{transform:scale(.97)}
     .btn-danger{background:var(--rose-dim);color:var(--rose);border:1px solid var(--rose-ring);border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
     .btn-danger:hover{background:rgba(240,112,112,.25)}.btn-danger:active{transform:scale(.97)}.btn-danger:disabled{opacity:.4;cursor:not-allowed}
-    /* layout */
     .page{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 90px}
     .mode-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:rgba(13,17,25,.9);backdrop-filter:blur(14px);border:1px solid var(--border2);border-radius:100px;padding:5px;z-index:200}
     .mode-pill{padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .22s;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;white-space:nowrap}
     .mode-pill.active-guest{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-ring)}
     .mode-pill.active-staff{background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-ring)}
-    /* sub tabs */
     .sub-tabs{display:flex;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:4px;gap:3px;overflow-x:auto}
     .sub-tab{flex:1;padding:8px 8px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap;min-width:56px}
     .sub-tab.t-scan{background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-ring)}
     .sub-tab.t-status{background:var(--sky-dim);color:var(--sky);border:1px solid var(--sky-ring)}
     .sub-tab.t-qr{background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)}
     .sub-tab.t-import{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-ring)}
-    /* dashboard */
     .dash-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
     .stat-card{border-radius:14px;padding:16px 12px;text-align:center}
     .stat-card.total{background:rgba(96,168,240,.12);border:1px solid var(--sky-ring)}
@@ -85,53 +79,38 @@
     .stat-num{font-size:32px;font-weight:900;line-height:1}
     .stat-num.blue{color:var(--sky)}.stat-num.green{color:var(--lime)}.stat-num.red{color:var(--rose)}
     .stat-label{font-size:11px;color:var(--soft);margin-top:4px}
-    .progress-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;height:28px;position:relative}
+    .progress-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;height:28px}
     .progress-bar{height:100%;background:linear-gradient(90deg,var(--lime),#4ac96e);border-radius:10px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;min-width:40px}
     .progress-label{font-size:12px;font-weight:700;color:#061208}
-    /* guest status grid */
     .guest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px}
-    .g-card{border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:5px;transition:all .15s}
+    .g-card{border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:5px}
     .g-card.done{background:rgba(125,219,140,.08);border:1px solid var(--lime-ring)}
     .g-card.todo{background:var(--card);border:1px solid var(--border2)}
-    .g-card-badge{font-size:9px;font-weight:700;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:100px;display:inline-flex;align-items:center;gap:3px;margin-bottom:2px}
-    .g-card-badge.done{background:rgba(125,219,140,.15);color:var(--lime);border:1px solid var(--lime-ring)}
-    .g-card-badge.todo{background:var(--border);color:var(--muted);border:1px solid var(--border2)}
-    .g-card-name{font-size:13px;font-weight:700;color:var(--white);line-height:1.3}
-    .g-card-meta{font-size:10px;color:var(--muted)}
-    .g-card-time{font-size:10px;color:var(--soft);font-family:'DM Mono',monospace}
-    .g-card-actions{display:flex;gap:4px;margin-top:2px}
-    /* filter */
+    .g-badge{font-size:9px;font-weight:700;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:100px;display:inline-flex;align-items:center;gap:3px}
+    .g-badge.done{background:rgba(125,219,140,.15);color:var(--lime);border:1px solid var(--lime-ring)}
+    .g-badge.todo{background:var(--border);color:var(--muted);border:1px solid var(--border2)}
     .filter-btn{padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;transition:all .18s;white-space:nowrap}
     .filter-btn.active{background:var(--sky-dim);color:var(--sky);border-color:var(--sky-ring)}
-    .filter-btn.active-checked{background:var(--lime-dim);color:var(--lime);border-color:var(--lime-ring)}
-    .filter-btn.active-pending{background:var(--rose-dim);color:var(--rose);border-color:var(--rose-ring)}
-    /* QR grid */
+    .filter-btn.active-c{background:var(--lime-dim);color:var(--lime);border-color:var(--lime-ring)}
+    .filter-btn.active-p{background:var(--rose-dim);color:var(--rose);border-color:var(--rose-ring)}
     .qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-    .qr-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;transition:border-color .2s}
+    .qr-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative}
     .qr-card.done{border-color:var(--lime-ring)}
-    .qr-card:hover{border-color:var(--gold-ring)}
     .qr-done-badge{position:absolute;top:7px;right:7px;background:var(--lime);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#061208}
     .qr-img-wrap{background:#fff;border-radius:8px;padding:5px;border:2px solid var(--gold);display:inline-flex}
-    .qr-img-wrap.done-border{border-color:var(--lime)}
-    .qr-name{font-size:12px;font-weight:700;color:var(--white);text-align:center;line-height:1.3}
-    .qr-id{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)}
-    .qr-actions{display:flex;flex-direction:column;gap:4px;width:100%}
+    .qr-img-wrap.done-b{border-color:var(--lime)}
     .qr-btn{width:100%;padding:5px 0;border-radius:6px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:10px;cursor:pointer;border:none;transition:all .18s;text-align:center}
     .qr-btn.dl{background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)}
-    .qr-btn.dl:hover{background:rgba(160,125,240,.25)}
     .qr-btn.cp{background:var(--sky-dim);color:var(--sky);border:1px solid var(--sky-ring)}
-    .qr-btn.cp:hover{background:rgba(96,168,240,.2)}
-    /* log table */
     .log-table{width:100%;border-collapse:collapse;font-size:12px}
     .log-table th{background:var(--card);color:var(--soft);font-weight:500;padding:9px 10px;text-align:left;border-bottom:1px solid var(--border2);font-size:10px;white-space:nowrap}
     .log-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--light);vertical-align:middle}
     .log-table tr:last-child td{border-bottom:none}
     .log-table tr:hover td{background:rgba(46,61,85,.3)}
-    /* guest search dropdown */
     .name-dropdown{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--panel);border:1px solid var(--border2);border-radius:12px;overflow:hidden;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-    .name-option{padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;font-size:14px}
-    .name-option:hover{background:var(--card)}
-    .name-option:not(:last-child){border-bottom:1px solid var(--border)}
+    .name-opt{padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;font-size:14px}
+    .name-opt:hover{background:var(--card)}
+    .name-opt:not(:last-child){border-bottom:1px solid var(--border)}
   </style>
 </head>
 <body>
@@ -148,15 +127,13 @@
     </header>
     <div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <!-- Search with real-time dropdown -->
-      <div style="position:relative" id="guest-search-wrap">
-        <input type="text" id="guest-name-input" placeholder="輸入任一字即可搜尋，例：義"
-               oninput="onGuestType()" onkeydown="onGuestKey(event)"
-               autocomplete="off"/>
+      <div style="position:relative" id="guest-wrap">
+        <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋，例：義"
+               oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off"/>
         <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none">🔍</span>
-        <div id="name-dropdown" class="name-dropdown" style="display:none"></div>
+        <div id="name-dd" class="name-dropdown" style="display:none"></div>
       </div>
-      <button class="btn-gold" id="guest-btn" onclick="searchGuest()">查詢 QR Code</button>
+      <button class="btn-gold" id="guest-btn" onclick="searchByName()">查詢 QR Code</button>
     </div>
     <div id="guest-result" style="display:none"></div>
     <p style="text-align:center;font-size:11px;color:var(--muted)">若查無資料，請洽現場工作人員</p>
@@ -167,7 +144,6 @@
 <div id="page-staff" class="page ambient-staff" style="display:none">
   <div class="w-full max-w-2xl flex flex-col gap-4">
 
-    <!-- Password gate -->
     <div id="staff-gate" style="min-height:70dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px">
       <div style="text-align:center">
         <div style="font-size:44px;margin-bottom:10px">🔐</div>
@@ -181,10 +157,7 @@
       </div>
     </div>
 
-    <!-- Staff inner -->
     <div id="staff-inner" style="display:none;flex-direction:column;gap:14px">
-
-      <!-- Dashboard -->
       <div class="dash-stats" id="dash-stats" style="display:none">
         <div class="stat-card total"><div class="stat-num blue" id="d-total">—</div><div class="stat-label">總人數</div></div>
         <div class="stat-card checked"><div class="stat-num green" id="d-checked">—</div><div class="stat-label">✓ 已報到</div></div>
@@ -195,7 +168,6 @@
         <div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"><span class="progress-label" id="prog-label">0%</span></div></div>
       </div>
 
-      <!-- Sub tabs: 4 tabs -->
       <div class="sub-tabs">
         <button class="sub-tab" id="tab-scan"   onclick="switchTab('scan')">📷 掃碼報到</button>
         <button class="sub-tab" id="tab-status" onclick="switchTab('status')">📋 名單狀況</button>
@@ -203,7 +175,7 @@
         <button class="sub-tab" id="tab-import" onclick="switchTab('import')">📂 匯入管理</button>
       </div>
 
-      <!-- ── TAB: 掃碼報到 ── -->
+      <!-- ── 掃碼報到 ── -->
       <div id="panel-scan" style="display:none;flex-direction:column;gap:12px">
         <div style="border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--panel)">
           <div style="position:relative;width:100%;aspect-ratio:1;max-height:340px">
@@ -219,8 +191,7 @@
               <p style="font-size:13px;color:var(--muted)">相機尚未啟動</p>
             </div>
             <div id="staff-loading" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;background:rgba(8,11,16,.82);backdrop-filter:blur(4px)">
-              <div class="spinner"></div>
-              <p style="font-size:13px;color:var(--soft)">驗證報到資訊…</p>
+              <div class="spinner"></div><p style="font-size:13px;color:var(--soft)">驗證報到資訊…</p>
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border)">
@@ -235,9 +206,8 @@
         <div id="cam-err" style="display:none;border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:16px">
           <p style="font-weight:700;font-size:13px;color:var(--rose)">⚠ 無法存取相機</p>
           <p style="font-size:11px;color:var(--soft);margin-top:5px;line-height:1.6">請確認已授予相機權限後重新整理。</p>
-          <button onclick="location.reload()" class="btn-ghost" style="margin-top:10px;width:auto;padding:7px 14px;font-size:11px">重新整理頁面</button>
+          <button onclick="location.reload()" class="btn-ghost" style="margin-top:10px;width:auto;padding:7px 14px;font-size:11px">重新整理</button>
         </div>
-        <!-- Manual checkin in scan tab too -->
         <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
           <p style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:8px">✍️ 手動報到</p>
           <div style="display:flex;gap:8px">
@@ -248,7 +218,7 @@
         </div>
       </div>
 
-      <!-- ── TAB: 名單狀況 ── -->
+      <!-- ── 名單狀況 ── -->
       <div id="panel-status" style="display:none;flex-direction:column;gap:10px">
         <div style="display:flex;flex-direction:column;gap:8px">
           <input type="text" id="status-search" placeholder="🔍 搜尋姓名…" oninput="renderStatusGrid()" style="font-size:13px"/>
@@ -256,33 +226,30 @@
             <button class="filter-btn active" id="fb-all"     onclick="setFilter('all')">全部</button>
             <button class="filter-btn"        id="fb-checked" onclick="setFilter('checked')">已報到</button>
             <button class="filter-btn"        id="fb-pending" onclick="setFilter('pending')">未報到</button>
-            <button class="btn-sky-o" onclick="forceReloadGuests()" style="padding:6px 12px;font-size:11px;margin-left:auto">🔄 重新載入</button>
+            <button class="btn-sky-o" onclick="loadAll()" style="padding:6px 12px;font-size:11px;margin-left:auto">🔄 重新載入</button>
           </div>
         </div>
         <div id="status-grid" class="guest-grid"></div>
         <div id="status-msg" style="display:none"></div>
       </div>
 
-      <!-- ── TAB: QR 碼管理 ── -->
+      <!-- ── QR 碼管理 ── -->
       <div id="panel-qr" style="display:none;flex-direction:column;gap:12px">
-        <!-- action bar -->
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <button class="btn-lime" onclick="printAllQR()" style="font-size:12px;padding:9px 14px">🖨 列印全部QR碼</button>
           <button class="btn-sky-o" onclick="downloadAllQR()" style="font-size:12px;padding:9px 14px">📥 下載全部</button>
-          <span style="font-size:11px;color:var(--muted);margin-left:4px">可將個人連結傳給來賓，點開即見 QR Code</span>
+          <span style="font-size:11px;color:var(--muted)">點開即見 QR Code</span>
         </div>
-        <!-- search -->
         <input type="text" id="qr-search" placeholder="🔍 搜尋姓名…" oninput="renderQRGrid()" style="font-size:13px"/>
-        <!-- grid -->
         <div id="qr-grid" class="qr-grid"></div>
         <div id="qr-msg" style="display:none"></div>
       </div>
 
-      <!-- ── TAB: 匯入管理 ── -->
+      <!-- ── 匯入管理 ── -->
       <div id="panel-import" style="display:none;flex-direction:column;gap:12px">
         <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
           <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px">📂 匯入貴賓名單</p>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">CSV 格式：表頭 id,name,temple,note</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">CSV 格式：表頭 id,name,temple,note（仍透過 GAS 批次寫入）</p>
           <div style="display:flex;flex-direction:column;gap:8px">
             <input type="file" id="import-file" accept=".csv"/>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -296,14 +263,10 @@
           <button class="btn-sky-o" onclick="exportGuestCSV()" style="font-size:13px;padding:10px">⬇ 匯出貴賓 CSV</button>
           <button class="btn-sky-o" onclick="exportLogCSV()" style="font-size:13px;padding:10px">⬇ 匯出報到記錄</button>
         </div>
-        <!-- Manual checkin -->
         <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
           <p style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:8px">✅ 報到記錄</p>
-          <div style="display:flex;gap:8px;margin-bottom:10px">
-            <button class="btn-sky-o" onclick="forceReloadLog()" style="font-size:12px;padding:8px 12px">🔄 重新載入記錄</button>
-          </div>
-          <input type="text" id="log-search" placeholder="🔍 搜尋報到記錄…" oninput="filterLogTable()" style="font-size:13px;margin-bottom:10px"/>
-          <div id="log-list-wrap" style="display:none;border-radius:10px;overflow:hidden;border:1px solid var(--border);overflow-x:auto">
+          <input type="text" id="log-search" placeholder="🔍 搜尋…" oninput="filterLogTable()" style="font-size:13px;margin-bottom:10px"/>
+          <div id="log-wrap" style="display:none;border-radius:10px;overflow:hidden;border:1px solid var(--border);overflow-x:auto">
             <table class="log-table">
               <thead><tr><th>ID</th><th>姓名</th><th>報到時間</th><th>操作</th></tr></thead>
               <tbody id="log-tbody"></tbody>
@@ -313,7 +276,7 @@
         <div id="import-msg" style="display:none"></div>
       </div>
 
-    </div><!-- /staff-inner -->
+    </div>
   </div>
 </div>
 
@@ -323,549 +286,604 @@
 </nav>
 
 <script>
-const GAS_URL        = 'https://script.google.com/macros/s/AKfycbzzmPJ3lmKfQuQEjfpLpOqpZUuCU7NBqhIUBThdPYWRGQdsEU7fXZVJaAP_zrjuz_mdhQ/exec';
+// ╔══════════════════════════════════════════════════════╗
+// ║  ★ 填入你的設定                                       ║
+// ╚══════════════════════════════════════════════════════╝
+const FB_PROJECT = 'andong-maitreya-moutain';
+const FB_API_KEY = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
+const GAS_URL    = 'https://script.google.com/macros/s/AKfycbzzmPJ3lmKfQuQEjfpLpOqpZUuCU7NBqhIUBThdPYWRGQdsEU7fXZVJaAP_zrjuz_mdhQ/exec';
 const CHECKIN_BASE   = 'https://my-checkin-event.com';
 const STAFF_PASSWORD = '0531';
+
+// Firestore REST base
+const FS = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
+
+// ══════════════════════════════════════
+// FIRESTORE DIRECT API
+// ══════════════════════════════════════
+
+// 讀取單一文件
+async function fsGet(col, id) {
+  const r = await fetch(`${FS}/${col}/${encodeURIComponent(id)}?key=${FB_API_KEY}`);
+  if (r.status === 404) return null;
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  return parseDoc(d);
+}
+
+// 寫入文件 (PATCH = upsert)
+async function fsSet(col, id, fields) {
+  const r = await fetch(`${FS}/${col}/${encodeURIComponent(id)}?key=${FB_API_KEY}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields: toFsFields(fields) })
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  return d;
+}
+
+// 刪除文件
+async function fsDel(col, id) {
+  const r = await fetch(`${FS}/${col}/${encodeURIComponent(id)}?key=${FB_API_KEY}`, { method: 'DELETE' });
+  if (!r.ok && r.status !== 404) throw new Error(`DELETE failed: ${r.status}`);
+}
+
+// 讀取整個 collection (支援分頁)
+async function fsList(col) {
+  let docs = [], token = null;
+  do {
+    const url = `${FS}/${col}?key=${FB_API_KEY}&pageSize=300${token ? '&pageToken=' + token : ''}`;
+    const r = await fetch(url);
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+    if (d.documents) docs = docs.concat(d.documents.map(parseDoc));
+    token = d.nextPageToken || null;
+  } while (token);
+  return docs;
+}
+
+// 姓名查詢 (runQuery)
+async function fsQueryByName(name) {
+  const r = await fetch(`${FS}:runQuery?key=${FB_API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      structuredQuery: {
+        from: [{ collectionId: 'guests' }],
+        where: { fieldFilter: { field: { fieldPath: 'name' }, op: 'EQUAL', value: { stringValue: name } } }
+      }
+    })
+  });
+  const res = await r.json();
+  if (!Array.isArray(res)) return [];
+  return res.filter(x => x.document).map(x => parseDoc(x.document));
+}
+
+function parseDoc(doc) {
+  const id = doc.name.split('/').pop();
+  const f  = {};
+  for (const [k, v] of Object.entries(doc.fields || {})) {
+    f[k] = v.stringValue ?? v.integerValue ?? v.doubleValue ?? v.booleanValue ?? '';
+  }
+  return { id, ...f };
+}
+
+function toFsFields(obj) {
+  const f = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (typeof v === 'number') f[k] = Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
+    else if (typeof v === 'boolean') f[k] = { booleanValue: v };
+    else if (v == null) f[k] = { nullValue: null };
+    else f[k] = { stringValue: String(v) };
+  }
+  return f;
+}
 
 // ══════════════════════════════════════
 // ROUTING
 // ══════════════════════════════════════
-function getMode(){ return new URLSearchParams(location.search).get('mode')||'guest'; }
-function setMode(m){
-  const u=new URL(location.href); u.searchParams.set('mode',m);
-  history.pushState({},'',u); renderMode(m);
+function getMode() { return new URLSearchParams(location.search).get('mode') || 'guest'; }
+function setMode(m) {
+  const u = new URL(location.href); u.searchParams.set('mode', m);
+  history.pushState({}, '', u); renderMode(m);
 }
-function renderMode(m){
-  document.getElementById('page-guest').style.display=m==='guest'?'flex':'none';
-  document.getElementById('page-staff').style.display=m==='staff'?'flex':'none';
-  document.getElementById('nav-guest').className='mode-pill'+(m==='guest'?' active-guest':'');
-  document.getElementById('nav-staff').className='mode-pill'+(m==='staff'?' active-staff':'');
-  if(m!=='staff') stopScanner();
-  if(m==='guest') closeDropdown();
+function renderMode(m) {
+  document.getElementById('page-guest').style.display = m === 'guest' ? 'flex' : 'none';
+  document.getElementById('page-staff').style.display = m === 'staff' ? 'flex' : 'none';
+  document.getElementById('nav-guest').className = 'mode-pill' + (m === 'guest' ? ' active-guest' : '');
+  document.getElementById('nav-staff').className = 'mode-pill' + (m === 'staff' ? ' active-staff' : '');
+  if (m !== 'staff') stopScanner();
+  if (m === 'guest') { closeDd(); preloadGuests(); }
 }
-window.addEventListener('popstate',()=>renderMode(getMode()));
+window.addEventListener('popstate', () => renderMode(getMode()));
 renderMode(getMode());
 
 // ══════════════════════════════════════
-// GUEST — Real-time search dropdown
+// GUEST — Real-time search
 // ══════════════════════════════════════
-let guestNameCache = []; // cache from Firestore for fast lookup
+let guestCache = [];
 
-async function preloadGuestNames(){
-  if(guestNameCache.length) return;
-  try{
-    const res=await apiFetch({action:'listGuests'});
-    if(res.status==='success') guestNameCache=res.guests||[];
-  }catch(_){}
+async function preloadGuests() {
+  if (guestCache.length) return;
+  try {
+    const docs = await fsList('guests');
+    guestCache = docs.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
+  } catch(_) {}
 }
 
-function onGuestType(){
-  const val=document.getElementById('guest-name-input').value.trim();
-  document.getElementById('guest-result').style.display='none';
-  if(!val){ closeDropdown(); return; }
-
-  // Search from cache first
-  const matched=guestNameCache.filter(g=>g.name.includes(val));
-  if(matched.length){
-    showDropdown(matched);
-  } else {
-    closeDropdown();
-  }
+function onGuestType() {
+  const val = document.getElementById('guest-input').value.trim();
+  document.getElementById('guest-result').style.display = 'none';
+  if (!val) { closeDd(); return; }
+  const matched = guestCache.filter(g => g.name && g.name.includes(val));
+  if (matched.length) showDd(matched);
+  else closeDd();
 }
 
-function showDropdown(guests){
-  const dd=document.getElementById('name-dropdown');
-  dd.innerHTML=guests.slice(0,8).map(g=>`
-    <div class="name-option" onclick="selectGuest(${JSON.stringify(g).replace(/"/g,'&quot;')})">
+function showDd(guests) {
+  const dd = document.getElementById('name-dd');
+  dd.innerHTML = guests.slice(0, 8).map(g => `
+    <div class="name-opt" onclick='selectGuest(${JSON.stringify({id:g.id,name:g.name,temple:g.temple||'',note:g.note||''})})'>
       <span style="font-weight:700;color:var(--white)">${g.name}</span>
-      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${g.id}${g.temple?'・'+g.temple:''}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</span>
     </div>`).join('');
-  if(guests.length>8){
-    dd.innerHTML+=`<div style="padding:8px 16px;font-size:11px;color:var(--muted);text-align:center">…還有 ${guests.length-8} 位符合</div>`;
-  }
-  dd.style.display='block';
+  if (guests.length > 8) dd.innerHTML += `<div style="padding:8px 16px;font-size:11px;color:var(--muted);text-align:center">…還有 ${guests.length - 8} 位符合</div>`;
+  dd.style.display = 'block';
 }
 
-function closeDropdown(){
-  document.getElementById('name-dropdown').style.display='none';
+function closeDd() { document.getElementById('name-dd').style.display = 'none'; }
+
+function selectGuest(g) {
+  document.getElementById('guest-input').value = g.name;
+  closeDd(); showQR(g);
 }
 
-function selectGuest(g){
-  document.getElementById('guest-name-input').value=g.name;
-  closeDropdown();
-  showQR(g);
+function onGuestKey(e) {
+  if (e.key === 'Enter') { closeDd(); searchByName(); }
+  if (e.key === 'Escape') closeDd();
 }
 
-function onGuestKey(e){
-  if(e.key==='Enter'){ closeDropdown(); searchGuest(); }
-  if(e.key==='Escape') closeDropdown();
-}
-
-document.addEventListener('click', e=>{
-  if(!document.getElementById('guest-search-wrap').contains(e.target)) closeDropdown();
+document.addEventListener('click', e => {
+  if (!document.getElementById('guest-wrap').contains(e.target)) closeDd();
 });
 
-// Load guest names on guest page focus
-document.addEventListener('DOMContentLoaded',()=>{
-  // Preload on first interaction
-  document.getElementById('guest-name-input').addEventListener('focus',()=>preloadGuestNames());
-});
-
-async function searchGuest(){
-  const name=document.getElementById('guest-name-input').value.trim(); if(!name) return;
-  const btn=document.getElementById('guest-btn'); btn.disabled=true; btn.textContent='查詢中…';
-  document.getElementById('guest-result').style.display='none';
-  try{
-    const res=await apiFetch({action:'lookup',name});
-    if(res.status==='not_found') guestErr('查無此姓名','請確認姓名正確，或洽現場工作人員');
-    else if(res.status==='found_one') showQR(res.guest);
-    else if(res.status==='found_many') showGuestPick(res.guests);
-    else guestErr('系統錯誤',res.message||'請稍後再試');
-  }catch(_){ guestErr('連線失敗','請確認網路後重試'); }
-  btn.disabled=false; btn.textContent='查詢 QR Code';
+async function searchByName() {
+  const name = document.getElementById('guest-input').value.trim(); if (!name) return;
+  const btn = document.getElementById('guest-btn'); btn.disabled = true; btn.textContent = '查詢中…';
+  document.getElementById('guest-result').style.display = 'none';
+  try {
+    // First try cache
+    let matches = guestCache.filter(g => g.name === name);
+    if (!matches.length) {
+      const docs = await fsQueryByName(name);
+      matches = docs;
+    }
+    if (!matches.length) guestErr('查無此姓名', '請確認姓名正確，或洽現場工作人員');
+    else if (matches.length === 1) showQR(matches[0]);
+    else showGuestPick(matches);
+  } catch(_) { guestErr('連線失敗', '請確認網路後重試'); }
+  btn.disabled = false; btn.textContent = '查詢 QR Code';
 }
 
-function guestErr(t,s){
-  const el=document.getElementById('guest-result');
-  el.innerHTML=`<div style="border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:18px;text-align:center"><p style="font-weight:700;font-size:14px;color:var(--rose)">${t}</p><p style="font-size:12px;color:var(--soft);margin-top:5px">${s}</p></div>`;
+function guestErr(t, s) {
+  const el = document.getElementById('guest-result');
+  el.innerHTML = `<div style="border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:18px;text-align:center"><p style="font-weight:700;font-size:14px;color:var(--rose)">${t}</p><p style="font-size:12px;color:var(--soft);margin-top:5px">${s}</p></div>`;
   animShow(el);
 }
 
-function showQR(g){
-  const qr=`https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data=${encodeURIComponent(CHECKIN_BASE+'?id='+g.id)}`;
-  const el=document.getElementById('guest-result');
-  el.innerHTML=`<div style="border-radius:18px;border:1px solid var(--gold-ring);background:var(--panel);overflow:hidden"><div style="padding:24px 16px 18px;text-align:center"><p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:5px">您的專屬入場碼</p><p style="font-size:19px;font-weight:900;color:var(--gold);margin-bottom:18px">${g.name} 先生／小姐</p><div class="shimmer" style="display:inline-block;border-radius:14px;overflow:hidden;border:3px solid var(--gold);padding:7px;background:#fff"><img src="${qr}" width="220" height="220" style="display:block;border-radius:7px" alt="QR" loading="lazy"/></div><div style="margin-top:14px;background:var(--card);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)"><span style="font-size:11px;color:var(--muted)">邀請 ID</span><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--light)">${g.id}</span></div></div><div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div><div style="padding:10px 16px;text-align:center"><p style="font-size:11px;color:var(--muted)">請向工作人員出示此 QR Code 完成報到</p></div></div>`;
+function showQR(g) {
+  const qr = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data=${encodeURIComponent(CHECKIN_BASE + '?id=' + g.id)}`;
+  const el = document.getElementById('guest-result');
+  el.innerHTML = `<div style="border-radius:18px;border:1px solid var(--gold-ring);background:var(--panel);overflow:hidden"><div style="padding:24px 16px 18px;text-align:center"><p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:5px">您的專屬入場碼</p><p style="font-size:19px;font-weight:900;color:var(--gold);margin-bottom:18px">${g.name} 先生／小姐</p><div class="shimmer" style="display:inline-block;border-radius:14px;overflow:hidden;border:3px solid var(--gold);padding:7px;background:#fff"><img src="${qr}" width="220" height="220" style="display:block;border-radius:7px" alt="QR" loading="lazy"/></div><div style="margin-top:14px;background:var(--card);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)"><span style="font-size:11px;color:var(--muted)">邀請 ID</span><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--light)">${g.id}</span></div></div><div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div><div style="padding:10px 16px;text-align:center"><p style="font-size:11px;color:var(--muted)">請向工作人員出示此 QR Code 完成報到</p></div></div>`;
   animShow(el);
 }
 
-function showGuestPick(guests){
-  const el=document.getElementById('guest-result');
-  el.innerHTML=`<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到 ${guests.length} 位同名貴賓，請選擇：</p>${guests.map(g=>`<button onclick='showQR(${JSON.stringify(g)})' style="width:100%;text-align:left;border-radius:12px;border:1px solid var(--border2);background:var(--card);padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Noto Sans TC',sans-serif;margin-bottom:6px" onmouseover="this.style.borderColor='var(--gold-ring)'" onmouseout="this.style.borderColor='var(--border2)'"><span style="color:var(--white);font-weight:700">${g.name}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${g.id}</span></button>`).join('')}`;
+function showGuestPick(guests) {
+  const el = document.getElementById('guest-result');
+  el.innerHTML = `<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到 ${guests.length} 位同名，請選擇：</p>` +
+    guests.map(g => `<button onclick='showQR(${JSON.stringify(g)})' style="width:100%;text-align:left;border-radius:12px;border:1px solid var(--border2);background:var(--card);padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Noto Sans TC',sans-serif;margin-bottom:6px" onmouseover="this.style.borderColor='var(--gold-ring)'" onmouseout="this.style.borderColor='var(--border2)'"><span style="color:var(--white);font-weight:700">${g.name}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${g.id}</span></button>`).join('');
   animShow(el);
 }
 
 // ══════════════════════════════════════
-// STAFF — Auth + tabs
+// STAFF — Auth + Tabs
 // ══════════════════════════════════════
-function checkPW(){
-  if(document.getElementById('staff-pw').value===STAFF_PASSWORD){
-    document.getElementById('staff-gate').style.display='none';
-    const inner=document.getElementById('staff-inner');
-    inner.style.display='flex'; inner.classList.add('rise');
+function checkPW() {
+  if (document.getElementById('staff-pw').value === STAFF_PASSWORD) {
+    document.getElementById('staff-gate').style.display = 'none';
+    const inner = document.getElementById('staff-inner');
+    inner.style.display = 'flex'; inner.classList.add('rise');
     switchTab('scan');
-    preloadGuestNames(); // preload for manual checkin name search
+    loadAll();
   } else {
-    const err=document.getElementById('pw-err'); err.style.display='block';
-    document.getElementById('staff-pw').value='';
+    const err = document.getElementById('pw-err'); err.style.display = 'block';
+    document.getElementById('staff-pw').value = '';
     document.getElementById('staff-pw').focus();
-    setTimeout(()=>{ err.style.display='none'; },3000);
+    setTimeout(() => { err.style.display = 'none'; }, 3000);
   }
 }
 
-const TABS=['scan','status','qr','import'];
-function switchTab(tab){
-  TABS.forEach(t=>{
-    document.getElementById('panel-'+t).style.display='none';
-    document.getElementById('tab-'+t).className='sub-tab';
+const TABS = ['scan', 'status', 'qr', 'import'];
+function switchTab(tab) {
+  TABS.forEach(t => {
+    document.getElementById('panel-' + t).style.display = 'none';
+    document.getElementById('tab-' + t).className = 'sub-tab';
   });
-  document.getElementById('panel-'+tab).style.display='flex';
-  document.getElementById('tab-'+tab).className=`sub-tab t-${tab}`;
-  if(tab!=='scan') stopScanner();
-  if((tab==='status'||tab==='qr') && !guestsLoaded) loadGuests();
-  if(tab==='import' && !logLoaded) loadLog();
+  document.getElementById('panel-' + tab).style.display = 'flex';
+  document.getElementById('tab-' + tab).className = `sub-tab t-${tab}`;
+  if (tab !== 'scan') stopScanner();
 }
 
 // ══════════════════════════════════════
-// STAFF — Scanner
+// DATA — Direct Firestore
 // ══════════════════════════════════════
-let qrScanner=null, scanning=false, busy=false;
-function staffToggle(){ scanning?stopScanner():startScanner(); }
-function startScanner(){
-  qrScanner=new Html5Qrcode('qr-reader');
-  qrScanner.start({facingMode:'environment'},{fps:15,qrbox:{width:200,height:200},aspectRatio:1.0,formatsToSupport:[Html5QrcodeSupportedFormats.QR_CODE]},onScan,()=>{})
-  .then(()=>{
-    scanning=true;
-    document.getElementById('staff-idle').style.display='none';
-    document.getElementById('brackets').style.display='block';
-    document.getElementById('toggle-btn').textContent='停止掃描';
-    setSt('掃描中…','請將貴賓 QR Code 對準掃描框');
-  }).catch(()=>{
-    document.getElementById('cam-err').style.display='block';
-    document.getElementById('toggle-btn').disabled=true;
-    setSt('相機錯誤','請檢查相機權限');
-  });
-}
-async function stopScanner(){
-  if(!qrScanner||!scanning) return;
-  try{ await qrScanner.stop(); }catch(_){}
-  scanning=false;
-  document.getElementById('brackets').style.display='none';
-  document.getElementById('staff-idle').style.display='flex';
-  document.getElementById('toggle-btn').textContent='開始掃描';
-  setSt('已停止','點擊按鈕重新掃描');
-}
-async function onScan(decoded){
-  if(busy) return; busy=true;
-  await stopScanner();
-  let id=null;
-  try{ id=new URL(decoded).searchParams.get('id'); }catch(_){ id=decoded.trim()||null; }
-  if(!id){ scanResult('error','QR Code 無效','找不到報到 ID',null); busy=false; return; }
-  document.getElementById('staff-loading').style.display='flex';
-  setSt('驗證中…',`ID：${id}`);
-  document.getElementById('toggle-btn').disabled=true;
-  try{
-    const data=await apiFetch({action:'checkin',id});
-    document.getElementById('staff-loading').style.display='none';
-    if(data.status==='success'){ checkedIds.add(id); logLoaded=false; updateDash(); renderStatusGrid(); renderQRGrid(); scanResult('success',data.message,`報到時間：${data.checkInTime}`,data); }
-    else if(data.status==='duplicate') scanResult('warn','您已完成報到，請勿重複掃描',`首次報到：${data.checkInTime}`,data);
-    else if(data.status==='not_found') scanResult('error','非受邀貴賓','此 QR Code 不在貴賓名單中',null);
-    else scanResult('error','報到失敗',data.message||'請聯繫系統管理員',null);
-  }catch(_){ document.getElementById('staff-loading').style.display='none'; scanResult('error','連線失敗','請確認網路後重試',null); }
-  busy=false;
-}
-const RS={
-  success:{icon:'✓',bg:'var(--lime-dim)',br:'var(--lime-ring)',ic:'var(--lime)',tc:'var(--lime)'},
-  warn:   {icon:'!',bg:'var(--amber-dim)',br:'var(--amber-ring)',ic:'var(--amber)',tc:'var(--amber)'},
-  error:  {icon:'✕',bg:'var(--rose-dim)',br:'var(--rose-ring)',ic:'var(--rose)',tc:'var(--rose)'},
-};
-function scanResult(type,title,sub,data){
-  const s=RS[type];
-  const rows=data?`<div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;gap:7px;margin-top:10px">${data.name?`<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">姓名</span><span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--white)">${data.name}</span></div>`:''}<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">ID</span><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--light)">${data.id||'—'}</span></div></div>`:'';
-  const el=document.getElementById('staff-result');
-  el.innerHTML=`<div style="border-radius:18px;border:1px solid ${s.br};background:${s.bg};padding:20px"><div style="text-align:center"><div style="width:48px;height:48px;border-radius:50%;background:${s.bg};border:1px solid ${s.br};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:${s.ic};margin:0 auto 10px">${s.icon}</div><p style="font-weight:900;font-size:16px;color:${s.tc}">${title}</p><p style="font-size:11px;color:var(--soft);margin-top:4px">${sub}</p></div>${rows}</div><button class="btn-ghost" onclick="resetScan()" style="margin-top:7px">繼續掃下一位 →</button>`;
-  el.style.display='block'; void el.offsetWidth; el.classList.add('rise');
-  setSt('掃描完成','查看下方結果');
-  document.getElementById('toggle-btn').disabled=false;
-  document.getElementById('toggle-btn').textContent='開始掃描';
-}
-function resetScan(){ document.getElementById('staff-result').style.display='none'; startScanner(); }
-function setSt(t,s){ document.getElementById('s-title').textContent=t; document.getElementById('s-sub').textContent=s; }
+let allGuests = [], checkedIds = new Set(), allLogs = [], dataLoaded = false;
+let statusFilter = 'all';
 
-// ══════════════════════════════════════
-// DATA
-// ══════════════════════════════════════
-let allGuests=[], checkedIds=new Set(), allLogs=[], guestsLoaded=false, logLoaded=false;
-let statusFilter='all';
+async function loadAll() {
+  showMsg('status-msg', 'sky', '載入中…', '直接從 Firestore 讀取');
+  showMsg('qr-msg', 'sky', '載入中…', '直接從 Firestore 讀取');
+  try {
+    // 同時讀取 guests 和 log（平行）
+    const [gDocs, lDocs] = await Promise.all([
+      fsList('guests'),
+      fsList('log')
+    ]);
 
-async function loadGuests(){
-  showMsg('status-msg','sky','載入中…','正在讀取貴賓名單');
-  showMsg('qr-msg','sky','載入中…','正在讀取貴賓名單');
-  document.getElementById('status-grid').innerHTML='';
-  document.getElementById('qr-grid').innerHTML='';
-  try{
-    const res=await apiFetch({action:'listGuests'});
-    if(res.status!=='success'){ showMsg('status-msg','rose','載入失敗',res.message); showMsg('qr-msg','rose','載入失敗',res.message); return; }
-    allGuests=res.guests||[]; checkedIds=new Set(res.checkedIds||[]);
-    guestNameCache=allGuests; // sync cache
-    updateDash(); renderStatusGrid(); renderQRGrid();
-    document.getElementById('status-msg').style.display='none';
-    document.getElementById('qr-msg').style.display='none';
-    guestsLoaded=true;
-  }catch(_){ showMsg('status-msg','rose','連線失敗','請確認 GAS_URL 設定正確'); showMsg('qr-msg','rose','連線失敗','請確認 GAS_URL 設定正確'); }
-}
-function forceReloadGuests(){ guestsLoaded=false; loadGuests(); }
+    allGuests = gDocs.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
+    allLogs   = lDocs.sort((a, b) => (a.checkInTime || '').localeCompare(b.checkInTime || ''));
+    checkedIds = new Set(allLogs.map(l => l.id));
+    guestCache = allGuests; // sync cache
 
-function updateDash(){
-  const total=allGuests.length, checked=checkedIds.size, pending=total-checked;
-  document.getElementById('d-total').textContent=total;
-  document.getElementById('d-checked').textContent=checked;
-  document.getElementById('d-pending').textContent=pending;
-  const pct=total?Math.round(checked/total*100):0;
-  document.getElementById('prog-bar').style.width=pct+'%';
-  document.getElementById('prog-label').textContent=pct+'%';
-  document.getElementById('dash-stats').style.display='grid';
-  document.getElementById('dash-progress').style.display='block';
+    updateDash();
+    renderStatusGrid();
+    renderQRGrid();
+    renderLogTable(allLogs);
+    document.getElementById('log-wrap').style.display = 'block';
+    document.getElementById('status-msg').style.display = 'none';
+    document.getElementById('qr-msg').style.display = 'none';
+    dataLoaded = true;
+  } catch(e) {
+    showMsg('status-msg', 'rose', '載入失敗', e.message);
+    showMsg('qr-msg', 'rose', '載入失敗', e.message);
+  }
 }
 
-// ── Status grid ──────────────────────
-function renderStatusGrid(){
-  const q=(document.getElementById('status-search')?.value||'').trim().toLowerCase();
-  const filtered=allGuests.filter(g=>{
-    if(q && !g.name.toLowerCase().includes(q) && !g.id.toLowerCase().includes(q)) return false;
-    if(statusFilter==='checked' && !checkedIds.has(g.id)) return false;
-    if(statusFilter==='pending' && checkedIds.has(g.id)) return false;
+function updateDash() {
+  const total = allGuests.length, checked = checkedIds.size, pending = total - checked;
+  document.getElementById('d-total').textContent   = total;
+  document.getElementById('d-checked').textContent = checked;
+  document.getElementById('d-pending').textContent = pending;
+  const pct = total ? Math.round(checked / total * 100) : 0;
+  document.getElementById('prog-bar').style.width  = pct + '%';
+  document.getElementById('prog-label').textContent = pct + '%';
+  document.getElementById('dash-stats').style.display   = 'grid';
+  document.getElementById('dash-progress').style.display = 'block';
+}
+
+// ── Status grid ──
+function renderStatusGrid() {
+  const q = (document.getElementById('status-search')?.value || '').trim().toLowerCase();
+  const filtered = allGuests.filter(g => {
+    if (q && !g.name?.toLowerCase().includes(q) && !g.id?.toLowerCase().includes(q)) return false;
+    if (statusFilter === 'checked' && !checkedIds.has(g.id)) return false;
+    if (statusFilter === 'pending' &&  checkedIds.has(g.id)) return false;
     return true;
   });
-  const grid=document.getElementById('status-grid');
-  if(!filtered.length){ grid.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無符合條件的貴賓</p>'; return; }
-  const log=Object.fromEntries(allLogs.map(l=>[l.id,l]));
-  grid.innerHTML=filtered.map(g=>{
-    const done=checkedIds.has(g.id);
-    const time=log[g.id]?.checkInTime||'';
-    return `<div class="g-card ${done?'done':'todo'}">
-      <div class="g-card-badge ${done?'done':'todo'}">${done?'☑ 已報到':'☐ 未報到'}</div>
-      <div class="g-card-name">${g.name}</div>
-      <div class="g-card-meta">${g.id}${g.temple?'・'+g.temple:''}</div>
-      ${time?`<div class="g-card-time">${time}</div>`:''}
-      <div class="g-card-actions">
+  const logMap = Object.fromEntries(allLogs.map(l => [l.id, l]));
+  const grid = document.getElementById('status-grid');
+  if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無資料</p>'; return; }
+  grid.innerHTML = filtered.map(g => {
+    const done = checkedIds.has(g.id);
+    const time = logMap[g.id]?.checkInTime || '';
+    return `<div class="g-card ${done ? 'done' : 'todo'}">
+      <div class="g-badge ${done ? 'done' : 'todo'}">${done ? '☑ 已報到' : '☐ 未報到'}</div>
+      <div style="font-size:13px;font-weight:700;color:var(--white)">${g.name}</div>
+      <div style="font-size:10px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</div>
+      ${time ? `<div style="font-size:10px;color:var(--soft);font-family:'DM Mono',monospace">${time}</div>` : ''}
+      <div style="display:flex;gap:4px;margin-top:2px">
         ${done
-          ?`<button class="btn-rose-xs" onclick="cancelCheckin('${g.id}','${g.name}')">↩ 取消</button>`
-          :`<button class="btn-lime-xs" onclick="manualCheckinById('${g.id}','${g.name}')">報到</button>`
-        }
+          ? `<button class="btn-rose-xs" onclick="cancelCheckin('${g.id}','${g.name}')">↩ 取消</button>`
+          : `<button class="btn-lime-xs" onclick="doCheckin('${g.id}','${g.name}')">報到</button>`}
       </div>
     </div>`;
   }).join('');
 }
-function setFilter(f){
-  statusFilter=f;
-  document.getElementById('fb-all').className='filter-btn'+(f==='all'?' active':'');
-  document.getElementById('fb-checked').className='filter-btn'+(f==='checked'?' active-checked':'');
-  document.getElementById('fb-pending').className='filter-btn'+(f==='pending'?' active-pending':'');
+
+function setFilter(f) {
+  statusFilter = f;
+  document.getElementById('fb-all').className     = 'filter-btn' + (f === 'all'     ? ' active'   : '');
+  document.getElementById('fb-checked').className = 'filter-btn' + (f === 'checked' ? ' active-c' : '');
+  document.getElementById('fb-pending').className = 'filter-btn' + (f === 'pending' ? ' active-p' : '');
   renderStatusGrid();
 }
 
-// ── QR grid ──────────────────────────
-function renderQRGrid(){
-  const q=(document.getElementById('qr-search')?.value||'').trim().toLowerCase();
-  const filtered=allGuests.filter(g=>!q||g.name.toLowerCase().includes(q)||g.id.toLowerCase().includes(q));
-  const grid=document.getElementById('qr-grid');
-  if(!filtered.length){ grid.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無符合條件的貴賓</p>'; return; }
-  grid.innerHTML=filtered.map(g=>{
-    const done=checkedIds.has(g.id);
-    const checkinUrl=`${CHECKIN_BASE}?id=${g.id}`;
-    const qrSrc=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=${encodeURIComponent(checkinUrl)}`;
-    return `<div class="qr-card ${done?'done':''}">
-      ${done?'<div class="qr-done-badge">✓</div>':''}
-      <div class="qr-img-wrap ${done?'done-border':''}">
-        <img src="${qrSrc}" width="90" height="90" loading="lazy" style="display:block;border-radius:5px" alt="${g.name}"/>
+// ── QR grid ──
+function renderQRGrid() {
+  const q = (document.getElementById('qr-search')?.value || '').trim().toLowerCase();
+  const filtered = allGuests.filter(g => !q || g.name?.toLowerCase().includes(q) || g.id?.toLowerCase().includes(q));
+  const grid = document.getElementById('qr-grid');
+  if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無資料</p>'; return; }
+  grid.innerHTML = filtered.map(g => {
+    const done = checkedIds.has(g.id);
+    const url  = `${CHECKIN_BASE}?id=${g.id}`;
+    const qr   = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=${encodeURIComponent(url)}`;
+    return `<div class="qr-card ${done ? 'done' : ''}">
+      ${done ? '<div class="qr-done-badge">✓</div>' : ''}
+      <div class="qr-img-wrap ${done ? 'done-b' : ''}">
+        <img src="${qr}" width="90" height="90" loading="lazy" style="display:block;border-radius:5px" alt="${g.name}"/>
       </div>
-      <div class="qr-name">${g.name}</div>
-      <div class="qr-id">${g.id}${g.temple?'・'+g.temple:''}</div>
-      <div class="qr-actions">
-        <button class="qr-btn dl" onclick="downloadOneQR('${qrSrc}','${g.name}')">📥 下載 QR</button>
-        <button class="qr-btn cp" onclick="copyLink('${checkinUrl}',this)">🔗 複製連結</button>
+      <div style="font-size:12px;font-weight:700;color:var(--white);text-align:center;line-height:1.3">${g.name}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;width:100%">
+        <button class="qr-btn dl" onclick="dlQR('${qr}','${g.name}')">📥 下載 QR</button>
+        <button class="qr-btn cp" onclick="copyLink('${url}',this)">🔗 複製連結</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function downloadOneQR(src, name){
-  const a=document.createElement('a');
-  a.href=src.replace('200x200','400x400');
-  a.download=`QR_${name}.png`;
-  a.target='_blank';
-  a.click();
+function dlQR(src, name) {
+  const a = document.createElement('a');
+  a.href = src.replace('200x200', '400x400');
+  a.download = `QR_${name}.png`; a.target = '_blank'; a.click();
 }
 
-function copyLink(url, btn){
-  navigator.clipboard.writeText(url).then(()=>{
-    const orig=btn.textContent;
-    btn.textContent='✓ 已複製！';
-    btn.style.background='var(--lime-dim)';
-    btn.style.color='var(--lime)';
-    btn.style.borderColor='var(--lime-ring)';
-    setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; btn.style.color=''; btn.style.borderColor=''; },2000);
-  }).catch(()=>{ alert('複製失敗，請手動複製：'+url); });
+function copyLink(url, btn) {
+  navigator.clipboard.writeText(url).then(() => {
+    const o = btn.textContent; btn.textContent = '✓ 已複製！';
+    btn.style.cssText += 'background:var(--lime-dim);color:var(--lime);border-color:var(--lime-ring)';
+    setTimeout(() => { btn.textContent = o; btn.style.cssText = ''; }, 2000);
+  }).catch(() => alert('請手動複製：' + url));
 }
 
-function printAllQR(){
-  if(!allGuests.length){ alert('請先載入名單'); return; }
-  const win=window.open('','_blank');
-  const cards=allGuests.map(g=>{
-    const done=checkedIds.has(g.id);
-    const qr=`https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=M&data=${encodeURIComponent(CHECKIN_BASE+'?id='+g.id)}`;
-    return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;padding:12px;border:1px solid ${done?'#4ac96e':'#ccc'};border-radius:10px;background:${done?'#f0fff4':'#fff'};page-break-inside:avoid">
-      <img src="${qr}" width="120" height="120" style="border-radius:6px"/>
-      <div style="font-weight:700;font-size:13px;color:#000">${g.name}</div>
-      <div style="font-size:10px;color:#888">${g.id}${g.temple?'・'+g.temple:''}</div>
-      ${done?'<div style="font-size:9px;color:#2a7a3a;font-weight:700">✓ 已報到</div>':''}
+function printAllQR() {
+  if (!allGuests.length) { alert('請先載入名單'); return; }
+  const win = window.open('', '_blank');
+  const cards = allGuests.map(g => {
+    const done = checkedIds.has(g.id);
+    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&ecc=M&data=${encodeURIComponent(CHECKIN_BASE + '?id=' + g.id)}`;
+    return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;padding:10px;border:1.5px solid ${done ? '#4ac96e' : '#ccc'};border-radius:10px;background:${done ? '#f0fff4' : '#fff'};page-break-inside:avoid;font-family:sans-serif">
+      <img src="${qr}" width="110" height="110" style="border-radius:5px"/>
+      <b style="font-size:12px;color:#000">${g.name}</b>
+      <span style="font-size:9px;color:#888">${g.id}${g.temple ? '・' + g.temple : ''}</span>
+      ${done ? '<span style="font-size:9px;color:#2a7a3a;font-weight:700">✓ 已報到</span>' : ''}
     </div>`;
   }).join('');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{font-family:sans-serif;padding:16px;background:#fff}#grid{display:flex;flex-wrap:wrap;gap:8px}@media print{@page{margin:10mm}}</style></head><body><h2 style="margin-bottom:12px">貴賓 QR Code 名單</h2><div id="grid">${cards}</div></body></html>`);
-  win.document.close();
-  setTimeout(()=>win.print(),800);
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">${cards}</div></body></html>`);
+  win.document.close(); setTimeout(() => win.print(), 800);
 }
 
-function downloadAllQR(){
-  alert('下載全部：將逐一開啟各貴賓的 QR Code 下載連結，瀏覽器可能會詢問允許多個下載。');
-  allGuests.forEach((g,i)=>{
-    setTimeout(()=>{
-      const a=document.createElement('a');
-      a.href=`https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data=${encodeURIComponent(CHECKIN_BASE+'?id='+g.id)}`;
-      a.download=`QR_${g.id}_${g.name}.png`;
-      a.target='_blank'; a.click();
-    },i*300);
+function downloadAllQR() {
+  alert('將逐一開啟各貴賓的 QR Code 下載連結，瀏覽器可能會詢問允許多個下載。');
+  allGuests.forEach((g, i) => setTimeout(() => {
+    const a = document.createElement('a');
+    a.href = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data=${encodeURIComponent(CHECKIN_BASE + '?id=' + g.id)}`;
+    a.download = `QR_${g.id}_${g.name}.png`; a.target = '_blank'; a.click();
+  }, i * 300));
+}
+
+// ── Checkin / Cancel (直接寫 Firestore) ──
+async function doCheckin(id, name) {
+  // 防重複
+  const existing = await fsGet('log', id);
+  if (existing) { alert(`⚠ ${name} 已於 ${existing.checkInTime} 完成報到`); return; }
+
+  const taipeiTime = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false })
+    .replace(/\//g, '-');
+  await fsSet('log', id, { id, name, temple: allGuests.find(g => g.id === id)?.temple || '', checkInTime: taipeiTime, status: '已報到' });
+
+  checkedIds.add(id);
+  allLogs.push({ id, name, temple: allGuests.find(g => g.id === id)?.temple || '', checkInTime: taipeiTime });
+  updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+  alert(`✓ ${name} 報到成功！\n時間：${taipeiTime}`);
+}
+
+async function cancelCheckin(id, name) {
+  if (!confirm(`確定取消「${name}」的報到記錄？`)) return;
+  await fsDel('log', id);
+  checkedIds.delete(id);
+  allLogs = allLogs.filter(l => l.id !== id);
+  updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+  alert(`已取消 ${name} 的報到記錄`);
+}
+
+// ── Scanner ──
+let qrScanner = null, scanning = false, busy = false;
+function staffToggle() { scanning ? stopScanner() : startScanner(); }
+function startScanner() {
+  qrScanner = new Html5Qrcode('qr-reader');
+  qrScanner.start({ facingMode: 'environment' },
+    { fps: 15, qrbox: { width: 200, height: 200 }, aspectRatio: 1.0, formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE] },
+    onScan, () => {})
+  .then(() => {
+    scanning = true;
+    document.getElementById('staff-idle').style.display = 'none';
+    document.getElementById('brackets').style.display = 'block';
+    document.getElementById('toggle-btn').textContent = '停止掃描';
+    setSt('掃描中…', '請將貴賓 QR Code 對準掃描框');
+  }).catch(() => {
+    document.getElementById('cam-err').style.display = 'block';
+    document.getElementById('toggle-btn').disabled = true;
+    setSt('相機錯誤', '請檢查相機權限');
   });
 }
-
-// ── Manual checkin / cancel ──────────
-async function manualCheckinById(id,name){
-  if(!confirm(`確定為「${name}」手動報到？`)) return;
-  try{
-    const data=await apiFetch({action:'checkin',id});
-    if(data.status==='success'){
-      checkedIds.add(id); logLoaded=false;
-      allLogs.push({id:data.id,name:data.name,temple:data.temple||'',checkInTime:data.checkInTime});
-      updateDash(); renderStatusGrid(); renderQRGrid();
-      alert(`✓ ${name} 報到成功！\n時間：${data.checkInTime}`);
-    } else if(data.status==='duplicate'){
-      alert(`⚠ ${name} 已於 ${data.checkInTime} 完成報到`);
-    } else { alert(`✕ 報到失敗：${data.message}`); }
-  }catch(_){ alert('連線失敗，請確認網路後重試'); }
+async function stopScanner() {
+  if (!qrScanner || !scanning) return;
+  try { await qrScanner.stop(); } catch(_) {}
+  scanning = false;
+  document.getElementById('brackets').style.display = 'none';
+  document.getElementById('staff-idle').style.display = 'flex';
+  document.getElementById('toggle-btn').textContent = '開始掃描';
+  setSt('已停止', '點擊按鈕重新掃描');
 }
-
-async function cancelCheckin(id,name){
-  if(!confirm(`確定取消「${name}」的報到記錄？`)) return;
-  try{
-    const data=await apiFetch({action:'cancelCheckin',id});
-    if(data.status==='success'){
-      checkedIds.delete(id); allLogs=allLogs.filter(l=>l.id!==id); logLoaded=false;
-      updateDash(); renderStatusGrid(); renderQRGrid();
-      alert(`已取消 ${name} 的報到記錄`);
-    } else { alert(`取消失敗：${data.message}`); }
-  }catch(_){ alert('連線失敗'); }
-}
-
-async function manualCheckin(){
-  const val=document.getElementById('manual-id').value.trim(); if(!val) return;
-  const resEl=document.getElementById('manual-result');
-  let id=val;
-  const looksLikeName=isNaN(val)&&val.length>=2;
-  if(looksLikeName){
-    const local=allGuests.filter(g=>g.name.includes(val));
-    if(local.length===1){ id=local[0].id; }
-    else if(local.length>1){
-      resEl.innerHTML=`<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">找到 ${local.length} 位同名，請輸入 ID：${local.map(g=>`<b>${g.id}</b>(${g.name})`).join('、')}</div>`;
-      animShow(resEl); return;
-    } else {
-      try{
-        const r=await apiFetch({action:'lookup',name:val});
-        if(r.status==='found_one') id=r.guest.id;
-        else if(r.status==='found_many'){
-          resEl.innerHTML=`<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">找到 ${r.guests.length} 位同名，請輸入 ID</div>`;
-          animShow(resEl); return;
-        } else {
-          resEl.innerHTML=`<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">查無此姓名</div>`;
-          animShow(resEl); return;
-        }
-      }catch(_){}
+async function onScan(decoded) {
+  if (busy) return; busy = true;
+  await stopScanner();
+  let id = null;
+  try { id = new URL(decoded).searchParams.get('id'); } catch(_) { id = decoded.trim() || null; }
+  if (!id) { scanResult('error', 'QR Code 無效', '找不到報到 ID', null); busy = false; return; }
+  document.getElementById('staff-loading').style.display = 'flex';
+  setSt('驗證中…', `ID：${id}`);
+  document.getElementById('toggle-btn').disabled = true;
+  try {
+    // 直接查 Firestore
+    const guest = allGuests.find(g => g.id === id) || await fsGet('guests', id);
+    if (!guest) { scanResult('error', '非受邀貴賓', '此 QR Code 不在貴賓名單中', null); }
+    else {
+      const logDoc = await fsGet('log', id);
+      if (logDoc) {
+        scanResult('warn', '您已完成報到，請勿重複掃描', `首次報到：${logDoc.checkInTime}`, { id, name: guest.name });
+      } else {
+        const taipeiTime = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
+        await fsSet('log', id, { id, name: guest.name, temple: guest.temple || '', checkInTime: taipeiTime, status: '已報到' });
+        checkedIds.add(id);
+        allLogs.push({ id, name: guest.name, temple: guest.temple || '', checkInTime: taipeiTime });
+        updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+        scanResult('success', `歡迎光臨，${guest.name} 先生/小姐`, `報到時間：${taipeiTime}`, { id, name: guest.name });
+      }
     }
+  } catch(e) { scanResult('error', '連線失敗', e.message || '請確認網路後重試', null); }
+  document.getElementById('staff-loading').style.display = 'none';
+  document.getElementById('toggle-btn').disabled = false;
+  document.getElementById('toggle-btn').textContent = '開始掃描';
+  busy = false;
+}
+
+const RS = {
+  success: { icon:'✓', bg:'var(--lime-dim)', br:'var(--lime-ring)', ic:'var(--lime)', tc:'var(--lime)' },
+  warn:    { icon:'!', bg:'var(--amber-dim)',br:'var(--amber-ring)',ic:'var(--amber)',tc:'var(--amber)' },
+  error:   { icon:'✕', bg:'var(--rose-dim)', br:'var(--rose-ring)', ic:'var(--rose)', tc:'var(--rose)' },
+};
+function scanResult(type, title, sub, data) {
+  const s = RS[type];
+  const rows = data ? `<div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;gap:7px;margin-top:10px">${data.name ? `<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">姓名</span><span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--white)">${data.name}</span></div>` : ''}<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">ID</span><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--light)">${data.id || '—'}</span></div></div>` : '';
+  const el = document.getElementById('staff-result');
+  el.innerHTML = `<div style="border-radius:18px;border:1px solid ${s.br};background:${s.bg};padding:20px"><div style="text-align:center"><div style="width:48px;height:48px;border-radius:50%;background:${s.bg};border:1px solid ${s.br};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:${s.ic};margin:0 auto 10px">${s.icon}</div><p style="font-weight:900;font-size:16px;color:${s.tc}">${title}</p><p style="font-size:11px;color:var(--soft);margin-top:4px">${sub}</p></div>${rows}</div><button class="btn-ghost" onclick="resetScan()" style="margin-top:7px">繼續掃下一位 →</button>`;
+  el.style.display = 'block'; void el.offsetWidth; el.classList.add('rise');
+  setSt('掃描完成', '查看下方結果');
+}
+function resetScan() { document.getElementById('staff-result').style.display = 'none'; startScanner(); }
+function setSt(t, s) { document.getElementById('s-title').textContent = t; document.getElementById('s-sub').textContent = s; }
+
+// ── Manual checkin ──
+async function manualCheckin() {
+  const val = document.getElementById('manual-id').value.trim(); if (!val) return;
+  const resEl = document.getElementById('manual-result');
+  let guest = null;
+  // 先在本地找
+  const byId   = allGuests.find(g => g.id === val);
+  const byName = allGuests.filter(g => g.name && g.name.includes(val));
+  if (byId) { guest = byId; }
+  else if (byName.length === 1) { guest = byName[0]; }
+  else if (byName.length > 1) {
+    resEl.innerHTML = `<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">找到 ${byName.length} 位同名，請輸入 ID：${byName.map(g => `<b>${g.id}</b>(${g.name})`).join('、')}</div>`;
+    animShow(resEl); return;
+  } else {
+    // 向 Firestore 查
+    try { guest = await fsGet('guests', val); } catch(_) {}
   }
-  try{
-    const data=await apiFetch({action:'checkin',id});
-    if(data.status==='success'){
-      checkedIds.add(id); logLoaded=false;
-      allLogs.push({id:data.id,name:data.name,temple:data.temple||'',checkInTime:data.checkInTime});
-      updateDash(); renderStatusGrid(); renderQRGrid();
-      resEl.innerHTML=`<div style="background:var(--lime-dim);border:1px solid var(--lime-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--lime)">✓ <b>${data.name}</b> 報到成功！${data.checkInTime}</div>`;
-      document.getElementById('manual-id').value='';
-    } else if(data.status==='duplicate'){
-      resEl.innerHTML=`<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">⚠ ${data.name||id} 已於 ${data.checkInTime} 報到</div>`;
-    } else if(data.status==='not_found'){
-      resEl.innerHTML=`<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">✕ 非受邀貴賓</div>`;
+  if (!guest) {
+    resEl.innerHTML = `<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">✕ 查無此貴賓</div>`;
+    animShow(resEl); return;
+  }
+  try {
+    const existing = await fsGet('log', guest.id);
+    if (existing) {
+      resEl.innerHTML = `<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">⚠ ${guest.name} 已於 ${existing.checkInTime} 報到</div>`;
     } else {
-      resEl.innerHTML=`<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">✕ ${data.message}</div>`;
+      const t = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
+      await fsSet('log', guest.id, { id: guest.id, name: guest.name, temple: guest.temple || '', checkInTime: t, status: '已報到' });
+      checkedIds.add(guest.id);
+      allLogs.push({ id: guest.id, name: guest.name, temple: guest.temple || '', checkInTime: t });
+      updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+      resEl.innerHTML = `<div style="background:var(--lime-dim);border:1px solid var(--lime-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--lime)">✓ <b>${guest.name}</b> 報到成功！${t}</div>`;
+      document.getElementById('manual-id').value = '';
     }
-  }catch(_){
-    resEl.innerHTML=`<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">連線失敗</div>`;
+  } catch(e) {
+    resEl.innerHTML = `<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">連線失敗：${e.message}</div>`;
   }
   animShow(resEl);
 }
 
-// ── LOG ──────────────────────────────
-async function loadLog(){
-  try{
-    const res=await apiFetch({action:'listLog'});
-    if(res.status!=='success') return;
-    allLogs=res.logs||[]; renderLogTable(allLogs);
-    document.getElementById('log-list-wrap').style.display='block'; logLoaded=true;
-  }catch(_){}
+// ── Log table ──
+function renderLogTable(logs) {
+  document.getElementById('log-tbody').innerHTML = [...logs].reverse().map(l =>
+    `<tr><td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${l.id}</td><td style="font-weight:700;font-size:12px">${l.name || '—'}</td><td style="font-size:11px;color:var(--soft);font-family:'DM Mono',monospace">${l.checkInTime || '—'}</td><td><button class="btn-rose-xs" onclick="cancelCheckin('${l.id}','${l.name || l.id}')">取消</button></td></tr>`
+  ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">尚無報到記錄</td></tr>';
 }
-function forceReloadLog(){ logLoaded=false; loadLog(); }
-function renderLogTable(logs){
-  document.getElementById('log-tbody').innerHTML=[...logs].reverse().map(l=>`<tr>
-    <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${l.id}</td>
-    <td style="font-weight:700;font-size:12px">${l.name||'—'}</td>
-    <td style="font-size:11px;color:var(--soft);font-family:'DM Mono',monospace">${l.checkInTime||'—'}</td>
-    <td><button class="btn-rose-xs" onclick="cancelCheckinFromLog('${l.id}','${l.name||l.id}')">取消</button></td>
-  </tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">尚無報到記錄</td></tr>';
-}
-function filterLogTable(){
-  const q=document.getElementById('log-search').value.trim().toLowerCase();
-  renderLogTable(q?allLogs.filter(l=>(l.name||'').toLowerCase().includes(q)||(l.id||'').toLowerCase().includes(q)):allLogs);
-}
-async function cancelCheckinFromLog(id,name){
-  if(!confirm(`確定取消「${name}」的報到記錄？`)) return;
-  try{
-    const data=await apiFetch({action:'cancelCheckin',id});
-    if(data.status==='success'){
-      allLogs=allLogs.filter(l=>l.id!==id); checkedIds.delete(id); guestsLoaded=false;
-      updateDash(); renderStatusGrid(); renderQRGrid(); filterLogTable();
-      alert(`已取消 ${name} 的報到記錄`);
-    } else { alert(`取消失敗：${data.message}`); }
-  }catch(_){ alert('連線失敗'); }
-}
-function exportLogCSV(){
-  if(!allLogs.length){ loadLog().then(()=>{ if(allLogs.length) exportLogCSV(); else alert('尚無報到記錄'); }); return; }
-  dlCSV('\uFEFF'+'ID,姓名,佛堂,報到時間\n'+allLogs.map(l=>[l.id,l.name||'',l.temple||'',l.checkInTime||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'),`報到記錄_${today()}.csv`);
+function filterLogTable() {
+  const q = document.getElementById('log-search').value.trim().toLowerCase();
+  renderLogTable(q ? allLogs.filter(l => (l.name || '').toLowerCase().includes(q) || (l.id || '').toLowerCase().includes(q)) : allLogs);
 }
 
-// ── IMPORT ───────────────────────────
-let importData=[];
-function previewImport(){
-  const file=document.getElementById('import-file').files[0]; if(!file){ alert('請先選擇 CSV 檔案'); return; }
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const lines=e.target.result.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-    if(lines.length<2){ showImportMsg('檔案至少需要表頭和一筆資料'); return; }
-    const header=lines[0].split(',').map(h=>h.replace(/"/g,'').trim().toLowerCase());
-    const idIdx=header.indexOf('id'), nameIdx=header.indexOf('name');
-    if(idIdx<0||nameIdx<0){ showImportMsg('CSV 缺少必要欄位：id 和 name'); return; }
-    const tIdx=header.indexOf('temple'), nIdx=header.indexOf('note');
-    importData=lines.slice(1).map(line=>{
-      const cols=line.match(/("(?:[^"]|"")*"|[^,]*)/g).map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
-      return {id:cols[idIdx]||'',name:cols[nameIdx]||'',temple:tIdx>=0?(cols[tIdx]||''):'',note:nIdx>=0?(cols[nIdx]||''):''};
-    }).filter(r=>r.id&&r.name);
-    const prev=document.getElementById('import-preview');
-    prev.innerHTML=`<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px"><p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ${importData.length} 筆</p><div style="max-height:150px;overflow-y:auto">${importData.slice(0,8).map(r=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${r.name}</span><span style="font-family:'DM Mono',monospace;color:var(--muted)">${r.id}</span></div>`).join('')}${importData.length>8?`<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ${importData.length-8} 筆</p>`:''}</div></div>`;
-    prev.style.display='block';
-    document.getElementById('import-btn').style.display='block';
+// ── Import (still via GAS for batch write) ──
+let importData = [];
+function previewImport() {
+  const file = document.getElementById('import-file').files[0]; if (!file) { alert('請先選擇 CSV 檔案'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.replace(/\r/g, '').split('\n').filter(l => l.trim());
+    if (lines.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
+    const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
+    const idIdx = header.indexOf('id'), nameIdx = header.indexOf('name');
+    if (idIdx < 0 || nameIdx < 0) { showImportMsg('CSV 缺少必要欄位：id 和 name'); return; }
+    const tIdx = header.indexOf('temple'), nIdx = header.indexOf('note');
+    importData = lines.slice(1).map(line => {
+      const cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g).map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
+      return { id: cols[idIdx] || '', name: cols[nameIdx] || '', temple: tIdx >= 0 ? (cols[tIdx] || '') : '', note: nIdx >= 0 ? (cols[nIdx] || '') : '' };
+    }).filter(r => r.id && r.name);
+    const prev = document.getElementById('import-preview');
+    prev.innerHTML = `<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px"><p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ${importData.length} 筆</p><div style="max-height:150px;overflow-y:auto">${importData.slice(0, 8).map(r => `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${r.name}</span><span style="font-family:'DM Mono',monospace;color:var(--muted)">${r.id}</span></div>`).join('')}${importData.length > 8 ? `<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ${importData.length - 8} 筆</p>` : ''}</div></div>`;
+    prev.style.display = 'block';
+    document.getElementById('import-btn').style.display = 'block';
   };
-  reader.readAsText(file,'UTF-8');
-}
-async function confirmImport(){
-  if(!importData.length){ alert('沒有可匯入的資料'); return; }
-  if(!confirm(`確定匯入 ${importData.length} 筆？相同 ID 將被覆蓋`)) return;
-  const btn=document.getElementById('import-btn'); btn.disabled=true; btn.textContent='匯入中…';
-  try{
-    const res=await apiFetch({action:'importGuests',guests:importData});
-    if(res.status==='success'){
-      showMsg('import-msg','lime','匯入完成',`成功寫入 ${res.count} 筆資料`);
-      importData=[]; guestsLoaded=false;
-      document.getElementById('import-preview').style.display='none';
-      document.getElementById('import-file').value='';
-      btn.style.display='none';
-      setTimeout(()=>{ guestsLoaded=false; loadGuests(); },800);
-    } else { showMsg('import-msg','rose','匯入失敗',res.message||'請稍後再試'); }
-  }catch(_){ showMsg('import-msg','rose','連線失敗','請確認網路後重試'); }
-  btn.disabled=false; btn.textContent='確認匯入';
-}
-function showImportMsg(msg){
-  const p=document.getElementById('import-preview');
-  p.innerHTML=`<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">${msg}</div>`;
-  p.style.display='block';
-}
-function exportGuestCSV(){
-  if(!allGuests.length){ alert('請先載入名單'); return; }
-  dlCSV('\uFEFF'+'ID,姓名,所屬佛堂,備註,狀態\n'+allGuests.map(g=>[g.id,g.name,g.temple||'',g.note||'',checkedIds.has(g.id)?'已報到':'未報到'].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'),`貴賓名單_${today()}.csv`);
+  reader.readAsText(file, 'UTF-8');
 }
 
-// ── SHARED ───────────────────────────
-async function apiFetch(body){
-  const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+async function confirmImport() {
+  if (!importData.length) { alert('沒有可匯入的資料'); return; }
+  if (!confirm(`確定匯入 ${importData.length} 筆？相同 ID 將被覆蓋`)) return;
+  const btn = document.getElementById('import-btn'); btn.disabled = true; btn.textContent = '匯入中…';
+  try {
+    // 直接用 Firestore 批次寫入
+    await Promise.all(importData.map(g => fsSet('guests', g.id, g)));
+    showMsg('import-msg', 'lime', '匯入完成', `成功寫入 ${importData.length} 筆資料`);
+    importData = []; document.getElementById('import-preview').style.display = 'none';
+    document.getElementById('import-file').value = ''; btn.style.display = 'none';
+    setTimeout(() => loadAll(), 800);
+  } catch(e) { showMsg('import-msg', 'rose', '匯入失敗', e.message); }
+  btn.disabled = false; btn.textContent = '確認匯入';
 }
-function animShow(el){ el.style.display='block'; el.classList.remove('rise'); void el.offsetWidth; el.classList.add('rise'); }
-function dlCSV(c,f){ const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(c); a.download=f; a.click(); }
-function today(){ return new Date().toLocaleDateString('zh-TW'); }
-function showMsg(elId,color,title,sub){
-  const cm={sky:'var(--sky)',lime:'var(--lime)',rose:'var(--rose)',violet:'var(--violet)',amber:'var(--amber)'};
-  const bm={sky:'var(--sky-dim)',lime:'var(--lime-dim)',rose:'var(--rose-dim)',violet:'var(--violet-dim)',amber:'var(--amber-dim)'};
-  const rm={sky:'var(--sky-ring)',lime:'var(--lime-ring)',rose:'var(--rose-ring)',violet:'var(--violet-ring)',amber:'var(--amber-ring)'};
-  const el=document.getElementById(elId); if(!el) return;
-  el.innerHTML=`<div style="border-radius:12px;border:1px solid ${rm[color]||'var(--border)'};background:${bm[color]||'var(--card)'};padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:${cm[color]||'var(--light)'}">${title}</p><p style="font-size:11px;color:var(--soft);margin-top:3px">${sub}</p></div>`;
-  el.style.display='block';
+
+function showImportMsg(msg) {
+  const p = document.getElementById('import-preview');
+  p.innerHTML = `<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">${msg}</div>`;
+  p.style.display = 'block';
+}
+
+function exportGuestCSV() {
+  if (!allGuests.length) { alert('請先載入名單'); return; }
+  dlCSV('\uFEFF' + 'ID,姓名,所屬佛堂,備註,狀態\n' + allGuests.map(g => [g.id, g.name, g.temple || '', g.note || '', checkedIds.has(g.id) ? '已報到' : '未報到'].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'), `貴賓名單_${today()}.csv`);
+}
+
+function exportLogCSV() {
+  if (!allLogs.length) { alert('尚無報到記錄'); return; }
+  dlCSV('\uFEFF' + 'ID,姓名,佛堂,報到時間\n' + allLogs.map(l => [l.id, l.name || '', l.temple || '', l.checkInTime || ''].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'), `報到記錄_${today()}.csv`);
+}
+
+// ── Shared utils ──
+function animShow(el) { el.style.display = 'block'; el.classList.remove('rise'); void el.offsetWidth; el.classList.add('rise'); }
+function dlCSV(c, f) { const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(c); a.download = f; a.click(); }
+function today() { return new Date().toLocaleDateString('zh-TW'); }
+function showMsg(elId, color, title, sub) {
+  const cm = { sky:'var(--sky)', lime:'var(--lime)', rose:'var(--rose)', violet:'var(--violet)', amber:'var(--amber)' };
+  const bm = { sky:'var(--sky-dim)', lime:'var(--lime-dim)', rose:'var(--rose-dim)', violet:'var(--violet-dim)', amber:'var(--amber-dim)' };
+  const rm = { sky:'var(--sky-ring)', lime:'var(--lime-ring)', rose:'var(--rose-ring)', violet:'var(--violet-ring)', amber:'var(--amber-ring)' };
+  const el = document.getElementById(elId); if (!el) return;
+  el.innerHTML = `<div style="border-radius:12px;border:1px solid ${rm[color] || 'var(--border)'};background:${bm[color] || 'var(--card)'};padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:${cm[color] || 'var(--light)'}">${title}</p><p style="font-size:11px;color:var(--soft);margin-top:3px">${sub}</p></div>`;
+  el.style.display = 'block';
 }
 </script>
 </body>
