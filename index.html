@@ -221,13 +221,34 @@
       <!-- ── 名單狀況 ── -->
       <div id="panel-status" style="display:none;flex-direction:column;gap:10px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <input type="text" id="status-search" placeholder="🔍 搜尋姓名…" oninput="renderStatusGrid()" style="font-size:13px"/>
+          <!-- 搜尋 -->
+          <input type="text" id="status-search" placeholder="🔍 搜尋姓名或 ID…" oninput="renderStatusGrid()" style="font-size:13px"/>
+          <!-- 下拉篩選列 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:10px;color:var(--muted);font-weight:700">區別</label>
+              <select id="filter-area" onchange="renderStatusGrid()"
+                style="background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer">
+                <option value="">全部區別</option>
+              </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:10px;color:var(--muted);font-weight:700">介紹人</label>
+              <select id="filter-referrer" onchange="renderStatusGrid()"
+                style="background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer">
+                <option value="">全部介紹人</option>
+              </select>
+            </div>
+          </div>
+          <!-- 報到狀態篩選 + 重新載入 -->
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
             <button class="filter-btn active" id="fb-all"     onclick="setFilter('all')">全部</button>
             <button class="filter-btn"        id="fb-checked" onclick="setFilter('checked')">已報到</button>
             <button class="filter-btn"        id="fb-pending" onclick="setFilter('pending')">未報到</button>
             <button class="btn-sky-o" onclick="loadAll()" style="padding:6px 12px;font-size:11px;margin-left:auto">🔄 重新載入</button>
           </div>
+          <!-- 篩選結果統計 -->
+          <div id="filter-stats" style="font-size:11px;color:var(--muted);display:none"></div>
         </div>
         <div id="status-grid" class="guest-grid"></div>
         <div id="status-msg" style="display:none"></div>
@@ -292,7 +313,7 @@
 const FB_PROJECT = 'andong-maitreya-moutain';
 const FB_API_KEY = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
 const GAS_URL    = 'https://script.google.com/macros/s/AKfycbzzmPJ3lmKfQuQEjfpLpOqpZUuCU7NBqhIUBThdPYWRGQdsEU7fXZVJaAP_zrjuz_mdhQ/exec';
-const CHECKIN_BASE = 'https://piratecaptain9.github.io/SeediqBale';
+const CHECKIN_BASE   = 'https://my-checkin-event.com';
 const STAFF_PASSWORD = '0531';
 
 // Firestore REST base
@@ -537,6 +558,7 @@ async function loadAll() {
     guestCache = allGuests; // sync cache
 
     updateDash();
+    buildFilterDropdowns();
     renderStatusGrid();
     renderQRGrid();
     renderLogTable(allLogs);
@@ -562,25 +584,63 @@ function updateDash() {
   document.getElementById('dash-progress').style.display = 'block';
 }
 
+// ── Build dropdown options from loaded data ──
+function buildFilterDropdowns() {
+  const areas     = [...new Set(allGuests.map(g => g.area || '').filter(Boolean))].sort();
+  const referrers = [...new Set(allGuests.map(g => g.referrer || '').filter(Boolean))].sort();
+  const areaEl = document.getElementById('filter-area');
+  const refEl  = document.getElementById('filter-referrer');
+  if (areaEl) {
+    const cur = areaEl.value;
+    areaEl.innerHTML = '<option value="">全部區別</option>' + areas.map(a => `<option value="${a}">${a}</option>`).join('');
+    if (cur) areaEl.value = cur;
+  }
+  if (refEl) {
+    const cur = refEl.value;
+    refEl.innerHTML = '<option value="">全部介紹人</option>' + referrers.map(r => `<option value="${r}">${r}</option>`).join('');
+    if (cur) refEl.value = cur;
+  }
+}
+
 // ── Status grid ──
 function renderStatusGrid() {
-  const q = (document.getElementById('status-search')?.value || '').trim().toLowerCase();
+  const q        = (document.getElementById('status-search')?.value || '').trim().toLowerCase();
+  const areaF    = document.getElementById('filter-area')?.value || '';
+  const referF   = document.getElementById('filter-referrer')?.value || '';
   const filtered = allGuests.filter(g => {
     if (q && !g.name?.toLowerCase().includes(q) && !g.id?.toLowerCase().includes(q)) return false;
     if (statusFilter === 'checked' && !checkedIds.has(g.id)) return false;
     if (statusFilter === 'pending' &&  checkedIds.has(g.id)) return false;
+    if (areaF  && g.area     !== areaF)  return false;
+    if (referF && g.referrer !== referF) return false;
     return true;
   });
+
+  // 篩選統計
+  const statsEl = document.getElementById('filter-stats');
+  if (statsEl) {
+    const checkedCount = filtered.filter(g => checkedIds.has(g.id)).length;
+    const hasFilter = q || areaF || referF || statusFilter !== 'all';
+    if (hasFilter) {
+      statsEl.textContent = `篩選結果：${filtered.length} 人（已報到 ${checkedCount} / 未報到 ${filtered.length - checkedCount}）`;
+      statsEl.style.display = 'block';
+    } else {
+      statsEl.style.display = 'none';
+    }
+  }
+
   const logMap = Object.fromEntries(allLogs.map(l => [l.id, l]));
-  const grid = document.getElementById('status-grid');
-  if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無資料</p>'; return; }
+  const grid   = document.getElementById('status-grid');
+  if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無符合條件的貴賓</p>'; return; }
   grid.innerHTML = filtered.map(g => {
     const done = checkedIds.has(g.id);
     const time = logMap[g.id]?.checkInTime || '';
+    const tags = [g.area, g.referrer ? '介：' + g.referrer : ''].filter(Boolean);
     return `<div class="g-card ${done ? 'done' : 'todo'}">
       <div class="g-badge ${done ? 'done' : 'todo'}">${done ? '☑ 已報到' : '☐ 未報到'}</div>
       <div style="font-size:13px;font-weight:700;color:var(--white)">${g.name}</div>
       <div style="font-size:10px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</div>
+      ${tags.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">${tags.map(t => `<span style="font-size:9px;padding:1px 6px;border-radius:100px;background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)">${t}</span>`).join('')}</div>` : ''}
       ${time ? `<div style="font-size:10px;color:var(--soft);font-family:'DM Mono',monospace">${time}</div>` : ''}
       <div style="display:flex;gap:4px;margin-top:2px">
         ${done
@@ -830,9 +890,17 @@ function previewImport() {
     const idIdx = header.indexOf('id'), nameIdx = header.indexOf('name');
     if (idIdx < 0 || nameIdx < 0) { showImportMsg('CSV 缺少必要欄位：id 和 name'); return; }
     const tIdx = header.indexOf('temple'), nIdx = header.indexOf('note');
+    const aIdx = header.indexOf('area'),   rIdx = header.indexOf('referrer');
     importData = lines.slice(1).map(line => {
       const cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g).map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
-      return { id: cols[idIdx] || '', name: cols[nameIdx] || '', temple: tIdx >= 0 ? (cols[tIdx] || '') : '', note: nIdx >= 0 ? (cols[nIdx] || '') : '' };
+      return {
+        id:       cols[idIdx]   || '',
+        name:     cols[nameIdx] || '',
+        temple:   tIdx >= 0 ? (cols[tIdx] || '') : '',
+        note:     nIdx >= 0 ? (cols[nIdx] || '') : '',
+        area:     aIdx >= 0 ? (cols[aIdx] || '') : '',
+        referrer: rIdx >= 0 ? (cols[rIdx] || '') : ''
+      };
     }).filter(r => r.id && r.name);
     const prev = document.getElementById('import-preview');
     prev.innerHTML = `<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px"><p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ${importData.length} 筆</p><div style="max-height:150px;overflow-y:auto">${importData.slice(0, 8).map(r => `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${r.name}</span><span style="font-family:'DM Mono',monospace;color:var(--muted)">${r.id}</span></div>`).join('')}${importData.length > 8 ? `<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ${importData.length - 8} 筆</p>` : ''}</div></div>`;
