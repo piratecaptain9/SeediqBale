@@ -887,7 +887,12 @@ function previewImport() {
     const lines = e.target.result.replace(/\r/g, '').split('\n').filter(l => l.trim());
     if (lines.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
     const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
-    const idIdx = header.indexOf('id'), nameIdx = header.indexOf('name');
+    const idIdx    = header.findIndex(h => h==='id'   || h==='id');
+    const nameIdx  = header.findIndex(h => h==='name' || h==='姓名');
+    const tIdx     = header.findIndex(h => h==='temple'   || h==='所屬佛堂');
+    const nIdx     = header.findIndex(h => h==='note'     || h==='備註');
+    const aIdx     = header.findIndex(h => h==='area'     || h==='區別');
+    const rIdx     = header.findIndex(h => h==='referrer' || h==='介紹人');
     if (idIdx < 0 || nameIdx < 0) { showImportMsg('CSV 缺少必要欄位：id 和 name'); return; }
     const tIdx = header.indexOf('temple'), nIdx = header.indexOf('note');
     const aIdx = header.indexOf('area'),   rIdx = header.indexOf('referrer');
