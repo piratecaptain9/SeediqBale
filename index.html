@@ -43,6 +43,7 @@
     .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 50%,transparent 35%,rgba(8,11,16,.75) 100%)}
     input[type="text"],input[type="password"]{background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:10px;padding:10px 14px;font-size:14px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;transition:border-color .2s}
     input[type="file"]{background:var(--card);border:1px solid var(--border2);color:var(--light);border-radius:10px;padding:9px 14px;font-size:13px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;cursor:pointer}
+    select{background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer}
     input:focus{border-color:var(--gold)}input.lime-focus:focus{border-color:var(--lime)}input::placeholder{color:var(--muted)}
     .btn-gold{background:var(--gold);color:#1a1400;border:none;border-radius:10px;padding:11px 22px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .18s;width:100%}
     .btn-gold:hover{background:#f0d880}.btn-gold:active{transform:scale(.97)}.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none}
@@ -89,6 +90,7 @@
     .g-badge{font-size:9px;font-weight:700;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:100px;display:inline-flex;align-items:center;gap:3px}
     .g-badge.done{background:rgba(125,219,140,.15);color:var(--lime);border:1px solid var(--lime-ring)}
     .g-badge.todo{background:var(--border);color:var(--muted);border:1px solid var(--border2)}
+    .g-tag{font-size:9px;padding:1px 6px;border-radius:100px;background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)}
     .filter-btn{padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;transition:all .18s;white-space:nowrap}
     .filter-btn.active{background:var(--sky-dim);color:var(--sky);border-color:var(--sky-ring)}
     .filter-btn.active-c{background:var(--lime-dim);color:var(--lime);border-color:var(--lime-ring)}
@@ -115,7 +117,7 @@
 </head>
 <body>
 
-<!-- ══════════════════════ GUEST PAGE ══════════════════════ -->
+<!-- ══════════ GUEST PAGE ══════════ -->
 <div id="page-guest" class="page ambient-guest" style="display:none">
   <div class="w-full max-w-sm flex flex-col gap-6">
     <header class="text-center pt-2 space-y-3">
@@ -128,8 +130,7 @@
     <div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div style="position:relative" id="guest-wrap">
-        <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋，例：義"
-               oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off"/>
+        <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋，例：義" oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off"/>
         <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none">🔍</span>
         <div id="name-dd" class="name-dropdown" style="display:none"></div>
       </div>
@@ -140,10 +141,11 @@
   </div>
 </div>
 
-<!-- ══════════════════════ STAFF PAGE ══════════════════════ -->
+<!-- ══════════ STAFF PAGE ══════════ -->
 <div id="page-staff" class="page ambient-staff" style="display:none">
   <div class="w-full max-w-2xl flex flex-col gap-4">
 
+    <!-- Gate -->
     <div id="staff-gate" style="min-height:70dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px">
       <div style="text-align:center">
         <div style="font-size:44px;margin-bottom:10px">🔐</div>
@@ -157,7 +159,9 @@
       </div>
     </div>
 
+    <!-- Inner -->
     <div id="staff-inner" style="display:none;flex-direction:column;gap:14px">
+      <!-- Dashboard -->
       <div class="dash-stats" id="dash-stats" style="display:none">
         <div class="stat-card total"><div class="stat-num blue" id="d-total">—</div><div class="stat-label">總人數</div></div>
         <div class="stat-card checked"><div class="stat-num green" id="d-checked">—</div><div class="stat-label">✓ 已報到</div></div>
@@ -168,6 +172,7 @@
         <div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"><span class="progress-label" id="prog-label">0%</span></div></div>
       </div>
 
+      <!-- Sub tabs -->
       <div class="sub-tabs">
         <button class="sub-tab" id="tab-scan"   onclick="switchTab('scan')">📷 掃碼報到</button>
         <button class="sub-tab" id="tab-status" onclick="switchTab('status')">📋 名單狀況</button>
@@ -208,47 +213,35 @@
           <p style="font-size:11px;color:var(--soft);margin-top:5px;line-height:1.6">請確認已授予相機權限後重新整理。</p>
           <button onclick="location.reload()" class="btn-ghost" style="margin-top:10px;width:auto;padding:7px 14px;font-size:11px">重新整理</button>
         </div>
-        <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
-          <p style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:8px">✍️ 手動報到</p>
-          <div style="display:flex;gap:8px">
-            <input type="text" id="manual-id" placeholder="輸入 ID 或姓名" style="flex:1;padding:9px 12px;font-size:13px;border-radius:8px" onkeydown="if(event.key==='Enter')manualCheckin()"/>
-            <button class="btn-lime" onclick="manualCheckin()" style="padding:9px 14px;font-size:13px;white-space:nowrap">報到</button>
-          </div>
-          <div id="manual-result" style="display:none;margin-top:8px"></div>
-        </div>
       </div>
 
       <!-- ── 名單狀況 ── -->
       <div id="panel-status" style="display:none;flex-direction:column;gap:10px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <!-- 搜尋 -->
           <input type="text" id="status-search" placeholder="🔍 搜尋姓名或 ID…" oninput="renderStatusGrid()" style="font-size:13px"/>
-          <!-- 下拉篩選列 -->
+          <!-- 下拉篩選 -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:10px;color:var(--muted);font-weight:700">區別</label>
-              <select id="filter-area" onchange="renderStatusGrid()"
-                style="background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer">
+              <select id="filter-area" onchange="renderStatusGrid()">
                 <option value="">全部區別</option>
               </select>
             </div>
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:10px;color:var(--muted);font-weight:700">介紹人</label>
-              <select id="filter-referrer" onchange="renderStatusGrid()"
-                style="background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer">
+              <select id="filter-referrer" onchange="renderStatusGrid()">
                 <option value="">全部介紹人</option>
               </select>
             </div>
           </div>
-          <!-- 報到狀態篩選 + 重新載入 -->
+          <!-- 報到狀態 + 重載 -->
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
             <button class="filter-btn active" id="fb-all"     onclick="setFilter('all')">全部</button>
             <button class="filter-btn"        id="fb-checked" onclick="setFilter('checked')">已報到</button>
             <button class="filter-btn"        id="fb-pending" onclick="setFilter('pending')">未報到</button>
             <button class="btn-sky-o" onclick="loadAll()" style="padding:6px 12px;font-size:11px;margin-left:auto">🔄 重新載入</button>
           </div>
-          <!-- 篩選結果統計 -->
-          <div id="filter-stats" style="font-size:11px;color:var(--muted);display:none"></div>
+          <div id="filter-stats" style="display:none;font-size:11px;color:var(--muted)"></div>
         </div>
         <div id="status-grid" class="guest-grid"></div>
         <div id="status-msg" style="display:none"></div>
@@ -259,7 +252,6 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <button class="btn-lime" onclick="printAllQR()" style="font-size:12px;padding:9px 14px">🖨 列印全部QR碼</button>
           <button class="btn-sky-o" onclick="downloadAllQR()" style="font-size:12px;padding:9px 14px">📥 下載全部</button>
-          <span style="font-size:11px;color:var(--muted)">點開即見 QR Code</span>
         </div>
         <input type="text" id="qr-search" placeholder="🔍 搜尋姓名…" oninput="renderQRGrid()" style="font-size:13px"/>
         <div id="qr-grid" class="qr-grid"></div>
@@ -270,7 +262,7 @@
       <div id="panel-import" style="display:none;flex-direction:column;gap:12px">
         <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
           <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px">📂 匯入貴賓名單</p>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">CSV 格式：表頭 id,name,temple,note（仍透過 GAS 批次寫入）</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援欄位：id/ID、name/姓名、temple/所屬佛堂、note/備註、area/區別、referrer/介紹人</p>
           <div style="display:flex;flex-direction:column;gap:8px">
             <input type="file" id="import-file" accept=".csv"/>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -296,7 +288,6 @@
         </div>
         <div id="import-msg" style="display:none"></div>
       </div>
-
     </div>
   </div>
 </div>
@@ -307,36 +298,25 @@
 </nav>
 
 <script>
-// ╔══════════════════════════════════════════════════════╗
-// ║  ★ 填入你的設定                                       ║
-// ╚══════════════════════════════════════════════════════╝
-const FB_PROJECT = 'andong-maitreya-moutain';
-const FB_API_KEY = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
-const GAS_URL    = 'https://script.google.com/macros/s/AKfycbzzmPJ3lmKfQuQEjfpLpOqpZUuCU7NBqhIUBThdPYWRGQdsEU7fXZVJaAP_zrjuz_mdhQ/exec';
-const CHECKIN_BASE   = 'https://my-checkin-event.com';
+// ★ 設定
+const FB_PROJECT     = 'andong-maitreya-moutain';
+const FB_API_KEY     = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
+const CHECKIN_BASE   = 'https://piratecaptain9.github.io/SeediqBale';
 const STAFF_PASSWORD = '0531';
+const FS = 'https://firestore.googleapis.com/v1/projects/' + FB_PROJECT + '/databases/(default)/documents';
 
-// Firestore REST base
-const FS = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
-
-// ══════════════════════════════════════
-// FIRESTORE DIRECT API
-// ══════════════════════════════════════
-
-// 讀取單一文件
+// ══ Firestore API ══════════════════════
 async function fsGet(col, id) {
-  const r = await fetch(`${FS}/${col}/${encodeURIComponent(id)}?key=${FB_API_KEY}`);
+  const r = await fetch(FS + '/' + col + '/' + encodeURIComponent(id) + '?key=' + FB_API_KEY);
   if (r.status === 404) return null;
   const d = await r.json();
   if (d.error) throw new Error(d.error.message);
   return parseDoc(d);
 }
 
-// 寫入文件 (PATCH = upsert)
 async function fsSet(col, id, fields) {
-  const r = await fetch(`${FS}/${col}/${encodeURIComponent(id)}?key=${FB_API_KEY}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+  const r = await fetch(FS + '/' + col + '/' + encodeURIComponent(id) + '?key=' + FB_API_KEY, {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields: toFsFields(fields) })
   });
   const d = await r.json();
@@ -344,19 +324,17 @@ async function fsSet(col, id, fields) {
   return d;
 }
 
-// 刪除文件
 async function fsDel(col, id) {
-  const r = await fetch(`${FS}/${col}/${encodeURIComponent(id)}?key=${FB_API_KEY}`, { method: 'DELETE' });
-  if (!r.ok && r.status !== 404) throw new Error(`DELETE failed: ${r.status}`);
+  const r = await fetch(FS + '/' + col + '/' + encodeURIComponent(id) + '?key=' + FB_API_KEY, { method: 'DELETE' });
+  if (!r.ok && r.status !== 404) throw new Error('DELETE failed: ' + r.status);
 }
 
-// 讀取整個 collection (支援分頁)
 async function fsList(col) {
-  let docs = [], token = null;
+  var docs = [], token = null;
   do {
-    const url = `${FS}/${col}?key=${FB_API_KEY}&pageSize=300${token ? '&pageToken=' + token : ''}`;
-    const r = await fetch(url);
-    const d = await r.json();
+    var url = FS + '/' + col + '?key=' + FB_API_KEY + '&pageSize=300' + (token ? '&pageToken=' + token : '');
+    var r = await fetch(url);
+    var d = await r.json();
     if (d.error) throw new Error(d.error.message);
     if (d.documents) docs = docs.concat(d.documents.map(parseDoc));
     token = d.nextPageToken || null;
@@ -364,49 +342,47 @@ async function fsList(col) {
   return docs;
 }
 
-// 姓名查詢 (runQuery)
 async function fsQueryByName(name) {
-  const r = await fetch(`${FS}:runQuery?key=${FB_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      structuredQuery: {
-        from: [{ collectionId: 'guests' }],
-        where: { fieldFilter: { field: { fieldPath: 'name' }, op: 'EQUAL', value: { stringValue: name } } }
-      }
-    })
+  var r = await fetch(FS + ':runQuery?key=' + FB_API_KEY, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'guests' }], where: { fieldFilter: { field: { fieldPath: 'name' }, op: 'EQUAL', value: { stringValue: name } } } } })
   });
-  const res = await r.json();
+  var res = await r.json();
   if (!Array.isArray(res)) return [];
-  return res.filter(x => x.document).map(x => parseDoc(x.document));
+  return res.filter(function(x) { return x.document; }).map(function(x) { return parseDoc(x.document); });
 }
 
 function parseDoc(doc) {
-  const id = doc.name.split('/').pop();
-  const f  = {};
-  for (const [k, v] of Object.entries(doc.fields || {})) {
-    f[k] = v.stringValue ?? v.integerValue ?? v.doubleValue ?? v.booleanValue ?? '';
-  }
-  return { id, ...f };
+  var id = doc.name.split('/').pop();
+  var f = {};
+  var fields = doc.fields || {};
+  Object.keys(fields).forEach(function(k) {
+    var v = fields[k];
+    f[k] = v.stringValue !== undefined ? v.stringValue :
+           v.integerValue !== undefined ? v.integerValue :
+           v.doubleValue !== undefined ? v.doubleValue :
+           v.booleanValue !== undefined ? v.booleanValue : '';
+  });
+  f.id = id;
+  return f;
 }
 
 function toFsFields(obj) {
-  const f = {};
-  for (const [k, v] of Object.entries(obj)) {
+  var f = {};
+  Object.keys(obj).forEach(function(k) {
+    var v = obj[k];
     if (typeof v === 'number') f[k] = Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
     else if (typeof v === 'boolean') f[k] = { booleanValue: v };
     else if (v == null) f[k] = { nullValue: null };
     else f[k] = { stringValue: String(v) };
-  }
+  });
   return f;
 }
 
-// ══════════════════════════════════════
-// ROUTING
-// ══════════════════════════════════════
+// ══ Routing ═══════════════════════════
 function getMode() { return new URLSearchParams(location.search).get('mode') || 'guest'; }
 function setMode(m) {
-  const u = new URL(location.href); u.searchParams.set('mode', m);
+  var u = new URL(location.href); u.searchParams.set('mode', m);
   history.pushState({}, '', u); renderMode(m);
 }
 function renderMode(m) {
@@ -417,39 +393,43 @@ function renderMode(m) {
   if (m !== 'staff') stopScanner();
   if (m === 'guest') { closeDd(); preloadGuests(); }
 }
-window.addEventListener('popstate', () => renderMode(getMode()));
+window.addEventListener('popstate', function() { renderMode(getMode()); });
 renderMode(getMode());
 
-// ══════════════════════════════════════
-// GUEST — Real-time search
-// ══════════════════════════════════════
-let guestCache = [];
+// ══ Guest search ═══════════════════════
+var guestCache = [];
 
 async function preloadGuests() {
   if (guestCache.length) return;
   try {
-    const docs = await fsList('guests');
-    guestCache = docs.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
-  } catch(_) {}
+    var docs = await fsList('guests');
+    guestCache = docs.sort(function(a, b) { return (a.id || '').localeCompare(b.id || ''); });
+  } catch(e) {}
 }
 
 function onGuestType() {
-  const val = document.getElementById('guest-input').value.trim();
+  var val = document.getElementById('guest-input').value.trim();
   document.getElementById('guest-result').style.display = 'none';
   if (!val) { closeDd(); return; }
-  const matched = guestCache.filter(g => g.name && g.name.includes(val));
+  var matched = guestCache.filter(function(g) { return g.name && g.name.includes(val); });
   if (matched.length) showDd(matched);
   else closeDd();
 }
 
 function showDd(guests) {
-  const dd = document.getElementById('name-dd');
-  dd.innerHTML = guests.slice(0, 8).map(g => `
-    <div class="name-opt" onclick='selectGuest(${JSON.stringify({id:g.id,name:g.name,temple:g.temple||'',note:g.note||''})})'>
-      <span style="font-weight:700;color:var(--white)">${g.name}</span>
-      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</span>
-    </div>`).join('');
-  if (guests.length > 8) dd.innerHTML += `<div style="padding:8px 16px;font-size:11px;color:var(--muted);text-align:center">…還有 ${guests.length - 8} 位符合</div>`;
+  var dd = document.getElementById('name-dd');
+  var html = '';
+  var show = guests.slice(0, 8);
+  show.forEach(function(g, i) {
+    var key = '_gdd' + i;
+    window[key] = g;
+    html += '<div class="name-opt" onclick="selectGuest(window[\'' + key + '\'])">' +
+      '<span style="font-weight:700;color:var(--white)">' + g.name + '</span>' +
+      '<span style="font-size:11px;color:var(--muted)">' + g.id + (g.temple ? '・' + g.temple : '') + '</span>' +
+      '</div>';
+  });
+  if (guests.length > 8) html += '<div style="padding:8px 16px;font-size:11px;color:var(--muted);text-align:center">…還有 ' + (guests.length - 8) + ' 位符合</div>';
+  dd.innerHTML = html;
   dd.style.display = 'block';
 }
 
@@ -465,100 +445,107 @@ function onGuestKey(e) {
   if (e.key === 'Escape') closeDd();
 }
 
-document.addEventListener('click', e => {
-  if (!document.getElementById('guest-wrap').contains(e.target)) closeDd();
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('guest-wrap');
+  if (wrap && !wrap.contains(e.target)) closeDd();
 });
 
 async function searchByName() {
-  const name = document.getElementById('guest-input').value.trim(); if (!name) return;
-  const btn = document.getElementById('guest-btn'); btn.disabled = true; btn.textContent = '查詢中…';
+  var name = document.getElementById('guest-input').value.trim(); if (!name) return;
+  var btn = document.getElementById('guest-btn'); btn.disabled = true; btn.textContent = '查詢中…';
   document.getElementById('guest-result').style.display = 'none';
   try {
-    // First try cache
-    let matches = guestCache.filter(g => g.name === name);
+    var matches = guestCache.filter(function(g) { return g.name === name; });
     if (!matches.length) {
-      const docs = await fsQueryByName(name);
+      var docs = await fsQueryByName(name);
       matches = docs;
     }
     if (!matches.length) guestErr('查無此姓名', '請確認姓名正確，或洽現場工作人員');
     else if (matches.length === 1) showQR(matches[0]);
     else showGuestPick(matches);
-  } catch(_) { guestErr('連線失敗', '請確認網路後重試'); }
+  } catch(e) { guestErr('連線失敗', '請確認網路後重試'); }
   btn.disabled = false; btn.textContent = '查詢 QR Code';
 }
 
 function guestErr(t, s) {
-  const el = document.getElementById('guest-result');
-  el.innerHTML = `<div style="border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:18px;text-align:center"><p style="font-weight:700;font-size:14px;color:var(--rose)">${t}</p><p style="font-size:12px;color:var(--soft);margin-top:5px">${s}</p></div>`;
+  var el = document.getElementById('guest-result');
+  el.innerHTML = '<div style="border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:18px;text-align:center"><p style="font-weight:700;font-size:14px;color:var(--rose)">' + t + '</p><p style="font-size:12px;color:var(--soft);margin-top:5px">' + s + '</p></div>';
   animShow(el);
 }
 
 function showQR(g) {
-  const qr = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data=${encodeURIComponent(CHECKIN_BASE + '?id=' + g.id)}`;
-  const el = document.getElementById('guest-result');
-  el.innerHTML = `<div style="border-radius:18px;border:1px solid var(--gold-ring);background:var(--panel);overflow:hidden"><div style="padding:24px 16px 18px;text-align:center"><p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:5px">您的專屬入場碼</p><p style="font-size:19px;font-weight:900;color:var(--gold);margin-bottom:18px">${g.name} 先生／小姐</p><div class="shimmer" style="display:inline-block;border-radius:14px;overflow:hidden;border:3px solid var(--gold);padding:7px;background:#fff"><img src="${qr}" width="220" height="220" style="display:block;border-radius:7px" alt="QR" loading="lazy"/></div><div style="margin-top:14px;background:var(--card);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)"><span style="font-size:11px;color:var(--muted)">邀請 ID</span><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--light)">${g.id}</span></div></div><div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div><div style="padding:10px 16px;text-align:center"><p style="font-size:11px;color:var(--muted)">請向工作人員出示此 QR Code 完成報到</p></div></div>`;
+  var qr = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data=' + encodeURIComponent(CHECKIN_BASE + '?id=' + g.id);
+  var el = document.getElementById('guest-result');
+  el.innerHTML = '<div style="border-radius:18px;border:1px solid var(--gold-ring);background:var(--panel);overflow:hidden">' +
+    '<div style="padding:24px 16px 18px;text-align:center">' +
+    '<p style="font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:5px">您的專屬入場碼</p>' +
+    '<p style="font-size:19px;font-weight:900;color:var(--gold);margin-bottom:18px">' + g.name + ' 先生／小姐</p>' +
+    '<div class="shimmer" style="display:inline-block;border-radius:14px;overflow:hidden;border:3px solid var(--gold);padding:7px;background:#fff">' +
+    '<img src="' + qr + '" width="220" height="220" style="display:block;border-radius:7px" loading="lazy"/></div>' +
+    '<div style="margin-top:14px;background:var(--card);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)">' +
+    '<span style="font-size:11px;color:var(--muted)">邀請 ID</span>' +
+    '<span style="font-size:12px;font-weight:500;color:var(--light)">' + g.id + '</span></div></div>' +
+    '<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>' +
+    '<div style="padding:10px 16px;text-align:center"><p style="font-size:11px;color:var(--muted)">請向工作人員出示此 QR Code 完成報到</p></div></div>';
   animShow(el);
 }
 
 function showGuestPick(guests) {
-  const el = document.getElementById('guest-result');
-  el.innerHTML = `<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到 ${guests.length} 位同名，請選擇：</p>` +
-    guests.map(g => `<button onclick='showQR(${JSON.stringify(g)})' style="width:100%;text-align:left;border-radius:12px;border:1px solid var(--border2);background:var(--card);padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Noto Sans TC',sans-serif;margin-bottom:6px" onmouseover="this.style.borderColor='var(--gold-ring)'" onmouseout="this.style.borderColor='var(--border2)'"><span style="color:var(--white);font-weight:700">${g.name}</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${g.id}</span></button>`).join('');
+  var el = document.getElementById('guest-result');
+  var html = '<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到 ' + guests.length + ' 位同名，請選擇：</p>';
+  guests.forEach(function(g, i) {
+    var key = '_gpick' + i;
+    window[key] = g;
+    html += '<button onclick="showQR(window[\'' + key + '\'])" style="width:100%;text-align:left;border-radius:12px;border:1px solid var(--border2);background:var(--card);padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+      '<span style="color:var(--white);font-weight:700">' + g.name + '</span>' +
+      '<span style="font-size:11px;color:var(--muted)">' + g.id + '</span></button>';
+  });
+  el.innerHTML = html;
   animShow(el);
 }
 
-// ══════════════════════════════════════
-// STAFF — Auth + Tabs
-// ══════════════════════════════════════
+// ══ Staff auth + tabs ══════════════════
 function checkPW() {
   if (document.getElementById('staff-pw').value === STAFF_PASSWORD) {
     document.getElementById('staff-gate').style.display = 'none';
-    const inner = document.getElementById('staff-inner');
+    var inner = document.getElementById('staff-inner');
     inner.style.display = 'flex'; inner.classList.add('rise');
     switchTab('scan');
     loadAll();
   } else {
-    const err = document.getElementById('pw-err'); err.style.display = 'block';
+    var err = document.getElementById('pw-err'); err.style.display = 'block';
     document.getElementById('staff-pw').value = '';
     document.getElementById('staff-pw').focus();
-    setTimeout(() => { err.style.display = 'none'; }, 3000);
+    setTimeout(function() { err.style.display = 'none'; }, 3000);
   }
 }
 
-const TABS = ['scan', 'status', 'qr', 'import'];
+var TABS = ['scan', 'status', 'qr', 'import'];
 function switchTab(tab) {
-  TABS.forEach(t => {
+  TABS.forEach(function(t) {
     document.getElementById('panel-' + t).style.display = 'none';
     document.getElementById('tab-' + t).className = 'sub-tab';
   });
   document.getElementById('panel-' + tab).style.display = 'flex';
-  document.getElementById('tab-' + tab).className = `sub-tab t-${tab}`;
+  document.getElementById('tab-' + tab).className = 'sub-tab t-' + tab;
   if (tab !== 'scan') stopScanner();
 }
 
-// ══════════════════════════════════════
-// DATA — Direct Firestore
-// ══════════════════════════════════════
-let allGuests = [], checkedIds = new Set(), allLogs = [], dataLoaded = false;
-let statusFilter = 'all';
+// ══ Data ═══════════════════════════════
+var allGuests = [], checkedIds = new Set(), allLogs = [], dataLoaded = false;
+var statusFilter = 'all';
 
 async function loadAll() {
   showMsg('status-msg', 'sky', '載入中…', '直接從 Firestore 讀取');
   showMsg('qr-msg', 'sky', '載入中…', '直接從 Firestore 讀取');
   try {
-    // 同時讀取 guests 和 log（平行）
-    const [gDocs, lDocs] = await Promise.all([
-      fsList('guests'),
-      fsList('log')
-    ]);
-
-    allGuests = gDocs.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
-    allLogs   = lDocs.sort((a, b) => (a.checkInTime || '').localeCompare(b.checkInTime || ''));
-    checkedIds = new Set(allLogs.map(l => l.id));
-    guestCache = allGuests; // sync cache
-
+    var results = await Promise.all([fsList('guests'), fsList('log')]);
+    allGuests = results[0].sort(function(a, b) { return (a.id || '').localeCompare(b.id || ''); });
+    allLogs   = results[1].sort(function(a, b) { return (a.checkInTime || '').localeCompare(b.checkInTime || ''); });
+    checkedIds = new Set(allLogs.map(function(l) { return l.id; }));
+    guestCache = allGuests;
     updateDash();
-    buildFilterDropdowns();
+    buildDropdowns();
     renderStatusGrid();
     renderQRGrid();
     renderLogTable(allLogs);
@@ -573,82 +560,85 @@ async function loadAll() {
 }
 
 function updateDash() {
-  const total = allGuests.length, checked = checkedIds.size, pending = total - checked;
+  var total = allGuests.length, checked = checkedIds.size, pending = total - checked;
   document.getElementById('d-total').textContent   = total;
   document.getElementById('d-checked').textContent = checked;
   document.getElementById('d-pending').textContent = pending;
-  const pct = total ? Math.round(checked / total * 100) : 0;
-  document.getElementById('prog-bar').style.width  = pct + '%';
+  var pct = total ? Math.round(checked / total * 100) : 0;
+  document.getElementById('prog-bar').style.width   = pct + '%';
   document.getElementById('prog-label').textContent = pct + '%';
-  document.getElementById('dash-stats').style.display   = 'grid';
+  document.getElementById('dash-stats').style.display    = 'grid';
   document.getElementById('dash-progress').style.display = 'block';
 }
 
-// ── Build dropdown options from loaded data ──
-function buildFilterDropdowns() {
-  const areas     = [...new Set(allGuests.map(g => g.area || '').filter(Boolean))].sort();
-  const referrers = [...new Set(allGuests.map(g => g.referrer || '').filter(Boolean))].sort();
-  const areaEl = document.getElementById('filter-area');
-  const refEl  = document.getElementById('filter-referrer');
-  if (areaEl) {
-    const cur = areaEl.value;
-    areaEl.innerHTML = '<option value="">全部區別</option>' + areas.map(a => `<option value="${a}">${a}</option>`).join('');
-    if (cur) areaEl.value = cur;
+function buildDropdowns() {
+  var areas = [];
+  var refs  = [];
+  allGuests.forEach(function(g) {
+    if (g.area     && areas.indexOf(g.area)     === -1) areas.push(g.area);
+    if (g.referrer && refs.indexOf(g.referrer)  === -1) refs.push(g.referrer);
+  });
+  areas.sort(); refs.sort();
+  var aEl = document.getElementById('filter-area');
+  var rEl = document.getElementById('filter-referrer');
+  if (aEl) {
+    var av = aEl.value;
+    aEl.innerHTML = '<option value="">全部區別</option>' + areas.map(function(a) { return '<option value="' + a + '">' + a + '</option>'; }).join('');
+    if (av) aEl.value = av;
   }
-  if (refEl) {
-    const cur = refEl.value;
-    refEl.innerHTML = '<option value="">全部介紹人</option>' + referrers.map(r => `<option value="${r}">${r}</option>`).join('');
-    if (cur) refEl.value = cur;
+  if (rEl) {
+    var rv = rEl.value;
+    rEl.innerHTML = '<option value="">全部介紹人</option>' + refs.map(function(r) { return '<option value="' + r + '">' + r + '</option>'; }).join('');
+    if (rv) rEl.value = rv;
   }
 }
 
 // ── Status grid ──
 function renderStatusGrid() {
-  const q        = (document.getElementById('status-search')?.value || '').trim().toLowerCase();
-  const areaF    = document.getElementById('filter-area')?.value || '';
-  const referF   = document.getElementById('filter-referrer')?.value || '';
-  const filtered = allGuests.filter(g => {
-    if (q && !g.name?.toLowerCase().includes(q) && !g.id?.toLowerCase().includes(q)) return false;
+  var q      = (document.getElementById('status-search') ? document.getElementById('status-search').value : '').trim().toLowerCase();
+  var areaF  = document.getElementById('filter-area')     ? document.getElementById('filter-area').value     : '';
+  var referF = document.getElementById('filter-referrer') ? document.getElementById('filter-referrer').value : '';
+  var filtered = allGuests.filter(function(g) {
+    if (q && !(g.name || '').toLowerCase().includes(q) && !(g.id || '').toLowerCase().includes(q)) return false;
     if (statusFilter === 'checked' && !checkedIds.has(g.id)) return false;
     if (statusFilter === 'pending' &&  checkedIds.has(g.id)) return false;
     if (areaF  && g.area     !== areaF)  return false;
     if (referF && g.referrer !== referF) return false;
     return true;
   });
-
-  // 篩選統計
-  const statsEl = document.getElementById('filter-stats');
+  var statsEl = document.getElementById('filter-stats');
   if (statsEl) {
-    const checkedCount = filtered.filter(g => checkedIds.has(g.id)).length;
-    const hasFilter = q || areaF || referF || statusFilter !== 'all';
-    if (hasFilter) {
-      statsEl.textContent = `篩選結果：${filtered.length} 人（已報到 ${checkedCount} / 未報到 ${filtered.length - checkedCount}）`;
+    var hasFilter = q || areaF || referF || statusFilter !== 'all';
+    if (hasFilter && filtered.length) {
+      var chk = filtered.filter(function(g) { return checkedIds.has(g.id); }).length;
+      statsEl.textContent = '篩選結果：' + filtered.length + ' 人（已報到 ' + chk + ' / 未報到 ' + (filtered.length - chk) + '）';
       statsEl.style.display = 'block';
-    } else {
-      statsEl.style.display = 'none';
-    }
+    } else { statsEl.style.display = 'none'; }
   }
-
-  const logMap = Object.fromEntries(allLogs.map(l => [l.id, l]));
-  const grid   = document.getElementById('status-grid');
+  var logMap = {};
+  allLogs.forEach(function(l) { logMap[l.id] = l; });
+  var grid = document.getElementById('status-grid');
   if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無符合條件的貴賓</p>'; return; }
-  grid.innerHTML = filtered.map(g => {
-    const done = checkedIds.has(g.id);
-    const time = logMap[g.id]?.checkInTime || '';
-    const tags = [g.area, g.referrer ? '介：' + g.referrer : ''].filter(Boolean);
-    return `<div class="g-card ${done ? 'done' : 'todo'}">
-      <div class="g-badge ${done ? 'done' : 'todo'}">${done ? '☑ 已報到' : '☐ 未報到'}</div>
-      <div style="font-size:13px;font-weight:700;color:var(--white)">${g.name}</div>
-      <div style="font-size:10px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</div>
-      ${tags.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">${tags.map(t => `<span style="font-size:9px;padding:1px 6px;border-radius:100px;background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)">${t}</span>`).join('')}</div>` : ''}
-      ${time ? `<div style="font-size:10px;color:var(--soft);font-family:'DM Mono',monospace">${time}</div>` : ''}
-      <div style="display:flex;gap:4px;margin-top:2px">
-        ${done
-          ? `<button class="btn-rose-xs" onclick="cancelCheckin('${g.id}','${g.name}')">↩ 取消</button>`
-          : `<button class="btn-lime-xs" onclick="doCheckin('${g.id}','${g.name}')">報到</button>`}
-      </div>
-    </div>`;
-  }).join('');
+  var html = '';
+  filtered.forEach(function(g) {
+    var done = checkedIds.has(g.id);
+    var time = logMap[g.id] ? logMap[g.id].checkInTime || '' : '';
+    var tags = '';
+    if (g.area)     tags += '<span class="g-tag">' + g.area + '</span>';
+    if (g.referrer) tags += '<span class="g-tag">介：' + g.referrer + '</span>';
+    var tagsHtml = tags ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">' + tags + '</div>' : '';
+    var timeHtml = time ? '<div style="font-size:10px;color:var(--soft)">' + time + '</div>' : '';
+    var action = done
+      ? '<button class="btn-rose-xs" onclick="cancelCheckin(\'' + g.id + '\',\'' + g.name + '\')">↩ 取消</button>'
+      : '<button class="btn-lime-xs" onclick="doCheckin(\'' + g.id + '\',\'' + g.name + '\')">報到</button>';
+    html += '<div class="g-card ' + (done ? 'done' : 'todo') + '">' +
+      '<div class="g-badge ' + (done ? 'done' : 'todo') + '">' + (done ? '☑ 已報到' : '☐ 未報到') + '</div>' +
+      '<div style="font-size:13px;font-weight:700;color:var(--white)">' + g.name + '</div>' +
+      '<div style="font-size:10px;color:var(--muted)">' + g.id + (g.temple ? '・' + g.temple : '') + '</div>' +
+      tagsHtml + timeHtml +
+      '<div style="display:flex;gap:4px;margin-top:2px">' + action + '</div></div>';
+  });
+  grid.innerHTML = html;
 }
 
 function setFilter(f) {
@@ -661,109 +651,107 @@ function setFilter(f) {
 
 // ── QR grid ──
 function renderQRGrid() {
-  const q = (document.getElementById('qr-search')?.value || '').trim().toLowerCase();
-  const filtered = allGuests.filter(g => !q || g.name?.toLowerCase().includes(q) || g.id?.toLowerCase().includes(q));
-  const grid = document.getElementById('qr-grid');
+  var q = (document.getElementById('qr-search') ? document.getElementById('qr-search').value : '').trim().toLowerCase();
+  var filtered = allGuests.filter(function(g) { return !q || (g.name || '').toLowerCase().includes(q) || (g.id || '').toLowerCase().includes(q); });
+  var grid = document.getElementById('qr-grid');
   if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無資料</p>'; return; }
-  grid.innerHTML = filtered.map(g => {
-    const done = checkedIds.has(g.id);
-    const url  = `${CHECKIN_BASE}?id=${g.id}`;
-    const qr   = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=${encodeURIComponent(url)}`;
-    return `<div class="qr-card ${done ? 'done' : ''}">
-      ${done ? '<div class="qr-done-badge">✓</div>' : ''}
-      <div class="qr-img-wrap ${done ? 'done-b' : ''}">
-        <img src="${qr}" width="90" height="90" loading="lazy" style="display:block;border-radius:5px" alt="${g.name}"/>
-      </div>
-      <div style="font-size:12px;font-weight:700;color:var(--white);text-align:center;line-height:1.3">${g.name}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">${g.id}${g.temple ? '・' + g.temple : ''}</div>
-      <div style="display:flex;flex-direction:column;gap:4px;width:100%">
-        <button class="qr-btn dl" onclick="dlQR('${qr}','${g.name}')">📥 下載 QR</button>
-        <button class="qr-btn cp" onclick="copyLink('${url}',this)">🔗 複製連結</button>
-      </div>
-    </div>`;
-  }).join('');
+  var html = '';
+  filtered.forEach(function(g) {
+    var done = checkedIds.has(g.id);
+    var url  = CHECKIN_BASE + '?id=' + g.id;
+    var qr   = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=' + encodeURIComponent(url);
+    html += '<div class="qr-card ' + (done ? 'done' : '') + '">' +
+      (done ? '<div class="qr-done-badge">✓</div>' : '') +
+      '<div class="qr-img-wrap ' + (done ? 'done-b' : '') + '">' +
+      '<img src="' + qr + '" width="90" height="90" loading="lazy" style="display:block;border-radius:5px"/></div>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--white);text-align:center;line-height:1.3">' + g.name + '</div>' +
+      '<div style="font-size:9px;color:var(--muted)">' + g.id + (g.temple ? '・' + g.temple : '') + '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px;width:100%">' +
+      '<button class="qr-btn dl" onclick="dlQR(\'' + qr + '\',\'' + g.name + '\')">📥 下載 QR</button>' +
+      '<button class="qr-btn cp" id="cpbtn_' + g.id + '" onclick="copyLink(\'' + url + '\',\'' + g.id + '\')">🔗 複製連結</button>' +
+      '</div></div>';
+  });
+  grid.innerHTML = html;
 }
 
 function dlQR(src, name) {
-  const a = document.createElement('a');
+  var a = document.createElement('a');
   a.href = src.replace('200x200', '400x400');
-  a.download = `QR_${name}.png`; a.target = '_blank'; a.click();
+  a.download = 'QR_' + name + '.png'; a.target = '_blank'; a.click();
 }
 
-function copyLink(url, btn) {
-  navigator.clipboard.writeText(url).then(() => {
-    const o = btn.textContent; btn.textContent = '✓ 已複製！';
-    btn.style.cssText += 'background:var(--lime-dim);color:var(--lime);border-color:var(--lime-ring)';
-    setTimeout(() => { btn.textContent = o; btn.style.cssText = ''; }, 2000);
-  }).catch(() => alert('請手動複製：' + url));
+function copyLink(url, id) {
+  var btn = document.getElementById('cpbtn_' + id);
+  navigator.clipboard.writeText(url).then(function() {
+    if (btn) { btn.textContent = '✓ 已複製！'; btn.style.background = 'var(--lime-dim)'; btn.style.color = 'var(--lime)'; }
+    setTimeout(function() { if (btn) { btn.textContent = '🔗 複製連結'; btn.style.background = ''; btn.style.color = ''; } }, 2000);
+  }).catch(function() { alert('請手動複製：' + url); });
 }
 
 function printAllQR() {
   if (!allGuests.length) { alert('請先載入名單'); return; }
-  const win = window.open('', '_blank');
-  const cards = allGuests.map(g => {
-    const done = checkedIds.has(g.id);
-    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&ecc=M&data=${encodeURIComponent(CHECKIN_BASE + '?id=' + g.id)}`;
-    return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;padding:10px;border:1.5px solid ${done ? '#4ac96e' : '#ccc'};border-radius:10px;background:${done ? '#f0fff4' : '#fff'};page-break-inside:avoid;font-family:sans-serif">
-      <img src="${qr}" width="110" height="110" style="border-radius:5px"/>
-      <b style="font-size:12px;color:#000">${g.name}</b>
-      <span style="font-size:9px;color:#888">${g.id}${g.temple ? '・' + g.temple : ''}</span>
-      ${done ? '<span style="font-size:9px;color:#2a7a3a;font-weight:700">✓ 已報到</span>' : ''}
-    </div>`;
+  var win = window.open('', '_blank');
+  var cards = allGuests.map(function(g) {
+    var done = checkedIds.has(g.id);
+    var qr = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&ecc=M&data=' + encodeURIComponent(CHECKIN_BASE + '?id=' + g.id);
+    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;padding:10px;border:1.5px solid ' + (done ? '#4ac96e' : '#ccc') + ';border-radius:10px;background:' + (done ? '#f0fff4' : '#fff') + ';page-break-inside:avoid;font-family:sans-serif">' +
+      '<img src="' + qr + '" width="110" height="110" style="border-radius:5px"/>' +
+      '<b style="font-size:12px;color:#000">' + g.name + '</b>' +
+      '<span style="font-size:9px;color:#888">' + g.id + (g.temple ? '・' + g.temple : '') + '</span>' +
+      (done ? '<span style="font-size:9px;color:#2a7a3a;font-weight:700">✓ 已報到</span>' : '') + '</div>';
   }).join('');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">${cards}</div></body></html>`);
-  win.document.close(); setTimeout(() => win.print(), 800);
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">' + cards + '</div></body></html>');
+  win.document.close(); setTimeout(function() { win.print(); }, 800);
 }
 
 function downloadAllQR() {
-  alert('將逐一開啟各貴賓的 QR Code 下載連結，瀏覽器可能會詢問允許多個下載。');
-  allGuests.forEach((g, i) => setTimeout(() => {
-    const a = document.createElement('a');
-    a.href = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data=${encodeURIComponent(CHECKIN_BASE + '?id=' + g.id)}`;
-    a.download = `QR_${g.id}_${g.name}.png`; a.target = '_blank'; a.click();
-  }, i * 300));
+  alert('將逐一開啟各貴賓的 QR Code 下載連結。');
+  allGuests.forEach(function(g, i) {
+    setTimeout(function() {
+      var a = document.createElement('a');
+      a.href = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data=' + encodeURIComponent(CHECKIN_BASE + '?id=' + g.id);
+      a.download = 'QR_' + g.id + '_' + g.name + '.png'; a.target = '_blank'; a.click();
+    }, i * 300);
+  });
 }
 
-// ── Checkin / Cancel (直接寫 Firestore) ──
+// ── Checkin / Cancel ──
 async function doCheckin(id, name) {
-  // 防重複
-  const existing = await fsGet('log', id);
-  if (existing) { alert(`⚠ ${name} 已於 ${existing.checkInTime} 完成報到`); return; }
-
-  const taipeiTime = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false })
-    .replace(/\//g, '-');
-  await fsSet('log', id, { id, name, temple: allGuests.find(g => g.id === id)?.temple || '', checkInTime: taipeiTime, status: '已報到' });
-
+  var existing = await fsGet('log', id);
+  if (existing) { alert('⚠ ' + name + ' 已於 ' + existing.checkInTime + ' 完成報到'); return; }
+  var t = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
+  var guest = allGuests.find(function(g) { return g.id === id; }) || {};
+  await fsSet('log', id, { id: id, name: name, temple: guest.temple || '', checkInTime: t, status: '已報到' });
   checkedIds.add(id);
-  allLogs.push({ id, name, temple: allGuests.find(g => g.id === id)?.temple || '', checkInTime: taipeiTime });
+  allLogs.push({ id: id, name: name, temple: guest.temple || '', checkInTime: t });
   updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-  alert(`✓ ${name} 報到成功！\n時間：${taipeiTime}`);
+  alert('✓ ' + name + ' 報到成功！\n時間：' + t);
 }
 
 async function cancelCheckin(id, name) {
-  if (!confirm(`確定取消「${name}」的報到記錄？`)) return;
+  if (!confirm('確定取消「' + name + '」的報到記錄？')) return;
   await fsDel('log', id);
   checkedIds.delete(id);
-  allLogs = allLogs.filter(l => l.id !== id);
+  allLogs = allLogs.filter(function(l) { return l.id !== id; });
   updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-  alert(`已取消 ${name} 的報到記錄`);
+  alert('已取消 ' + name + ' 的報到記錄');
 }
 
 // ── Scanner ──
-let qrScanner = null, scanning = false, busy = false;
-function staffToggle() { scanning ? stopScanner() : startScanner(); }
+var qrScanner = null, scanning = false, busy = false;
+function staffToggle() { if (scanning) stopScanner(); else startScanner(); }
 function startScanner() {
   qrScanner = new Html5Qrcode('qr-reader');
   qrScanner.start({ facingMode: 'environment' },
     { fps: 15, qrbox: { width: 200, height: 200 }, aspectRatio: 1.0, formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE] },
-    onScan, () => {})
-  .then(() => {
+    onScan, function() {})
+  .then(function() {
     scanning = true;
     document.getElementById('staff-idle').style.display = 'none';
     document.getElementById('brackets').style.display = 'block';
     document.getElementById('toggle-btn').textContent = '停止掃描';
     setSt('掃描中…', '請將貴賓 QR Code 對準掃描框');
-  }).catch(() => {
+  }).catch(function() {
     document.getElementById('cam-err').style.display = 'block';
     document.getElementById('toggle-btn').disabled = true;
     setSt('相機錯誤', '請檢查相機權限');
@@ -771,7 +759,7 @@ function startScanner() {
 }
 async function stopScanner() {
   if (!qrScanner || !scanning) return;
-  try { await qrScanner.stop(); } catch(_) {}
+  try { await qrScanner.stop(); } catch(e) {}
   scanning = false;
   document.getElementById('brackets').style.display = 'none';
   document.getElementById('staff-idle').style.display = 'flex';
@@ -781,27 +769,27 @@ async function stopScanner() {
 async function onScan(decoded) {
   if (busy) return; busy = true;
   await stopScanner();
-  let id = null;
-  try { id = new URL(decoded).searchParams.get('id'); } catch(_) { id = decoded.trim() || null; }
+  var id = null;
+  try { id = new URL(decoded).searchParams.get('id'); } catch(e) { id = decoded.trim() || null; }
   if (!id) { scanResult('error', 'QR Code 無效', '找不到報到 ID', null); busy = false; return; }
   document.getElementById('staff-loading').style.display = 'flex';
-  setSt('驗證中…', `ID：${id}`);
+  setSt('驗證中…', 'ID：' + id);
   document.getElementById('toggle-btn').disabled = true;
   try {
-    // 直接查 Firestore
-    const guest = allGuests.find(g => g.id === id) || await fsGet('guests', id);
-    if (!guest) { scanResult('error', '非受邀貴賓', '此 QR Code 不在貴賓名單中', null); }
-    else {
-      const logDoc = await fsGet('log', id);
+    var guest = allGuests.find(function(g) { return g.id === id; }) || await fsGet('guests', id);
+    if (!guest) {
+      scanResult('error', '非受邀貴賓', '此 QR Code 不在貴賓名單中', null);
+    } else {
+      var logDoc = await fsGet('log', id);
       if (logDoc) {
-        scanResult('warn', '您已完成報到，請勿重複掃描', `首次報到：${logDoc.checkInTime}`, { id, name: guest.name });
+        scanResult('warn', '您已完成報到，請勿重複掃描', '首次報到：' + logDoc.checkInTime, { id: id, name: guest.name });
       } else {
-        const taipeiTime = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
-        await fsSet('log', id, { id, name: guest.name, temple: guest.temple || '', checkInTime: taipeiTime, status: '已報到' });
+        var t = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
+        await fsSet('log', id, { id: id, name: guest.name, temple: guest.temple || '', checkInTime: t, status: '已報到' });
         checkedIds.add(id);
-        allLogs.push({ id, name: guest.name, temple: guest.temple || '', checkInTime: taipeiTime });
+        allLogs.push({ id: id, name: guest.name, temple: guest.temple || '', checkInTime: t });
         updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-        scanResult('success', `歡迎光臨，${guest.name} 先生/小姐`, `報到時間：${taipeiTime}`, { id, name: guest.name });
+        scanResult('success', '歡迎光臨，' + guest.name + ' 先生/小姐', '報到時間：' + t, { id: id, name: guest.name });
       }
     }
   } catch(e) { scanResult('error', '連線失敗', e.message || '請確認網路後重試', null); }
@@ -811,104 +799,81 @@ async function onScan(decoded) {
   busy = false;
 }
 
-const RS = {
-  success: { icon:'✓', bg:'var(--lime-dim)', br:'var(--lime-ring)', ic:'var(--lime)', tc:'var(--lime)' },
-  warn:    { icon:'!', bg:'var(--amber-dim)',br:'var(--amber-ring)',ic:'var(--amber)',tc:'var(--amber)' },
-  error:   { icon:'✕', bg:'var(--rose-dim)', br:'var(--rose-ring)', ic:'var(--rose)', tc:'var(--rose)' },
+var RS = {
+  success: { icon: '✓', bg: 'var(--lime-dim)', br: 'var(--lime-ring)', ic: 'var(--lime)', tc: 'var(--lime)' },
+  warn:    { icon: '!', bg: 'var(--amber-dim)', br: 'var(--amber-ring)', ic: 'var(--amber)', tc: 'var(--amber)' },
+  error:   { icon: '✕', bg: 'var(--rose-dim)', br: 'var(--rose-ring)', ic: 'var(--rose)', tc: 'var(--rose)' }
 };
 function scanResult(type, title, sub, data) {
-  const s = RS[type];
-  const rows = data ? `<div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;display:flex;flex-direction:column;gap:7px;margin-top:10px">${data.name ? `<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">姓名</span><span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--white)">${data.name}</span></div>` : ''}<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">ID</span><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--light)">${data.id || '—'}</span></div></div>` : '';
-  const el = document.getElementById('staff-result');
-  el.innerHTML = `<div style="border-radius:18px;border:1px solid ${s.br};background:${s.bg};padding:20px"><div style="text-align:center"><div style="width:48px;height:48px;border-radius:50%;background:${s.bg};border:1px solid ${s.br};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:${s.ic};margin:0 auto 10px">${s.icon}</div><p style="font-weight:900;font-size:16px;color:${s.tc}">${title}</p><p style="font-size:11px;color:var(--soft);margin-top:4px">${sub}</p></div>${rows}</div><button class="btn-ghost" onclick="resetScan()" style="margin-top:7px">繼續掃下一位 →</button>`;
+  var s = RS[type];
+  var rows = data ? '<div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;margin-top:10px">' +
+    (data.name ? '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">姓名</span><span style="font-size:13px;font-weight:700;color:var(--white)">' + data.name + '</span></div>' : '') +
+    '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">ID</span><span style="font-size:12px;color:var(--light)">' + (data.id || '—') + '</span></div></div>' : '';
+  var el = document.getElementById('staff-result');
+  el.innerHTML = '<div style="border-radius:18px;border:1px solid ' + s.br + ';background:' + s.bg + ';padding:20px">' +
+    '<div style="text-align:center">' +
+    '<div style="width:48px;height:48px;border-radius:50%;background:' + s.bg + ';border:1px solid ' + s.br + ';display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:' + s.ic + ';margin:0 auto 10px">' + s.icon + '</div>' +
+    '<p style="font-weight:900;font-size:16px;color:' + s.tc + '">' + title + '</p>' +
+    '<p style="font-size:11px;color:var(--soft);margin-top:4px">' + sub + '</p></div>' + rows + '</div>' +
+    '<button class="btn-ghost" onclick="resetScan()" style="margin-top:7px">繼續掃下一位 →</button>';
   el.style.display = 'block'; void el.offsetWidth; el.classList.add('rise');
   setSt('掃描完成', '查看下方結果');
 }
 function resetScan() { document.getElementById('staff-result').style.display = 'none'; startScanner(); }
 function setSt(t, s) { document.getElementById('s-title').textContent = t; document.getElementById('s-sub').textContent = s; }
 
-// ── Manual checkin ──
-async function manualCheckin() {
-  const val = document.getElementById('manual-id').value.trim(); if (!val) return;
-  const resEl = document.getElementById('manual-result');
-  let guest = null;
-  // 先在本地找
-  const byId   = allGuests.find(g => g.id === val);
-  const byName = allGuests.filter(g => g.name && g.name.includes(val));
-  if (byId) { guest = byId; }
-  else if (byName.length === 1) { guest = byName[0]; }
-  else if (byName.length > 1) {
-    resEl.innerHTML = `<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">找到 ${byName.length} 位同名，請輸入 ID：${byName.map(g => `<b>${g.id}</b>(${g.name})`).join('、')}</div>`;
-    animShow(resEl); return;
-  } else {
-    // 向 Firestore 查
-    try { guest = await fsGet('guests', val); } catch(_) {}
-  }
-  if (!guest) {
-    resEl.innerHTML = `<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">✕ 查無此貴賓</div>`;
-    animShow(resEl); return;
-  }
-  try {
-    const existing = await fsGet('log', guest.id);
-    if (existing) {
-      resEl.innerHTML = `<div style="background:var(--amber-dim);border:1px solid var(--amber-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">⚠ ${guest.name} 已於 ${existing.checkInTime} 報到</div>`;
-    } else {
-      const t = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
-      await fsSet('log', guest.id, { id: guest.id, name: guest.name, temple: guest.temple || '', checkInTime: t, status: '已報到' });
-      checkedIds.add(guest.id);
-      allLogs.push({ id: guest.id, name: guest.name, temple: guest.temple || '', checkInTime: t });
-      updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-      resEl.innerHTML = `<div style="background:var(--lime-dim);border:1px solid var(--lime-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--lime)">✓ <b>${guest.name}</b> 報到成功！${t}</div>`;
-      document.getElementById('manual-id').value = '';
-    }
-  } catch(e) {
-    resEl.innerHTML = `<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">連線失敗：${e.message}</div>`;
-  }
-  animShow(resEl);
-}
-
 // ── Log table ──
 function renderLogTable(logs) {
-  document.getElementById('log-tbody').innerHTML = [...logs].reverse().map(l =>
-    `<tr><td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${l.id}</td><td style="font-weight:700;font-size:12px">${l.name || '—'}</td><td style="font-size:11px;color:var(--soft);font-family:'DM Mono',monospace">${l.checkInTime || '—'}</td><td><button class="btn-rose-xs" onclick="cancelCheckin('${l.id}','${l.name || l.id}')">取消</button></td></tr>`
-  ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">尚無報到記錄</td></tr>';
+  var html = '';
+  var rev = logs.slice().reverse();
+  rev.forEach(function(l) {
+    html += '<tr>' +
+      '<td style="font-size:10px;color:var(--muted)">' + l.id + '</td>' +
+      '<td style="font-weight:700;font-size:12px">' + (l.name || '—') + '</td>' +
+      '<td style="font-size:11px;color:var(--soft)">' + (l.checkInTime || '—') + '</td>' +
+      '<td><button class="btn-rose-xs" onclick="cancelCheckin(\'' + l.id + '\',\'' + (l.name || l.id) + '\')">取消</button></td></tr>';
+  });
+  document.getElementById('log-tbody').innerHTML = html || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">尚無報到記錄</td></tr>';
 }
 function filterLogTable() {
-  const q = document.getElementById('log-search').value.trim().toLowerCase();
-  renderLogTable(q ? allLogs.filter(l => (l.name || '').toLowerCase().includes(q) || (l.id || '').toLowerCase().includes(q)) : allLogs);
+  var q = document.getElementById('log-search').value.trim().toLowerCase();
+  renderLogTable(q ? allLogs.filter(function(l) { return (l.name || '').toLowerCase().includes(q) || (l.id || '').toLowerCase().includes(q); }) : allLogs);
 }
 
-// ── Import (still via GAS for batch write) ──
-let importData = [];
+// ── Import ──
+var importData = [];
 function previewImport() {
-  const file = document.getElementById('import-file').files[0]; if (!file) { alert('請先選擇 CSV 檔案'); return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    const lines = e.target.result.replace(/\r/g, '').split('\n').filter(l => l.trim());
+  var file = document.getElementById('import-file').files[0]; if (!file) { alert('請先選擇 CSV 檔案'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var lines = e.target.result.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
     if (lines.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
-    const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
-    const idIdx    = header.findIndex(h => h==='id'   || h==='id');
-const nameIdx  = header.findIndex(h => h==='name' || h==='姓名');
-const tIdx     = header.findIndex(h => h==='temple'   || h==='所屬佛堂');
-const nIdx     = header.findIndex(h => h==='note'     || h==='備註');
-const aIdx     = header.findIndex(h => h==='area'     || h==='區別');
-const rIdx     = header.findIndex(h => h==='referrer' || h==='介紹人');
-    if (idIdx < 0 || nameIdx < 0) { showImportMsg('CSV 缺少必要欄位：id 和 name'); return; }
-    const tIdx = header.indexOf('temple'), nIdx = header.indexOf('note');
-    const aIdx = header.indexOf('area'),   rIdx = header.indexOf('referrer');
-    importData = lines.slice(1).map(line => {
-      const cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g).map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
+    var header = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+    var idIdx   = header.findIndex(function(h) { return h === 'id' || h === 'ID' || h === '編號'; });
+    var nameIdx = header.findIndex(function(h) { return h === 'name' || h === '姓名'; });
+    if (idIdx < 0 || nameIdx < 0) { showImportMsg('CSV 缺少必要欄位：id/ID 和 name/姓名'); return; }
+    var tIdx = header.findIndex(function(h) { return h === 'temple' || h === '所屬佛堂'; });
+    var nIdx = header.findIndex(function(h) { return h === 'note'   || h === '備註'; });
+    var aIdx = header.findIndex(function(h) { return h === 'area'   || h === '區別'; });
+    var rIdx = header.findIndex(function(h) { return h === 'referrer' || h === '介紹人'; });
+    importData = lines.slice(1).map(function(line) {
+      var cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g).map(function(c) { return c.replace(/^"|"$/g, '').replace(/""/g, '"').trim(); });
       return {
         id:       cols[idIdx]   || '',
         name:     cols[nameIdx] || '',
-        temple:   tIdx >= 0 ? (cols[tIdx] || '') : '',
-        note:     nIdx >= 0 ? (cols[nIdx] || '') : '',
-        area:     aIdx >= 0 ? (cols[aIdx] || '') : '',
-        referrer: rIdx >= 0 ? (cols[rIdx] || '') : ''
+        temple:   tIdx >= 0 ? (cols[tIdx]   || '') : '',
+        note:     nIdx >= 0 ? (cols[nIdx]   || '') : '',
+        area:     aIdx >= 0 ? (cols[aIdx]   || '') : '',
+        referrer: rIdx >= 0 ? (cols[rIdx]   || '') : ''
       };
-    }).filter(r => r.id && r.name);
-    const prev = document.getElementById('import-preview');
-    prev.innerHTML = `<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px"><p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ${importData.length} 筆</p><div style="max-height:150px;overflow-y:auto">${importData.slice(0, 8).map(r => `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${r.name}</span><span style="font-family:'DM Mono',monospace;color:var(--muted)">${r.id}</span></div>`).join('')}${importData.length > 8 ? `<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ${importData.length - 8} 筆</p>` : ''}</div></div>`;
+    }).filter(function(r) { return r.id && r.name; });
+    var prev = document.getElementById('import-preview');
+    var previewRows = importData.slice(0, 8).map(function(r) {
+      return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span>' + r.name + (r.area ? ' [' + r.area + ']' : '') + '</span><span style="color:var(--muted)">' + r.id + '</span></div>';
+    }).join('');
+    prev.innerHTML = '<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px">' +
+      '<p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ' + importData.length + ' 筆</p>' +
+      '<div style="max-height:150px;overflow-y:auto">' + previewRows + (importData.length > 8 ? '<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ' + (importData.length - 8) + ' 筆</p>' : '') + '</div></div>';
     prev.style.display = 'block';
     document.getElementById('import-btn').style.display = 'block';
   };
@@ -917,45 +882,54 @@ const rIdx     = header.findIndex(h => h==='referrer' || h==='介紹人');
 
 async function confirmImport() {
   if (!importData.length) { alert('沒有可匯入的資料'); return; }
-  if (!confirm(`確定匯入 ${importData.length} 筆？相同 ID 將被覆蓋`)) return;
-  const btn = document.getElementById('import-btn'); btn.disabled = true; btn.textContent = '匯入中…';
+  if (!confirm('確定匯入 ' + importData.length + ' 筆？相同 ID 將被覆蓋')) return;
+  var btn = document.getElementById('import-btn'); btn.disabled = true; btn.textContent = '匯入中…';
   try {
-    // 直接用 Firestore 批次寫入
-    await Promise.all(importData.map(g => fsSet('guests', g.id, g)));
-    showMsg('import-msg', 'lime', '匯入完成', `成功寫入 ${importData.length} 筆資料`);
-    importData = []; document.getElementById('import-preview').style.display = 'none';
-    document.getElementById('import-file').value = ''; btn.style.display = 'none';
-    setTimeout(() => loadAll(), 800);
+    await Promise.all(importData.map(function(g) { return fsSet('guests', g.id, g); }));
+    showMsg('import-msg', 'lime', '匯入完成', '成功寫入 ' + importData.length + ' 筆資料');
+    importData = [];
+    document.getElementById('import-preview').style.display = 'none';
+    document.getElementById('import-file').value = '';
+    btn.style.display = 'none';
+    setTimeout(function() { loadAll(); }, 800);
   } catch(e) { showMsg('import-msg', 'rose', '匯入失敗', e.message); }
   btn.disabled = false; btn.textContent = '確認匯入';
 }
 
 function showImportMsg(msg) {
-  const p = document.getElementById('import-preview');
-  p.innerHTML = `<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">${msg}</div>`;
+  var p = document.getElementById('import-preview');
+  p.innerHTML = '<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">' + msg + '</div>';
   p.style.display = 'block';
 }
 
 function exportGuestCSV() {
   if (!allGuests.length) { alert('請先載入名單'); return; }
-  dlCSV('\uFEFF' + 'ID,姓名,所屬佛堂,備註,狀態\n' + allGuests.map(g => [g.id, g.name, g.temple || '', g.note || '', checkedIds.has(g.id) ? '已報到' : '未報到'].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'), `貴賓名單_${today()}.csv`);
+  var rows = allGuests.map(function(g) {
+    return [g.id, g.name, g.temple || '', g.note || '', g.area || '', g.referrer || '', checkedIds.has(g.id) ? '已報到' : '未報到']
+      .map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+  });
+  dlCSV('\uFEFF' + 'ID,姓名,所屬佛堂,備註,區別,介紹人,狀態\n' + rows.join('\n'), '貴賓名單_' + today() + '.csv');
 }
 
 function exportLogCSV() {
   if (!allLogs.length) { alert('尚無報到記錄'); return; }
-  dlCSV('\uFEFF' + 'ID,姓名,佛堂,報到時間\n' + allLogs.map(l => [l.id, l.name || '', l.temple || '', l.checkInTime || ''].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'), `報到記錄_${today()}.csv`);
+  var rows = allLogs.map(function(l) {
+    return [l.id, l.name || '', l.temple || '', l.checkInTime || '']
+      .map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+  });
+  dlCSV('\uFEFF' + 'ID,姓名,佛堂,報到時間\n' + rows.join('\n'), '報到記錄_' + today() + '.csv');
 }
 
-// ── Shared utils ──
+// ── Utils ──
 function animShow(el) { el.style.display = 'block'; el.classList.remove('rise'); void el.offsetWidth; el.classList.add('rise'); }
-function dlCSV(c, f) { const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(c); a.download = f; a.click(); }
+function dlCSV(c, f) { var a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(c); a.download = f; a.click(); }
 function today() { return new Date().toLocaleDateString('zh-TW'); }
 function showMsg(elId, color, title, sub) {
-  const cm = { sky:'var(--sky)', lime:'var(--lime)', rose:'var(--rose)', violet:'var(--violet)', amber:'var(--amber)' };
-  const bm = { sky:'var(--sky-dim)', lime:'var(--lime-dim)', rose:'var(--rose-dim)', violet:'var(--violet-dim)', amber:'var(--amber-dim)' };
-  const rm = { sky:'var(--sky-ring)', lime:'var(--lime-ring)', rose:'var(--rose-ring)', violet:'var(--violet-ring)', amber:'var(--amber-ring)' };
-  const el = document.getElementById(elId); if (!el) return;
-  el.innerHTML = `<div style="border-radius:12px;border:1px solid ${rm[color] || 'var(--border)'};background:${bm[color] || 'var(--card)'};padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:${cm[color] || 'var(--light)'}">${title}</p><p style="font-size:11px;color:var(--soft);margin-top:3px">${sub}</p></div>`;
+  var cm = { sky: 'var(--sky)', lime: 'var(--lime)', rose: 'var(--rose)', violet: 'var(--violet)', amber: 'var(--amber)' };
+  var bm = { sky: 'var(--sky-dim)', lime: 'var(--lime-dim)', rose: 'var(--rose-dim)', violet: 'var(--violet-dim)', amber: 'var(--amber-dim)' };
+  var rm = { sky: 'var(--sky-ring)', lime: 'var(--lime-ring)', rose: 'var(--rose-ring)', violet: 'var(--violet-ring)', amber: 'var(--amber-ring)' };
+  var el = document.getElementById(elId); if (!el) return;
+  el.innerHTML = '<div style="border-radius:12px;border:1px solid ' + (rm[color] || 'var(--border)') + ';background:' + (bm[color] || 'var(--card)') + ';padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:' + (cm[color] || 'var(--light)') + '">' + title + '</p><p style="font-size:11px;color:var(--soft);margin-top:3px">' + sub + '</p></div>';
   el.style.display = 'block';
 }
 </script>
