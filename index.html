@@ -846,7 +846,8 @@ function previewImport() {
   var file = document.getElementById('import-file').files[0]; if (!file) { alert('請先選擇 CSV 檔案'); return; }
   var reader = new FileReader();
   reader.onload = function(e) {
-    var lines = e.target.result.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
+    var raw = e.target.result.replace(/^\uFEFF/, ''); // 移除 BOM
+    var lines = raw.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
     if (lines.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
     var header = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
     var idIdx   = header.findIndex(function(h) { return h === 'id' || h === 'ID' || h === '編號'; });
