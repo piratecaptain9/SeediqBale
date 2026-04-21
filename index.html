@@ -393,11 +393,11 @@ function renderMode(m) {
   if (m !== 'staff') stopScanner();
   if (m === 'guest') { closeDd(); preloadGuests(); }
 }
-window.addEventListener('popstate', function() { renderMode(getMode()); });
-renderMode(getMode());
-
 // ══ Guest search ═══════════════════════
 var guestCache = [];
+
+window.addEventListener('popstate', function() { renderMode(getMode()); });
+renderMode(getMode());
 
 async function preloadGuests() {
   if (guestCache.length) return;
