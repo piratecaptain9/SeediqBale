@@ -6,6 +6,7 @@
   <title>活動報到系統</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -262,9 +263,9 @@
       <div id="panel-import" style="display:none;flex-direction:column;gap:12px">
         <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
           <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px">📂 匯入貴賓名單</p>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援欄位：id/ID、name/姓名、temple/所屬佛堂、note/備註、area/區別、referrer/介紹人</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援 Excel (.xlsx) 和 CSV 檔，欄位：ID/姓名/所屬佛堂/備註/區別/介紹人</p>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <input type="file" id="import-file" accept=".csv"/>
+            <input type="file" id="import-file" accept=".csv,.xlsx,.xls"/>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
               <button class="btn-sky" onclick="previewImport()" style="font-size:13px;padding:10px">預覽內容</button>
               <button class="btn-danger" onclick="confirmImport()" id="import-btn" style="display:none;font-size:13px;padding:10px">確認匯入</button>
@@ -273,8 +274,8 @@
           <div id="import-preview" style="display:none;margin-top:10px"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <button class="btn-sky-o" onclick="exportGuestCSV()" style="font-size:13px;padding:10px">⬇ 匯出貴賓 CSV</button>
-          <button class="btn-sky-o" onclick="exportLogCSV()" style="font-size:13px;padding:10px">⬇ 匯出報到記錄</button>
+          <button class="btn-sky-o" onclick="exportGuestCSV()" style="font-size:13px;padding:10px">⬇ 匯出貴賓 Excel</button>
+          <button class="btn-sky-o" onclick="exportLogCSV()" style="font-size:13px;padding:10px">⬇ 匯出報到 Excel</button>
         </div>
         <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
           <p style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:8px">✅ 報到記錄</p>
@@ -842,43 +843,100 @@ function filterLogTable() {
 
 // ── Import ──
 var importData = [];
+// 欄位名稱對照表（中英文皆可）
+var COL_MAP = {
+  id:       ['id','ID','編號'],
+  name:     ['name','姓名'],
+  temple:   ['temple','所屬佛堂','佛堂'],
+  note:     ['note','備註'],
+  area:     ['area','區別'],
+  referrer: ['referrer','介紹人'],
+  status:   ['status','狀態']
+};
+
+function findCol(header, key) {
+  var targets = COL_MAP[key] || [key];
+  return header.findIndex(function(h) {
+    return targets.some(function(t) { return h === t || h === t.toLowerCase(); });
+  });
+}
+
+function processRows(rows) {
+  // rows: array of arrays (first row = header)
+  if (rows.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
+  var header = rows[0].map(function(h) { return String(h).trim(); });
+  console.log('偵測到表頭：', header);
+  var idIdx   = findCol(header, 'id');
+  var nameIdx = findCol(header, 'name');
+  console.log('idIdx:', idIdx, 'nameIdx:', nameIdx);
+  if (idIdx < 0 || nameIdx < 0) {
+    showImportMsg('找不到必要欄位。表頭為：' + header.join(', '));
+    return;
+  }
+  var tIdx = findCol(header, 'temple');
+  var nIdx = findCol(header, 'note');
+  var aIdx = findCol(header, 'area');
+  var rIdx = findCol(header, 'referrer');
+  importData = rows.slice(1).map(function(cols) {
+    return {
+      id:       String(cols[idIdx]   || '').trim(),
+      name:     String(cols[nameIdx] || '').trim(),
+      temple:   tIdx >= 0 ? String(cols[tIdx]   || '').trim() : '',
+      note:     nIdx >= 0 ? String(cols[nIdx]   || '').trim() : '',
+      area:     aIdx >= 0 ? String(cols[aIdx]   || '').trim() : '',
+      referrer: rIdx >= 0 ? String(cols[rIdx]   || '').trim() : ''
+    };
+  }).filter(function(r) { return r.id && r.name; });
+  showPreview();
+}
+
+function showPreview() {
+  var prev = document.getElementById('import-preview');
+  var previewRows = importData.slice(0, 8).map(function(r) {
+    return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px">' +
+      '<span>' + r.name + (r.area ? ' [' + r.area + ']' : '') + '</span>' +
+      '<span style="color:var(--muted)">' + r.id + '</span></div>';
+  }).join('');
+  prev.innerHTML = '<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px">' +
+    '<p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ' + importData.length + ' 筆</p>' +
+    '<div style="max-height:150px;overflow-y:auto">' + previewRows +
+    (importData.length > 8 ? '<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ' + (importData.length - 8) + ' 筆</p>' : '') +
+    '</div></div>';
+  prev.style.display = 'block';
+  document.getElementById('import-btn').style.display = 'block';
+}
+
 function previewImport() {
-  var file = document.getElementById('import-file').files[0]; if (!file) { alert('請先選擇 CSV 檔案'); return; }
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var raw = e.target.result.replace(/^\uFEFF/, ''); // 移除 BOM
-    var lines = raw.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
-    if (lines.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
-    var header = lines[0].split(',').map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
-    var idIdx   = header.findIndex(function(h) { return h === 'id' || h === 'ID' || h === '編號'; });
-    var nameIdx = header.findIndex(function(h) { return h === 'name' || h === '姓名'; });
-    if (idIdx < 0 || nameIdx < 0) { showImportMsg('CSV 缺少必要欄位：id/ID 和 name/姓名'); return; }
-    var tIdx = header.findIndex(function(h) { return h === 'temple' || h === '所屬佛堂'; });
-    var nIdx = header.findIndex(function(h) { return h === 'note'   || h === '備註'; });
-    var aIdx = header.findIndex(function(h) { return h === 'area'   || h === '區別'; });
-    var rIdx = header.findIndex(function(h) { return h === 'referrer' || h === '介紹人'; });
-    importData = lines.slice(1).map(function(line) {
-      var cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g).map(function(c) { return c.replace(/^"|"$/g, '').replace(/""/g, '"').trim(); });
-      return {
-        id:       cols[idIdx]   || '',
-        name:     cols[nameIdx] || '',
-        temple:   tIdx >= 0 ? (cols[tIdx]   || '') : '',
-        note:     nIdx >= 0 ? (cols[nIdx]   || '') : '',
-        area:     aIdx >= 0 ? (cols[aIdx]   || '') : '',
-        referrer: rIdx >= 0 ? (cols[rIdx]   || '') : ''
-      };
-    }).filter(function(r) { return r.id && r.name; });
-    var prev = document.getElementById('import-preview');
-    var previewRows = importData.slice(0, 8).map(function(r) {
-      return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span>' + r.name + (r.area ? ' [' + r.area + ']' : '') + '</span><span style="color:var(--muted)">' + r.id + '</span></div>';
-    }).join('');
-    prev.innerHTML = '<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px">' +
-      '<p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ' + importData.length + ' 筆</p>' +
-      '<div style="max-height:150px;overflow-y:auto">' + previewRows + (importData.length > 8 ? '<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ' + (importData.length - 8) + ' 筆</p>' : '') + '</div></div>';
-    prev.style.display = 'block';
-    document.getElementById('import-btn').style.display = 'block';
-  };
-  reader.readAsText(file, 'UTF-8');
+  var file = document.getElementById('import-file').files[0];
+  if (!file) { alert('請先選擇檔案'); return; }
+  var ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    // Excel 處理
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var wb = XLSX.read(e.target.result, { type: 'array' });
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        var rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        processRows(rows);
+      } catch(err) { showImportMsg('Excel 讀取失敗：' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    // CSV 處理
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var raw = e.target.result.replace(/^\uFEFF/, '');
+      var lines = raw.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
+      var rows = lines.map(function(line) {
+        var cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g) || [];
+        return cols.map(function(c) { return c.replace(/^"|"$/g, '').replace(/""/g, '"').trim(); });
+      });
+      processRows(rows);
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
 }
 
 async function confirmImport() {
@@ -905,20 +963,25 @@ function showImportMsg(msg) {
 
 function exportGuestCSV() {
   if (!allGuests.length) { alert('請先載入名單'); return; }
+  var header = ['ID','姓名','所屬佛堂','備註','區別','介紹人','狀態'];
   var rows = allGuests.map(function(g) {
-    return [g.id, g.name, g.temple || '', g.note || '', g.area || '', g.referrer || '', checkedIds.has(g.id) ? '已報到' : '未報到']
-      .map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+    return [g.id, g.name, g.temple||'', g.note||'', g.area||'', g.referrer||'', checkedIds.has(g.id)?'已報到':'未報到'];
   });
-  dlCSV('\uFEFF' + 'ID,姓名,所屬佛堂,備註,區別,介紹人,狀態\n' + rows.join('\n'), '貴賓名單_' + today() + '.csv');
+  dlXlsx([header].concat(rows), '貴賓名單_' + today() + '.xlsx');
 }
 
 function exportLogCSV() {
   if (!allLogs.length) { alert('尚無報到記錄'); return; }
-  var rows = allLogs.map(function(l) {
-    return [l.id, l.name || '', l.temple || '', l.checkInTime || '']
-      .map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
-  });
-  dlCSV('\uFEFF' + 'ID,姓名,佛堂,報到時間\n' + rows.join('\n'), '報到記錄_' + today() + '.csv');
+  var header = ['ID','姓名','佛堂','報到時間'];
+  var rows = allLogs.map(function(l) { return [l.id, l.name||'', l.temple||'', l.checkInTime||'']; });
+  dlXlsx([header].concat(rows), '報到記錄_' + today() + '.xlsx');
+}
+
+function dlXlsx(data, filename) {
+  var ws = XLSX.utils.aoa_to_sheet(data);
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, filename);
 }
 
 // ── Utils ──
