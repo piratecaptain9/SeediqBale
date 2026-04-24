@@ -11,165 +11,190 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root{
-      --ink:#080b10;--panel:#131926;--card:#1a2235;
-      --border:#243044;--border2:#2e3d55;--muted:#4a5e7a;--soft:#7a92b4;
-      --light:#c0d0e8;--white:#e8eef8;
-      --gold:#e8c96a;--gold-dim:rgba(232,201,106,.10);--gold-ring:rgba(232,201,106,.35);
-      --lime:#7ddb8c;--lime-dim:rgba(125,219,140,.10);--lime-ring:rgba(125,219,140,.3);
-      --rose:#f07070;--rose-dim:rgba(240,112,112,.10);--rose-ring:rgba(240,112,112,.3);
-      --amber:#f0b060;--amber-dim:rgba(240,176,96,.10);--amber-ring:rgba(240,176,96,.3);
-      --sky:#60a8f0;--sky-dim:rgba(96,168,240,.10);--sky-ring:rgba(96,168,240,.3);
-      --violet:#a07df0;--violet-dim:rgba(160,125,240,.10);--violet-ring:rgba(160,125,240,.3);
+      --bg:#f5f7fa;--surface:#ffffff;--card:#ffffff;--panel:#f0f3f8;
+      --border:#e2e8f0;--border2:#cbd5e1;--muted:#94a3b8;--soft:#64748b;
+      --text:#1e293b;--text2:#334155;
+      --primary:#3b82f6;--primary-dim:rgba(59,130,246,.08);--primary-ring:rgba(59,130,246,.3);
+      --green:#16a34a;--green-dim:rgba(22,163,74,.08);--green-ring:rgba(22,163,74,.25);
+      --red:#dc2626;--red-dim:rgba(220,38,38,.08);--red-ring:rgba(220,38,38,.25);
+      --amber:#d97706;--amber-dim:rgba(217,119,6,.08);--amber-ring:rgba(217,119,6,.25);
+      --violet:#7c3aed;--violet-dim:rgba(124,58,237,.08);--violet-ring:rgba(124,58,237,.25);
+      --gold:#b45309;--gold-dim:rgba(180,83,9,.08);--gold-ring:rgba(180,83,9,.25);
+      --lime:#65a30d; --lime-dim:rgba(101,163,13,.08);--lime-ring:rgba(101,163,13,.25);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html,body{min-height:100%}
-    body{background:var(--ink);font-family:'Noto Sans TC',sans-serif;color:var(--light);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
-    .ambient-guest{background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(232,201,106,.08) 0%,transparent 65%)}
-    .ambient-staff{background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(125,219,140,.07) 0%,transparent 65%)}
+    html,body{min-height:100%;background:var(--bg)}
+    body{font-family:'Noto Sans TC',sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+    @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}.rise{animation:rise .3s cubic-bezier(.34,1.5,.64,1) both}
+    @keyframes spin{to{transform:rotate(360deg)}}.spinner{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--primary);animation:spin .7s linear infinite}
+    @keyframes shimmer{0%{box-shadow:0 0 0 0 var(--gold-ring)}70%{box-shadow:0 0 0 12px rgba(180,83,9,0)}100%{box-shadow:0 0 0 0 rgba(180,83,9,0)}}.shimmer{animation:shimmer 1.4s ease-out 2}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.blink{animation:blink 2s ease-in-out infinite}
-    @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}.rise{animation:rise .35s cubic-bezier(.34,1.5,.64,1) both}
-    @keyframes spin{to{transform:rotate(360deg)}}.spinner{width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--lime);animation:spin .75s linear infinite}
-    @keyframes shimmer{0%{box-shadow:0 0 0 0 var(--gold-ring)}70%{box-shadow:0 0 0 14px rgba(232,201,106,0)}100%{box-shadow:0 0 0 0 rgba(232,201,106,0)}}.shimmer{animation:shimmer 1.4s ease-out 2}
+    /* Scanner */
     #qr-reader{width:100%!important}
     #qr-reader video{width:100%!important;height:100%!important;object-fit:cover!important}
     #qr-reader__scan_region{width:100%!important;height:100%!important}
     #qr-reader__scan_region img,#qr-reader__dashboard,#qr-reader__header_message{display:none!important}
-    .brk{position:absolute;width:32px;height:32px;border-color:var(--lime);border-style:solid;border-width:0}
+    .brk{position:absolute;width:30px;height:30px;border-color:var(--primary);border-style:solid;border-width:0}
     .brk-tl{top:13%;left:13%;border-top-width:2px;border-left-width:2px;border-radius:3px 0 0 0}
     .brk-tr{top:13%;right:13%;border-top-width:2px;border-right-width:2px;border-radius:0 3px 0 0}
     .brk-bl{bottom:13%;left:13%;border-bottom-width:2px;border-left-width:2px;border-radius:0 0 0 3px}
     .brk-br{bottom:13%;right:13%;border-bottom-width:2px;border-right-width:2px;border-radius:0 0 3px 0}
     @keyframes laser{0%{top:13%;opacity:0}8%{opacity:1}92%{opacity:1}100%{top:87%;opacity:0}}
-    .laser{position:absolute;left:13%;right:13%;height:1.5px;background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 6px rgba(125,219,140,.5);animation:laser 2.4s ease-in-out infinite}
-    .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 50%,transparent 35%,rgba(8,11,16,.75) 100%)}
-    input[type="text"],input[type="password"]{background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:10px;padding:10px 14px;font-size:14px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;transition:border-color .2s}
-    input[type="file"]{background:var(--card);border:1px solid var(--border2);color:var(--light);border-radius:10px;padding:9px 14px;font-size:13px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;cursor:pointer}
-    select{background:var(--card);border:1px solid var(--border2);color:var(--white);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer}
-    input:focus{border-color:var(--gold)}input.lime-focus:focus{border-color:var(--lime)}input::placeholder{color:var(--muted)}
-    .btn-gold{background:var(--gold);color:#1a1400;border:none;border-radius:10px;padding:11px 22px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .18s;width:100%}
-    .btn-gold:hover{background:#f0d880}.btn-gold:active{transform:scale(.97)}.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none}
-    .btn-lime{background:var(--lime);color:#061208;border:none;border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
-    .btn-lime:hover{background:#9aeaa7}.btn-lime:active{transform:scale(.97)}.btn-lime:disabled{opacity:.4;cursor:not-allowed}
-    .btn-lime-xs{background:var(--lime);color:#061208;border:none;border-radius:6px;padding:4px 10px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap}
-    .btn-lime-xs:hover{background:#9aeaa7}.btn-lime-xs:active{transform:scale(.95)}.btn-lime-xs:disabled{opacity:.35;cursor:not-allowed}
-    .btn-rose-xs{background:var(--rose-dim);color:var(--rose);border:1px solid var(--rose-ring);border-radius:6px;padding:4px 10px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap}
-    .btn-rose-xs:hover{background:rgba(240,112,112,.25)}.btn-rose-xs:active{transform:scale(.95)}
-    .btn-sky{background:var(--sky);color:#040e1a;border:none;border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
-    .btn-sky:hover{background:#88c4f4}.btn-sky:active{transform:scale(.97)}.btn-sky:disabled{opacity:.4;cursor:not-allowed}
-    .btn-sky-o{background:var(--sky-dim);color:var(--sky);border:1px solid var(--sky-ring);border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
-    .btn-sky-o:hover{background:rgba(96,168,240,.2)}.btn-sky-o:active{transform:scale(.97)}
-    .btn-ghost{background:var(--card);color:var(--soft);border:1px solid var(--border2);border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:500;font-size:13px;cursor:pointer;transition:all .18s;width:100%}
-    .btn-ghost:hover{background:var(--border);color:var(--light)}.btn-ghost:active{transform:scale(.97)}
-    .btn-danger{background:var(--rose-dim);color:var(--rose);border:1px solid var(--rose-ring);border-radius:10px;padding:9px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
-    .btn-danger:hover{background:rgba(240,112,112,.25)}.btn-danger:active{transform:scale(.97)}.btn-danger:disabled{opacity:.4;cursor:not-allowed}
-    .page{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 90px}
-    .mode-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:rgba(13,17,25,.9);backdrop-filter:blur(14px);border:1px solid var(--border2);border-radius:100px;padding:5px;z-index:200}
-    .mode-pill{padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .22s;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;white-space:nowrap}
-    .mode-pill.active-guest{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-ring)}
-    .mode-pill.active-staff{background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-ring)}
-    .sub-tabs{display:flex;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:4px;gap:3px;overflow-x:auto}
-    .sub-tab{flex:1;padding:8px 8px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap;min-width:56px}
-    .sub-tab.t-scan{background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-ring)}
-    .sub-tab.t-status{background:var(--sky-dim);color:var(--sky);border:1px solid var(--sky-ring)}
-    .sub-tab.t-qr{background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)}
-    .sub-tab.t-import{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-ring)}
+    .laser{position:absolute;left:13%;right:13%;height:1.5px;background:linear-gradient(90deg,transparent,var(--primary),transparent);box-shadow:0 0 6px rgba(59,130,246,.5);animation:laser 2.4s ease-in-out infinite}
+    .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 50%,transparent 35%,rgba(0,0,0,.5) 100%)}
+    /* Inputs */
+    input[type="text"],input[type="password"],input[type="number"]{background:#fff;border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 13px;font-size:14px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;transition:border-color .2s;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+    input[type="file"]{background:#fff;border:1px solid var(--border2);color:var(--soft);border-radius:8px;padding:8px 13px;font-size:13px;font-family:'Noto Sans TC',sans-serif;width:100%;outline:none;cursor:pointer}
+    input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim)}
+    input::placeholder{color:var(--muted)}
+    select{background:#fff;border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 13px;font-size:13px;font-family:'Noto Sans TC',sans-serif;outline:none;width:100%;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+    select:focus{border-color:var(--primary)}
+    /* Buttons */
+    .btn{border:none;border-radius:8px;padding:10px 18px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
+    .btn:active{transform:scale(.97)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#2563eb}
+    .btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#15803d}
+    .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#b91c1c}
+    .btn-outline{background:#fff;color:var(--text2);border:1px solid var(--border2);box-shadow:0 1px 2px rgba(0,0,0,.05)}.btn-outline:hover{background:var(--panel)}
+    .btn-ghost{background:transparent;color:var(--soft)}.btn-ghost:hover{background:var(--panel);color:var(--text)}
+    .btn-xs-green{background:var(--green);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap}
+    .btn-xs-green:hover{background:#15803d}.btn-xs-green:active{transform:scale(.95)}.btn-xs-green:disabled{opacity:.4;cursor:not-allowed}
+    .btn-xs-red{background:#fff;color:var(--red);border:1px solid var(--red-ring);border-radius:6px;padding:4px 10px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap}
+    .btn-xs-red:hover{background:var(--red-dim)}.btn-xs-red:active{transform:scale(.95)}
+    /* Layout */
+    .page{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 80px}
+    .card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+    .mode-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:#fff;border:1px solid var(--border2);border-radius:100px;padding:4px;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+    .mode-pill{padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;white-space:nowrap}
+    .mode-pill.ag{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-ring)}
+    .mode-pill.as{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-ring)}
+    /* Sub tabs */
+    .sub-tabs{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px;overflow-x:auto}
+    .sub-tab{flex:1;padding:8px 8px;border-radius:7px;border:none;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap;min-width:56px}
+    .sub-tab.t-scan{background:#fff;color:var(--green);border:1px solid var(--green-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .sub-tab.t-status{background:#fff;color:var(--primary);border:1px solid var(--primary-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .sub-tab.t-qr{background:#fff;color:var(--violet);border:1px solid var(--violet-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .sub-tab.t-import{background:#fff;color:var(--amber);border:1px solid var(--amber-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    /* Dashboard stats */
     .dash-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-    .stat-card{border-radius:14px;padding:16px 12px;text-align:center}
-    .stat-card.total{background:rgba(96,168,240,.12);border:1px solid var(--sky-ring)}
-    .stat-card.checked{background:rgba(125,219,140,.12);border:1px solid var(--lime-ring)}
-    .stat-card.pending{background:rgba(240,112,112,.12);border:1px solid var(--rose-ring)}
-    .stat-num{font-size:32px;font-weight:900;line-height:1}
-    .stat-num.blue{color:var(--sky)}.stat-num.green{color:var(--lime)}.stat-num.red{color:var(--rose)}
-    .stat-label{font-size:11px;color:var(--soft);margin-top:4px}
-    .progress-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;height:28px}
-    .progress-bar{height:100%;background:linear-gradient(90deg,var(--lime),#4ac96e);border-radius:10px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;min-width:40px}
-    .progress-label{font-size:12px;font-weight:700;color:#061208}
-    .guest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px}
-    .g-card{border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:5px}
-    .g-card.done{background:rgba(125,219,140,.08);border:1px solid var(--lime-ring)}
-    .g-card.todo{background:var(--card);border:1px solid var(--border2)}
-    .g-badge{font-size:9px;font-weight:700;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:100px;display:inline-flex;align-items:center;gap:3px}
-    .g-badge.done{background:rgba(125,219,140,.15);color:var(--lime);border:1px solid var(--lime-ring)}
-    .g-badge.todo{background:var(--border);color:var(--muted);border:1px solid var(--border2)}
-    .g-tag{font-size:9px;padding:1px 6px;border-radius:100px;background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)}
-    .filter-btn{padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;transition:all .18s;white-space:nowrap}
-    .filter-btn.active{background:var(--sky-dim);color:var(--sky);border-color:var(--sky-ring)}
-    .filter-btn.active-c{background:var(--lime-dim);color:var(--lime);border-color:var(--lime-ring)}
-    .filter-btn.active-p{background:var(--rose-dim);color:var(--rose);border-color:var(--rose-ring)}
+    .stat-card{background:#fff;border-radius:12px;padding:14px 12px;text-align:center;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .stat-num{font-size:30px;font-weight:900;line-height:1}
+    .stat-num.blue{color:var(--primary)}.stat-num.green{color:var(--green)}.stat-num.red{color:var(--red)}
+    .stat-label{font-size:11px;color:var(--muted);margin-top:4px}
+    .progress-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;height:26px}
+    .progress-bar{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:8px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;min-width:36px}
+    .progress-label{font-size:11px;font-weight:700;color:#fff}
+    /* Guest cards */
+    .guest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+    .g-card{background:#fff;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:4px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.05);transition:box-shadow .15s}
+    .g-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+    .g-card.done{border-color:var(--green-ring);background:#f0fdf4}
+    .g-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;display:inline-flex;align-items:center;gap:3px}
+    .g-badge.done{background:#dcfce7;color:var(--green)}
+    .g-badge.todo{background:var(--panel);color:var(--muted)}
+    .g-tag{font-size:9px;padding:1px 6px;border-radius:100px}
+    .g-tag.area{background:var(--violet-dim);color:var(--violet)}
+    .g-tag.table{background:var(--primary-dim);color:var(--primary);font-weight:700}
+    /* Filter */
+    .filter-btn{padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:#fff;color:var(--muted);font-family:'Noto Sans TC',sans-serif;transition:all .18s;white-space:nowrap}
+    .filter-btn.fa{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-ring)}
+    .filter-btn.fc{background:var(--green-dim);color:var(--green);border-color:var(--green-ring)}
+    .filter-btn.fp{background:var(--red-dim);color:var(--red);border-color:var(--red-ring)}
+    /* QR grid */
     .qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-    .qr-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative}
-    .qr-card.done{border-color:var(--lime-ring)}
-    .qr-done-badge{position:absolute;top:7px;right:7px;background:var(--lime);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#061208}
-    .qr-img-wrap{background:#fff;border-radius:8px;padding:5px;border:2px solid var(--gold);display:inline-flex}
-    .qr-img-wrap.done-b{border-color:var(--lime)}
+    .qr-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+    .qr-card.done{border-color:var(--green-ring);background:#f0fdf4}
+    .qr-done-badge{position:absolute;top:7px;right:7px;background:var(--green);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff}
+    .qr-img-wrap{background:#fff;border-radius:8px;padding:5px;border:2px solid #e5e7eb;display:inline-flex}
+    .qr-img-wrap.done-b{border-color:var(--green)}
     .qr-btn{width:100%;padding:5px 0;border-radius:6px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:10px;cursor:pointer;border:none;transition:all .18s;text-align:center}
     .qr-btn.dl{background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-ring)}
-    .qr-btn.cp{background:var(--sky-dim);color:var(--sky);border:1px solid var(--sky-ring)}
+    .qr-btn.cp{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-ring)}
+    /* Log table */
     .log-table{width:100%;border-collapse:collapse;font-size:12px}
-    .log-table th{background:var(--card);color:var(--soft);font-weight:500;padding:9px 10px;text-align:left;border-bottom:1px solid var(--border2);font-size:10px;white-space:nowrap}
-    .log-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--light);vertical-align:middle}
+    .log-table th{background:var(--panel);color:var(--soft);font-weight:600;padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);font-size:11px}
+    .log-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
     .log-table tr:last-child td{border-bottom:none}
-    .log-table tr:hover td{background:rgba(46,61,85,.3)}
-    .name-dropdown{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--panel);border:1px solid var(--border2);border-radius:12px;overflow:hidden;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-    .name-opt{padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;font-size:14px}
-    .name-opt:hover{background:var(--card)}
+    .log-table tr:hover td{background:var(--panel)}
+    /* Name dropdown */
+    .name-dropdown{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--border2);border-radius:10px;overflow:hidden;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+    .name-opt{padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;font-size:14px}
+    .name-opt:hover{background:var(--panel)}
     .name-opt:not(:last-child){border-bottom:1px solid var(--border)}
+    /* TABLE MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
+    .modal-box{background:#fff;border-radius:14px;width:100%;max-width:680px;max-height:90dvh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border)}
+    .modal-body{flex:1;overflow-y:auto;padding:16px 20px}
+    .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:space-between}
+    .table-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .table-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--panel);border-radius:8px}
+    .table-row .name{flex:1;font-size:13px;font-weight:600;color:var(--text)}
+    .table-row input[type="number"]{width:64px;text-align:center;padding:6px 8px;font-size:14px;font-weight:700}
+    .table-num-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:10px;font-weight:700}
+    /* Scan result */
+    .scan-result-box{border-radius:14px;padding:18px}
+    .scan-result-box.success{background:#f0fdf4;border:1px solid var(--green-ring)}
+    .scan-result-box.warn{background:#fffbeb;border:1px solid var(--amber-ring)}
+    .scan-result-box.error{background:#fef2f2;border:1px solid var(--red-ring)}
   </style>
 </head>
 <body>
 
 <!-- ══════════ GUEST PAGE ══════════ -->
-<div id="page-guest" class="page ambient-guest" style="display:none">
-  <div class="w-full max-w-sm flex flex-col gap-6">
-    <header class="text-center pt-2 space-y-3">
-      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:100px;background:var(--gold-dim);border:1px solid var(--gold-ring)">
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.12em">貴賓查詢</span>
+<div id="page-guest" class="page" style="display:none;background:linear-gradient(135deg,#fefce8 0%,#fef9c3 50%,#fef3c7 100%)">
+  <div class="w-full max-w-sm flex flex-col gap-5">
+    <header class="text-center pt-2 space-y-2">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:100px;background:var(--gold-dim);border:1px solid var(--gold-ring)">
+        <span style="font-size:11px;font-weight:700;color:var(--gold)">貴賓查詢</span>
       </div>
-      <h1 style="font-size:28px;font-weight:900;color:var(--white);line-height:1.2;letter-spacing:-.02em">查詢您的<br><span style="color:var(--gold)">入場 QR Code</span></h1>
-      <p style="font-size:13px;color:var(--soft);line-height:1.7">輸入姓名即可取得您的專屬邀請碼</p>
+      <h1 style="font-size:26px;font-weight:900;color:#1c1917;line-height:1.2">查詢您的<br><span style="color:var(--gold)">入場 QR Code</span></h1>
+      <p style="font-size:13px;color:#78716c;line-height:1.6">輸入姓名即可取得您的專屬邀請碼</p>
     </header>
     <div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>
-    <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">
       <div style="position:relative" id="guest-wrap">
-        <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋，例：義" oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off"/>
-        <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none">🔍</span>
+        <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋" oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off" style="padding-right:40px"/>
+        <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none">🔍</span>
         <div id="name-dd" class="name-dropdown" style="display:none"></div>
       </div>
-      <button class="btn-gold" id="guest-btn" onclick="searchByName()">查詢 QR Code</button>
+      <button class="btn btn-primary" id="guest-btn" onclick="searchByName()" style="width:100%">查詢 QR Code</button>
     </div>
     <div id="guest-result" style="display:none"></div>
-    <p style="text-align:center;font-size:11px;color:var(--muted)">若查無資料，請洽現場工作人員</p>
+    <p style="text-align:center;font-size:11px;color:#a8a29e">若查無資料，請洽現場工作人員</p>
   </div>
 </div>
 
 <!-- ══════════ STAFF PAGE ══════════ -->
-<div id="page-staff" class="page ambient-staff" style="display:none">
+<div id="page-staff" class="page" style="display:none">
   <div class="w-full max-w-2xl flex flex-col gap-4">
 
     <!-- Gate -->
-    <div id="staff-gate" style="min-height:70dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px">
-      <div style="text-align:center">
-        <div style="font-size:44px;margin-bottom:10px">🔐</div>
-        <h2 style="font-size:22px;font-weight:900;color:var(--white)">工作人員入口</h2>
-        <p style="font-size:13px;color:var(--soft);margin-top:6px">請輸入工作人員密碼</p>
-      </div>
-      <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px">
-        <input type="password" id="staff-pw" class="lime-focus" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPW()"/>
-        <button class="btn-lime" onclick="checkPW()" style="width:100%;padding:12px">進入工作人員系統</button>
-        <p id="pw-err" style="display:none;text-align:center;font-size:12px;color:var(--rose)">密碼錯誤，請再試一次</p>
+    <div id="staff-gate" style="min-height:70dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">
+      <div class="card" style="width:100%;max-width:340px;padding:32px 24px;text-align:center">
+        <div style="font-size:40px;margin-bottom:12px">🔐</div>
+        <h2 style="font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px">工作人員入口</h2>
+        <p style="font-size:13px;color:var(--soft);margin-bottom:20px">請輸入工作人員密碼</p>
+        <input type="password" id="staff-pw" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPW()" style="margin-bottom:10px"/>
+        <button class="btn btn-green" onclick="checkPW()" style="width:100%">進入工作人員系統</button>
+        <p id="pw-err" style="display:none;margin-top:8px;font-size:12px;color:var(--red)">密碼錯誤，請再試一次</p>
       </div>
     </div>
 
     <!-- Inner -->
     <div id="staff-inner" style="display:none;flex-direction:column;gap:14px">
+
       <!-- Dashboard -->
       <div class="dash-stats" id="dash-stats" style="display:none">
-        <div class="stat-card total"><div class="stat-num blue" id="d-total">—</div><div class="stat-label">總人數</div></div>
-        <div class="stat-card checked"><div class="stat-num green" id="d-checked">—</div><div class="stat-label">✓ 已報到</div></div>
-        <div class="stat-card pending"><div class="stat-num red" id="d-pending">—</div><div class="stat-label">✗ 未報到</div></div>
+        <div class="stat-card"><div class="stat-num blue" id="d-total">—</div><div class="stat-label">總人數</div></div>
+        <div class="stat-card" style="border-color:var(--green-ring)"><div class="stat-num green" id="d-checked">—</div><div class="stat-label">✓ 已報到</div></div>
+        <div class="stat-card" style="border-color:var(--red-ring)"><div class="stat-num red" id="d-pending">—</div><div class="stat-label">✗ 未報到</div></div>
       </div>
       <div id="dash-progress" style="display:none">
-        <p style="font-size:11px;color:var(--muted);margin-bottom:6px">📊 報到進度</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <p style="font-size:11px;color:var(--soft);font-weight:600">📊 報到進度</p>
+          <span id="prog-pct" style="font-size:11px;color:var(--soft)">0%</span>
+        </div>
         <div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"><span class="progress-label" id="prog-label">0%</span></div></div>
       </div>
 
@@ -183,8 +208,8 @@
 
       <!-- ── 掃碼報到 ── -->
       <div id="panel-scan" style="display:none;flex-direction:column;gap:12px">
-        <div style="border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--panel)">
-          <div style="position:relative;width:100%;aspect-ratio:1;max-height:340px">
+        <div class="card" style="overflow:hidden">
+          <div style="position:relative;width:100%;aspect-ratio:1;max-height:320px;background:#000">
             <div id="qr-reader" style="position:absolute;inset:0"></div>
             <div class="vignette"></div>
             <div id="brackets" style="display:none">
@@ -192,102 +217,128 @@
               <div class="brk brk-bl"></div><div class="brk brk-br"></div>
               <div class="laser"></div>
             </div>
-            <div id="staff-idle" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--card)">
-              <div style="font-size:48px;opacity:.25">📷</div>
+            <div id="staff-idle" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--panel)">
+              <div style="font-size:44px;opacity:.3">📷</div>
               <p style="font-size:13px;color:var(--muted)">相機尚未啟動</p>
             </div>
-            <div id="staff-loading" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;background:rgba(8,11,16,.82);backdrop-filter:blur(4px)">
+            <div id="staff-loading" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;background:rgba(255,255,255,.85)">
               <div class="spinner"></div><p style="font-size:13px;color:var(--soft)">驗證報到資訊…</p>
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border)">
             <div style="flex:1;min-width:0">
-              <p id="s-title" style="font-size:13px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">尚未啟動</p>
+              <p id="s-title" style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">尚未啟動</p>
               <p id="s-sub" style="font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">點擊右側按鈕開始掃描</p>
             </div>
-            <button class="btn-lime" id="toggle-btn" onclick="staffToggle()">開始掃描</button>
+            <button class="btn btn-green" id="toggle-btn" onclick="staffToggle()">開始掃描</button>
           </div>
         </div>
         <div id="staff-result" style="display:none"></div>
-        <div id="cam-err" style="display:none;border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:16px">
-          <p style="font-weight:700;font-size:13px;color:var(--rose)">⚠ 無法存取相機</p>
-          <p style="font-size:11px;color:var(--soft);margin-top:5px;line-height:1.6">請確認已授予相機權限後重新整理。</p>
-          <button onclick="location.reload()" class="btn-ghost" style="margin-top:10px;width:auto;padding:7px 14px;font-size:11px">重新整理</button>
+        <div id="cam-err" style="display:none;border-radius:10px;border:1px solid var(--red-ring);background:var(--red-dim);padding:14px">
+          <p style="font-weight:700;font-size:13px;color:var(--red)">⚠ 無法存取相機</p>
+          <p style="font-size:11px;color:var(--soft);margin-top:4px;line-height:1.6">請確認已授予相機權限後重新整理。</p>
+          <button onclick="location.reload()" class="btn btn-outline" style="margin-top:8px;width:auto;padding:7px 14px;font-size:11px">重新整理</button>
         </div>
       </div>
 
       <!-- ── 名單狀況 ── -->
       <div id="panel-status" style="display:none;flex-direction:column;gap:10px">
-        <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
           <input type="text" id="status-search" placeholder="🔍 搜尋姓名或 ID…" oninput="renderStatusGrid()" style="font-size:13px"/>
-          <!-- 下拉篩選 -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:10px;color:var(--muted);font-weight:700">區別</label>
-              <select id="filter-area" onchange="renderStatusGrid()">
-                <option value="">全部區別</option>
-              </select>
+            <div>
+              <label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px">區別</label>
+              <select id="filter-area" onchange="renderStatusGrid()"><option value="">全部區別</option></select>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:10px;color:var(--muted);font-weight:700">介紹人</label>
-              <select id="filter-referrer" onchange="renderStatusGrid()">
-                <option value="">全部介紹人</option>
-              </select>
+            <div>
+              <label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px">介紹人</label>
+              <select id="filter-referrer" onchange="renderStatusGrid()"><option value="">全部介紹人</option></select>
             </div>
           </div>
-          <!-- 報到狀態 + 重載 -->
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <button class="filter-btn active" id="fb-all"     onclick="setFilter('all')">全部</button>
-            <button class="filter-btn"        id="fb-checked" onclick="setFilter('checked')">已報到</button>
-            <button class="filter-btn"        id="fb-pending" onclick="setFilter('pending')">未報到</button>
-            <button class="btn-sky-o" onclick="loadAll()" style="padding:6px 12px;font-size:11px;margin-left:auto">🔄 重新載入</button>
+            <button class="filter-btn fa" id="fb-all"     onclick="setFilter('all')">全部</button>
+            <button class="filter-btn"    id="fb-checked" onclick="setFilter('checked')">已報到</button>
+            <button class="filter-btn"    id="fb-pending" onclick="setFilter('pending')">未報到</button>
+            <div style="margin-left:auto;display:flex;gap:6px">
+              <button class="btn btn-outline" onclick="openTableModal()" style="padding:6px 12px;font-size:11px;display:flex;align-items:center;gap:4px"><span>🪑</span> 設定桌次</button>
+              <button class="btn btn-outline" onclick="loadAll()" style="padding:6px 12px;font-size:11px">🔄 重新載入</button>
+            </div>
           </div>
-          <div id="filter-stats" style="display:none;font-size:11px;color:var(--muted)"></div>
+          <div id="filter-stats" style="display:none;font-size:11px;color:var(--soft)"></div>
         </div>
         <div id="status-grid" class="guest-grid"></div>
         <div id="status-msg" style="display:none"></div>
       </div>
 
       <!-- ── QR 碼管理 ── -->
-      <div id="panel-qr" style="display:none;flex-direction:column;gap:12px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <button class="btn-lime" onclick="printAllQR()" style="font-size:12px;padding:9px 14px">🖨 列印全部QR碼</button>
-          <button class="btn-sky-o" onclick="downloadAllQR()" style="font-size:12px;padding:9px 14px">📥 下載全部</button>
+      <div id="panel-qr" style="display:none;flex-direction:column;gap:10px">
+        <div class="card" style="padding:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-green" onclick="printAllQR()" style="font-size:12px;padding:8px 14px">🖨 列印全部QR碼</button>
+          <button class="btn btn-outline" onclick="downloadAllQR()" style="font-size:12px;padding:8px 14px">📥 下載全部</button>
+          <input type="text" id="qr-search" placeholder="🔍 搜尋…" oninput="renderQRGrid()" style="flex:1;min-width:120px;font-size:13px"/>
         </div>
-        <input type="text" id="qr-search" placeholder="🔍 搜尋姓名…" oninput="renderQRGrid()" style="font-size:13px"/>
         <div id="qr-grid" class="qr-grid"></div>
         <div id="qr-msg" style="display:none"></div>
       </div>
 
       <!-- ── 匯入管理 ── -->
-      <div id="panel-import" style="display:none;flex-direction:column;gap:12px">
-        <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
-          <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px">📂 匯入貴賓名單</p>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援 Excel (.xlsx) 和 CSV 檔，欄位：ID/姓名/所屬佛堂/備註/區別/介紹人</p>
+      <div id="panel-import" style="display:none;flex-direction:column;gap:10px">
+        <div class="card" style="padding:16px">
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">📂 匯入貴賓名單</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援 Excel (.xlsx) 和 CSV，欄位：ID/姓名/所屬佛堂/備註/區別/介紹人/桌次</p>
           <div style="display:flex;flex-direction:column;gap:8px">
             <input type="file" id="import-file" accept=".csv,.xlsx,.xls"/>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <button class="btn-sky" onclick="previewImport()" style="font-size:13px;padding:10px">預覽內容</button>
-              <button class="btn-danger" onclick="confirmImport()" id="import-btn" style="display:none;font-size:13px;padding:10px">確認匯入</button>
+              <button class="btn btn-primary" onclick="previewImport()" style="font-size:13px">預覽內容</button>
+              <button class="btn btn-red" onclick="confirmImport()" id="import-btn" style="display:none;font-size:13px">確認匯入</button>
             </div>
           </div>
           <div id="import-preview" style="display:none;margin-top:10px"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <button class="btn-sky-o" onclick="exportGuestCSV()" style="font-size:13px;padding:10px">⬇ 匯出貴賓 Excel</button>
-          <button class="btn-sky-o" onclick="exportLogCSV()" style="font-size:13px;padding:10px">⬇ 匯出報到 Excel</button>
+          <button class="btn btn-outline" onclick="exportGuestExcel()" style="font-size:13px">⬇ 匯出貴賓 Excel</button>
+          <button class="btn btn-outline" onclick="exportLogExcel()" style="font-size:13px">⬇ 匯出報到記錄</button>
         </div>
-        <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:14px">
-          <p style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:8px">✅ 報到記錄</p>
+        <div class="card" style="padding:14px">
+          <p style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">✅ 報到記錄</p>
           <input type="text" id="log-search" placeholder="🔍 搜尋…" oninput="filterLogTable()" style="font-size:13px;margin-bottom:10px"/>
-          <div id="log-wrap" style="display:none;border-radius:10px;overflow:hidden;border:1px solid var(--border);overflow-x:auto">
+          <div id="log-wrap" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--border);overflow-x:auto">
             <table class="log-table">
-              <thead><tr><th>ID</th><th>姓名</th><th>報到時間</th><th>操作</th></tr></thead>
+              <thead><tr><th>ID</th><th>姓名</th><th>桌次</th><th>報到時間</th><th>操作</th></tr></thead>
               <tbody id="log-tbody"></tbody>
             </table>
           </div>
         </div>
         <div id="import-msg" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TABLE MODAL ══════════ -->
+<div id="table-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeTableModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2 style="font-size:16px;font-weight:900;color:var(--text)">🪑 設定桌次</h2>
+        <p style="font-size:11px;color:var(--muted);margin-top:2px">點擊每人欄位直接輸入桌次編號，亦可在 Excel 中加入「桌次」欄位一次匯入。</p>
+      </div>
+      <button class="btn btn-ghost" onclick="closeTableModal()" style="padding:6px 12px;font-size:12px">✕ 關閉</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--primary-dim);border:1px solid var(--primary-ring);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:12px;font-weight:700;color:var(--primary)">✏️ 自動分配：每桌</span>
+        <input type="number" id="auto-per-table" value="10" min="1" max="100" style="width:60px;padding:5px 8px;font-size:14px;font-weight:700;text-align:center"/>
+        <span style="font-size:12px;font-weight:700;color:var(--primary)">人</span>
+        <button class="btn btn-primary" onclick="autoAssignTables()" style="padding:6px 14px;font-size:12px">自動填入</button>
+      </div>
+      <div class="table-grid" id="table-grid"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-red" onclick="clearAllTables()" style="font-size:12px;padding:8px 14px">🗑 清除全部桌次</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" onclick="closeTableModal()" style="font-size:12px;padding:8px 14px">取消</button>
+        <button class="btn btn-green" onclick="saveTableData()" style="font-size:12px;padding:8px 14px">✓ 儲存</button>
       </div>
     </div>
   </div>
@@ -300,701 +351,642 @@
 
 <script>
 // ★ 設定
-const FB_PROJECT     = 'andong-maitreya-moutain';
-const FB_API_KEY     = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
-const CHECKIN_BASE   = 'https://piratecaptain9.github.io/SeediqBale';
-const STAFF_PASSWORD = '0531';
-const FS = 'https://firestore.googleapis.com/v1/projects/' + FB_PROJECT + '/databases/(default)/documents';
+var FB_PROJECT     = 'andong-maitreya-moutain';
+var FB_API_KEY     = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
+var CHECKIN_BASE   = 'https://piratecaptain9.github.io/SeediqBale';
+var STAFF_PASSWORD = '0531';
+var FS = 'https://firestore.googleapis.com/v1/projects/' + FB_PROJECT + '/databases/(default)/documents';
 
 // ══ Firestore API ══════════════════════
 async function fsGet(col, id) {
-  const r = await fetch(FS + '/' + col + '/' + encodeURIComponent(id) + '?key=' + FB_API_KEY);
-  if (r.status === 404) return null;
-  const d = await r.json();
+  var r = await fetch(FS+'/'+col+'/'+encodeURIComponent(id)+'?key='+FB_API_KEY);
+  if (r.status===404) return null;
+  var d = await r.json();
   if (d.error) throw new Error(d.error.message);
   return parseDoc(d);
 }
-
 async function fsSet(col, id, fields) {
-  const r = await fetch(FS + '/' + col + '/' + encodeURIComponent(id) + '?key=' + FB_API_KEY, {
-    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: toFsFields(fields) })
+  var r = await fetch(FS+'/'+col+'/'+encodeURIComponent(id)+'?key='+FB_API_KEY,{
+    method:'PATCH',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({fields:toFsFields(fields)})
   });
-  const d = await r.json();
+  var d = await r.json();
   if (d.error) throw new Error(d.error.message);
   return d;
 }
-
 async function fsDel(col, id) {
-  const r = await fetch(FS + '/' + col + '/' + encodeURIComponent(id) + '?key=' + FB_API_KEY, { method: 'DELETE' });
-  if (!r.ok && r.status !== 404) throw new Error('DELETE failed: ' + r.status);
+  var r = await fetch(FS+'/'+col+'/'+encodeURIComponent(id)+'?key='+FB_API_KEY,{method:'DELETE'});
+  if (!r.ok && r.status!==404) throw new Error('DELETE failed: '+r.status);
 }
-
 async function fsList(col) {
-  var docs = [], token = null;
+  var docs=[], token=null;
   do {
-    var url = FS + '/' + col + '?key=' + FB_API_KEY + '&pageSize=300' + (token ? '&pageToken=' + token : '');
-    var r = await fetch(url);
-    var d = await r.json();
+    var url=FS+'/'+col+'?key='+FB_API_KEY+'&pageSize=300'+(token?'&pageToken='+token:'');
+    var r=await fetch(url); var d=await r.json();
     if (d.error) throw new Error(d.error.message);
-    if (d.documents) docs = docs.concat(d.documents.map(parseDoc));
-    token = d.nextPageToken || null;
-  } while (token);
+    if (d.documents) docs=docs.concat(d.documents.map(parseDoc));
+    token=d.nextPageToken||null;
+  } while(token);
   return docs;
 }
-
 async function fsQueryByName(name) {
-  var r = await fetch(FS + ':runQuery?key=' + FB_API_KEY, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'guests' }], where: { fieldFilter: { field: { fieldPath: 'name' }, op: 'EQUAL', value: { stringValue: name } } } } })
+  var r=await fetch(FS+':runQuery?key='+FB_API_KEY,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({structuredQuery:{from:[{collectionId:'guests'}],where:{fieldFilter:{field:{fieldPath:'name'},op:'EQUAL',value:{stringValue:name}}}}})
   });
-  var res = await r.json();
+  var res=await r.json();
   if (!Array.isArray(res)) return [];
-  return res.filter(function(x) { return x.document; }).map(function(x) { return parseDoc(x.document); });
+  return res.filter(function(x){return x.document;}).map(function(x){return parseDoc(x.document);});
 }
-
 function parseDoc(doc) {
-  var id = doc.name.split('/').pop();
-  var f = {};
-  var fields = doc.fields || {};
-  Object.keys(fields).forEach(function(k) {
-    var v = fields[k];
-    f[k] = v.stringValue !== undefined ? v.stringValue :
-           v.integerValue !== undefined ? v.integerValue :
-           v.doubleValue !== undefined ? v.doubleValue :
-           v.booleanValue !== undefined ? v.booleanValue : '';
+  var id=doc.name.split('/').pop(), f={};
+  var fields=doc.fields||{};
+  Object.keys(fields).forEach(function(k){
+    var v=fields[k];
+    f[k]=v.stringValue!==undefined?v.stringValue:v.integerValue!==undefined?v.integerValue:v.doubleValue!==undefined?v.doubleValue:v.booleanValue!==undefined?v.booleanValue:'';
   });
-  f.id = id;
-  return f;
+  f.id=id; return f;
 }
-
 function toFsFields(obj) {
-  var f = {};
-  Object.keys(obj).forEach(function(k) {
-    var v = obj[k];
-    if (typeof v === 'number') f[k] = Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
-    else if (typeof v === 'boolean') f[k] = { booleanValue: v };
-    else if (v == null) f[k] = { nullValue: null };
-    else f[k] = { stringValue: String(v) };
+  var f={};
+  Object.keys(obj).forEach(function(k){
+    var v=obj[k];
+    if (typeof v==='number') f[k]=Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v};
+    else if (typeof v==='boolean') f[k]={booleanValue:v};
+    else if (v==null) f[k]={nullValue:null};
+    else f[k]={stringValue:String(v)};
   });
   return f;
 }
 
-// ══ Routing ═══════════════════════════
-function getMode() { return new URLSearchParams(location.search).get('mode') || 'guest'; }
-function setMode(m) {
-  var u = new URL(location.href); u.searchParams.set('mode', m);
-  history.pushState({}, '', u); renderMode(m);
+// ══ Routing ══════════════════════════
+function getMode(){return new URLSearchParams(location.search).get('mode')||'guest';}
+function setMode(m){var u=new URL(location.href);u.searchParams.set('mode',m);history.pushState({},'',u);renderMode(m);}
+function renderMode(m){
+  document.getElementById('page-guest').style.display=m==='guest'?'flex':'none';
+  document.getElementById('page-staff').style.display=m==='staff'?'flex':'none';
+  document.getElementById('nav-guest').className='mode-pill'+(m==='guest'?' ag':'');
+  document.getElementById('nav-staff').className='mode-pill'+(m==='staff'?' as':'');
+  if(m!=='staff') stopScanner();
+  if(m==='guest') closeDd();
 }
-function renderMode(m) {
-  document.getElementById('page-guest').style.display = m === 'guest' ? 'flex' : 'none';
-  document.getElementById('page-staff').style.display = m === 'staff' ? 'flex' : 'none';
-  document.getElementById('nav-guest').className = 'mode-pill' + (m === 'guest' ? ' active-guest' : '');
-  document.getElementById('nav-staff').className = 'mode-pill' + (m === 'staff' ? ' active-staff' : '');
-  if (m !== 'staff') stopScanner();
-  if (m === 'guest') { closeDd(); preloadGuests(); }
-}
-// ══ Guest search ═══════════════════════
-var guestCache = [];
 
-window.addEventListener('popstate', function() { renderMode(getMode()); });
+// ══ Guest search (on-demand) ══════════
+var guestCache=[], searchTimer=null;
+
+window.addEventListener('popstate',function(){renderMode(getMode());});
 renderMode(getMode());
 
-async function preloadGuests() {
-  if (guestCache.length) return;
-  try {
-    var docs = await fsList('guests');
-    guestCache = docs.sort(function(a, b) { return (a.id || '').localeCompare(b.id || ''); });
-  } catch(e) {}
+function onGuestType(){
+  var val=document.getElementById('guest-input').value.trim();
+  document.getElementById('guest-result').style.display='none';
+  if(!val){closeDd();return;}
+  if(guestCache.length){
+    var m=guestCache.filter(function(g){return g.name&&g.name.includes(val);});
+    if(m.length) showDd(m); else closeDd(); return;
+  }
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(function(){queryKw(val);},400);
 }
-
-function onGuestType() {
-  var val = document.getElementById('guest-input').value.trim();
-  document.getElementById('guest-result').style.display = 'none';
-  if (!val) { closeDd(); return; }
-  var matched = guestCache.filter(function(g) { return g.name && g.name.includes(val); });
-  if (matched.length) showDd(matched);
-  else closeDd();
+async function queryKw(val){
+  var docs=await fsQueryByName(val);
+  if(docs.length){showDd(docs);return;}
+  var dd=document.getElementById('name-dd');
+  dd.innerHTML='<div style="padding:12px 14px;font-size:13px;color:var(--muted)">請輸入完整姓名後按「查詢」</div>';
+  dd.style.display='block';
 }
-
-function showDd(guests) {
-  var dd = document.getElementById('name-dd');
-  var html = '';
-  var show = guests.slice(0, 8);
-  show.forEach(function(g, i) {
-    var key = '_gdd' + i;
-    window[key] = g;
-    html += '<div class="name-opt" onclick="selectGuest(window[\'' + key + '\'])">' +
-      '<span style="font-weight:700;color:var(--white)">' + g.name + '</span>' +
-      '<span style="font-size:11px;color:var(--muted)">' + g.id + (g.temple ? '・' + g.temple : '') + '</span>' +
-      '</div>';
+function showDd(guests){
+  var dd=document.getElementById('name-dd'),html='';
+  guests.slice(0,8).forEach(function(g,i){
+    var key='_gdd'+i; window[key]=g;
+    html+='<div class="name-opt" onclick="selectG(window[\''+key+'\'])">'+
+      '<span style="font-weight:700;color:var(--text)">'+g.name+'</span>'+
+      '<span style="font-size:11px;color:var(--muted)">'+g.id+(g.temple?'・'+g.temple:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
   });
-  if (guests.length > 8) html += '<div style="padding:8px 16px;font-size:11px;color:var(--muted);text-align:center">…還有 ' + (guests.length - 8) + ' 位符合</div>';
-  dd.innerHTML = html;
-  dd.style.display = 'block';
+  if(guests.length>8) html+='<div style="padding:8px 14px;font-size:11px;color:var(--muted);text-align:center">…還有'+(guests.length-8)+'位符合</div>';
+  dd.innerHTML=html; dd.style.display='block';
 }
+function closeDd(){document.getElementById('name-dd').style.display='none';}
+function selectG(g){document.getElementById('guest-input').value=g.name;closeDd();showQR(g);}
+function onGuestKey(e){if(e.key==='Enter'){closeDd();searchByName();}if(e.key==='Escape')closeDd();}
+document.addEventListener('click',function(e){var w=document.getElementById('guest-wrap');if(w&&!w.contains(e.target))closeDd();});
 
-function closeDd() { document.getElementById('name-dd').style.display = 'none'; }
-
-function selectGuest(g) {
-  document.getElementById('guest-input').value = g.name;
-  closeDd(); showQR(g);
-}
-
-function onGuestKey(e) {
-  if (e.key === 'Enter') { closeDd(); searchByName(); }
-  if (e.key === 'Escape') closeDd();
-}
-
-document.addEventListener('click', function(e) {
-  var wrap = document.getElementById('guest-wrap');
-  if (wrap && !wrap.contains(e.target)) closeDd();
-});
-
-async function searchByName() {
-  var name = document.getElementById('guest-input').value.trim(); if (!name) return;
-  var btn = document.getElementById('guest-btn'); btn.disabled = true; btn.textContent = '查詢中…';
-  document.getElementById('guest-result').style.display = 'none';
-  try {
-    var matches = guestCache.filter(function(g) { return g.name === name; });
-    if (!matches.length) {
-      var docs = await fsQueryByName(name);
-      matches = docs;
-    }
-    if (!matches.length) guestErr('查無此姓名', '請確認姓名正確，或洽現場工作人員');
-    else if (matches.length === 1) showQR(matches[0]);
+async function searchByName(){
+  var name=document.getElementById('guest-input').value.trim();if(!name)return;
+  var btn=document.getElementById('guest-btn');btn.disabled=true;btn.textContent='查詢中…';
+  document.getElementById('guest-result').style.display='none';closeDd();
+  try{
+    var matches=guestCache.filter(function(g){return g.name===name;});
+    if(!matches.length){var docs=await fsQueryByName(name);matches=docs;}
+    if(!matches.length) guestErr('查無此姓名','請確認姓名正確，或洽現場工作人員');
+    else if(matches.length===1) showQR(matches[0]);
     else showGuestPick(matches);
-  } catch(e) { guestErr('連線失敗', '請確認網路後重試'); }
-  btn.disabled = false; btn.textContent = '查詢 QR Code';
+  }catch(e){guestErr('連線失敗','請確認網路後重試');}
+  btn.disabled=false;btn.textContent='查詢 QR Code';
 }
-
-function guestErr(t, s) {
-  var el = document.getElementById('guest-result');
-  el.innerHTML = '<div style="border-radius:14px;border:1px solid var(--rose-ring);background:var(--rose-dim);padding:18px;text-align:center"><p style="font-weight:700;font-size:14px;color:var(--rose)">' + t + '</p><p style="font-size:12px;color:var(--soft);margin-top:5px">' + s + '</p></div>';
+function guestErr(t,s){
+  var el=document.getElementById('guest-result');
+  el.innerHTML='<div style="border-radius:10px;border:1px solid var(--red-ring);background:var(--red-dim);padding:16px;text-align:center">'+
+    '<p style="font-weight:700;font-size:14px;color:var(--red)">'+t+'</p>'+
+    '<p style="font-size:12px;color:var(--soft);margin-top:4px">'+s+'</p></div>';
   animShow(el);
 }
-
-function showQR(g) {
-  var qr = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data=' + encodeURIComponent(CHECKIN_BASE + '?id=' + g.id);
-  var el = document.getElementById('guest-result');
-  el.innerHTML = '<div style="border-radius:18px;border:1px solid var(--gold-ring);background:var(--panel);overflow:hidden">' +
-    '<div style="padding:24px 16px 18px;text-align:center">' +
-    '<p style="font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:5px">您的專屬入場碼</p>' +
-    '<p style="font-size:19px;font-weight:900;color:var(--gold);margin-bottom:18px">' + g.name + ' 先生／小姐</p>' +
-    '<div class="shimmer" style="display:inline-block;border-radius:14px;overflow:hidden;border:3px solid var(--gold);padding:7px;background:#fff">' +
-    '<img src="' + qr + '" width="220" height="220" style="display:block;border-radius:7px" loading="lazy"/></div>' +
-    '<div style="margin-top:14px;background:var(--card);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)">' +
-    '<span style="font-size:11px;color:var(--muted)">邀請 ID</span>' +
-    '<span style="font-size:12px;font-weight:500;color:var(--light)">' + g.id + '</span></div></div>' +
-    '<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>' +
+function showQR(g){
+  // QR Code 內含 id 和 table 資訊
+  var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
+  var qr='https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data='+encodeURIComponent(qrData);
+  var el=document.getElementById('guest-result');
+  var tableInfo=g.table?'<div style="background:var(--primary-dim);border:1px solid var(--primary-ring);border-radius:6px;padding:6px 12px;display:flex;justify-content:space-between;align-items:center">'+
+    '<span style="font-size:11px;color:var(--primary);font-weight:700">座位桌次</span>'+
+    '<span style="font-size:18px;font-weight:900;color:var(--primary)">第 '+g.table+' 桌</span></div>':'';
+  el.innerHTML='<div class="card" style="overflow:hidden">'+
+    '<div style="padding:20px 16px 16px;text-align:center">'+
+    '<p style="font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:4px">您的專屬入場碼</p>'+
+    '<p style="font-size:18px;font-weight:900;color:var(--gold);margin-bottom:16px">'+g.name+' 先生／小姐</p>'+
+    '<div class="shimmer" style="display:inline-block;border-radius:12px;overflow:hidden;border:3px solid #d97706;padding:6px;background:#fff">'+
+    '<img src="'+qr+'" width="220" height="220" style="display:block;border-radius:6px" loading="lazy"/></div>'+
+    '<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">'+
+    '<div style="background:var(--panel);border-radius:6px;padding:8px 12px;display:flex;justify-content:space-between">'+
+    '<span style="font-size:11px;color:var(--muted)">邀請 ID</span>'+
+    '<span style="font-size:12px;font-weight:600;color:var(--text2)">'+g.id+'</span></div>'+
+    tableInfo+'</div></div>'+
+    '<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>'+
     '<div style="padding:10px 16px;text-align:center"><p style="font-size:11px;color:var(--muted)">請向工作人員出示此 QR Code 完成報到</p></div></div>';
   animShow(el);
 }
-
-function showGuestPick(guests) {
-  var el = document.getElementById('guest-result');
-  var html = '<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到 ' + guests.length + ' 位同名，請選擇：</p>';
-  guests.forEach(function(g, i) {
-    var key = '_gpick' + i;
-    window[key] = g;
-    html += '<button onclick="showQR(window[\'' + key + '\'])" style="width:100%;text-align:left;border-radius:12px;border:1px solid var(--border2);background:var(--card);padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-      '<span style="color:var(--white);font-weight:700">' + g.name + '</span>' +
-      '<span style="font-size:11px;color:var(--muted)">' + g.id + '</span></button>';
+function showGuestPick(guests){
+  var el=document.getElementById('guest-result'),html='';
+  html='<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到'+guests.length+'位同名，請選擇：</p>';
+  guests.forEach(function(g,i){
+    var key='_gpick'+i; window[key]=g;
+    html+='<button onclick="showQR(window[\''+key+'\'])" style="width:100%;text-align:left;border-radius:10px;border:1px solid var(--border2);background:#fff;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.06)">'+
+      '<span style="color:var(--text);font-weight:700">'+g.name+'</span>'+
+      '<span style="font-size:11px;color:var(--muted)">'+g.id+(g.table?' · 第'+g.table+'桌':'')+'</span></button>';
   });
-  el.innerHTML = html;
-  animShow(el);
+  el.innerHTML=html; animShow(el);
 }
 
-// ══ Staff auth + tabs ══════════════════
-function checkPW() {
-  if (document.getElementById('staff-pw').value === STAFF_PASSWORD) {
-    document.getElementById('staff-gate').style.display = 'none';
-    var inner = document.getElementById('staff-inner');
-    inner.style.display = 'flex'; inner.classList.add('rise');
-    switchTab('scan');
-    loadAll();
-  } else {
-    var err = document.getElementById('pw-err'); err.style.display = 'block';
-    document.getElementById('staff-pw').value = '';
-    document.getElementById('staff-pw').focus();
-    setTimeout(function() { err.style.display = 'none'; }, 3000);
+// ══ Staff auth ════════════════════════
+function checkPW(){
+  if(document.getElementById('staff-pw').value===STAFF_PASSWORD){
+    document.getElementById('staff-gate').style.display='none';
+    var inner=document.getElementById('staff-inner');inner.style.display='flex';inner.classList.add('rise');
+    switchTab('scan');loadAll();
+  }else{
+    var err=document.getElementById('pw-err');err.style.display='block';
+    document.getElementById('staff-pw').value='';document.getElementById('staff-pw').focus();
+    setTimeout(function(){err.style.display='none';},3000);
   }
 }
 
-var TABS = ['scan', 'status', 'qr', 'import'];
-function switchTab(tab) {
-  TABS.forEach(function(t) {
-    document.getElementById('panel-' + t).style.display = 'none';
-    document.getElementById('tab-' + t).className = 'sub-tab';
+var TABS=['scan','status','qr','import'];
+function switchTab(tab){
+  TABS.forEach(function(t){document.getElementById('panel-'+t).style.display='none';document.getElementById('tab-'+t).className='sub-tab';});
+  document.getElementById('panel-'+tab).style.display='flex';
+  document.getElementById('tab-'+tab).className='sub-tab t-'+tab;
+  if(tab!=='scan') stopScanner();
+}
+
+// ══ Data ════════════════════════════
+var allGuests=[], checkedIds=new Set(), allLogs=[], dataLoaded=false, statusFilter='all';
+
+async function loadAll(){
+  showMsg('status-msg','blue','載入中…','直接從 Firestore 讀取');
+  showMsg('qr-msg','blue','載入中…','直接從 Firestore 讀取');
+  try{
+    var results=await Promise.all([fsList('guests'),fsList('log')]);
+    allGuests=results[0].sort(function(a,b){return (a.id||'').localeCompare(b.id||'');});
+    allLogs=results[1].sort(function(a,b){return (a.checkInTime||'').localeCompare(b.checkInTime||'');});
+    checkedIds=new Set(allLogs.map(function(l){return l.id;}));
+    guestCache=allGuests;
+    updateDash(); buildDropdowns(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+    document.getElementById('log-wrap').style.display='block';
+    document.getElementById('status-msg').style.display='none';
+    document.getElementById('qr-msg').style.display='none';
+    dataLoaded=true;
+  }catch(e){showMsg('status-msg','red','載入失敗',e.message);showMsg('qr-msg','red','載入失敗',e.message);}
+}
+
+function updateDash(){
+  var total=allGuests.length,checked=checkedIds.size,pending=total-checked;
+  document.getElementById('d-total').textContent=total;
+  document.getElementById('d-checked').textContent=checked;
+  document.getElementById('d-pending').textContent=pending;
+  var pct=total?Math.round(checked/total*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('dash-stats').style.display='grid';
+  document.getElementById('dash-progress').style.display='block';
+}
+
+function buildDropdowns(){
+  var areas=[],refs=[];
+  allGuests.forEach(function(g){
+    if(g.area&&areas.indexOf(g.area)===-1) areas.push(g.area);
+    if(g.referrer&&refs.indexOf(g.referrer)===-1) refs.push(g.referrer);
   });
-  document.getElementById('panel-' + tab).style.display = 'flex';
-  document.getElementById('tab-' + tab).className = 'sub-tab t-' + tab;
-  if (tab !== 'scan') stopScanner();
-}
-
-// ══ Data ═══════════════════════════════
-var allGuests = [], checkedIds = new Set(), allLogs = [], dataLoaded = false;
-var statusFilter = 'all';
-
-async function loadAll() {
-  showMsg('status-msg', 'sky', '載入中…', '直接從 Firestore 讀取');
-  showMsg('qr-msg', 'sky', '載入中…', '直接從 Firestore 讀取');
-  try {
-    var results = await Promise.all([fsList('guests'), fsList('log')]);
-    allGuests = results[0].sort(function(a, b) { return (a.id || '').localeCompare(b.id || ''); });
-    allLogs   = results[1].sort(function(a, b) { return (a.checkInTime || '').localeCompare(b.checkInTime || ''); });
-    checkedIds = new Set(allLogs.map(function(l) { return l.id; }));
-    guestCache = allGuests;
-    updateDash();
-    buildDropdowns();
-    renderStatusGrid();
-    renderQRGrid();
-    renderLogTable(allLogs);
-    document.getElementById('log-wrap').style.display = 'block';
-    document.getElementById('status-msg').style.display = 'none';
-    document.getElementById('qr-msg').style.display = 'none';
-    dataLoaded = true;
-  } catch(e) {
-    showMsg('status-msg', 'rose', '載入失敗', e.message);
-    showMsg('qr-msg', 'rose', '載入失敗', e.message);
-  }
-}
-
-function updateDash() {
-  var total = allGuests.length, checked = checkedIds.size, pending = total - checked;
-  document.getElementById('d-total').textContent   = total;
-  document.getElementById('d-checked').textContent = checked;
-  document.getElementById('d-pending').textContent = pending;
-  var pct = total ? Math.round(checked / total * 100) : 0;
-  document.getElementById('prog-bar').style.width   = pct + '%';
-  document.getElementById('prog-label').textContent = pct + '%';
-  document.getElementById('dash-stats').style.display    = 'grid';
-  document.getElementById('dash-progress').style.display = 'block';
-}
-
-function buildDropdowns() {
-  var areas = [];
-  var refs  = [];
-  allGuests.forEach(function(g) {
-    if (g.area     && areas.indexOf(g.area)     === -1) areas.push(g.area);
-    if (g.referrer && refs.indexOf(g.referrer)  === -1) refs.push(g.referrer);
-  });
-  areas.sort(); refs.sort();
-  var aEl = document.getElementById('filter-area');
-  var rEl = document.getElementById('filter-referrer');
-  if (aEl) {
-    var av = aEl.value;
-    aEl.innerHTML = '<option value="">全部區別</option>' + areas.map(function(a) { return '<option value="' + a + '">' + a + '</option>'; }).join('');
-    if (av) aEl.value = av;
-  }
-  if (rEl) {
-    var rv = rEl.value;
-    rEl.innerHTML = '<option value="">全部介紹人</option>' + refs.map(function(r) { return '<option value="' + r + '">' + r + '</option>'; }).join('');
-    if (rv) rEl.value = rv;
-  }
+  areas.sort();refs.sort();
+  var aEl=document.getElementById('filter-area'),rEl=document.getElementById('filter-referrer');
+  if(aEl){var av=aEl.value;aEl.innerHTML='<option value="">全部區別</option>'+areas.map(function(a){return '<option value="'+a+'">'+a+'</option>';}).join('');if(av)aEl.value=av;}
+  if(rEl){var rv=rEl.value;rEl.innerHTML='<option value="">全部介紹人</option>'+refs.map(function(r){return '<option value="'+r+'">'+r+'</option>';}).join('');if(rv)rEl.value=rv;}
 }
 
 // ── Status grid ──
-function renderStatusGrid() {
-  var q      = (document.getElementById('status-search') ? document.getElementById('status-search').value : '').trim().toLowerCase();
-  var areaF  = document.getElementById('filter-area')     ? document.getElementById('filter-area').value     : '';
-  var referF = document.getElementById('filter-referrer') ? document.getElementById('filter-referrer').value : '';
-  var filtered = allGuests.filter(function(g) {
-    if (q && !(g.name || '').toLowerCase().includes(q) && !(g.id || '').toLowerCase().includes(q)) return false;
-    if (statusFilter === 'checked' && !checkedIds.has(g.id)) return false;
-    if (statusFilter === 'pending' &&  checkedIds.has(g.id)) return false;
-    if (areaF  && g.area     !== areaF)  return false;
-    if (referF && g.referrer !== referF) return false;
+function renderStatusGrid(){
+  var q=(document.getElementById('status-search')?document.getElementById('status-search').value:'').trim().toLowerCase();
+  var aF=document.getElementById('filter-area')?document.getElementById('filter-area').value:'';
+  var rF=document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'';
+  var filtered=allGuests.filter(function(g){
+    if(q&&!(g.name||'').toLowerCase().includes(q)&&!(g.id||'').toLowerCase().includes(q)) return false;
+    if(statusFilter==='checked'&&!checkedIds.has(g.id)) return false;
+    if(statusFilter==='pending'&&checkedIds.has(g.id)) return false;
+    if(aF&&g.area!==aF) return false;
+    if(rF&&g.referrer!==rF) return false;
     return true;
   });
-  var statsEl = document.getElementById('filter-stats');
-  if (statsEl) {
-    var hasFilter = q || areaF || referF || statusFilter !== 'all';
-    if (hasFilter && filtered.length) {
-      var chk = filtered.filter(function(g) { return checkedIds.has(g.id); }).length;
-      statsEl.textContent = '篩選結果：' + filtered.length + ' 人（已報到 ' + chk + ' / 未報到 ' + (filtered.length - chk) + '）';
-      statsEl.style.display = 'block';
-    } else { statsEl.style.display = 'none'; }
+  var sEl=document.getElementById('filter-stats');
+  if(sEl){
+    var hasF=q||aF||rF||statusFilter!=='all';
+    if(hasF&&filtered.length){var chk=filtered.filter(function(g){return checkedIds.has(g.id);}).length;sEl.textContent='篩選結果：'+filtered.length+' 人（已報到 '+chk+' / 未報到 '+(filtered.length-chk)+'）';sEl.style.display='block';}
+    else sEl.style.display='none';
   }
-  var logMap = {};
-  allLogs.forEach(function(l) { logMap[l.id] = l; });
-  var grid = document.getElementById('status-grid');
-  if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無符合條件的貴賓</p>'; return; }
-  var html = '';
-  filtered.forEach(function(g) {
-    var done = checkedIds.has(g.id);
-    var time = logMap[g.id] ? logMap[g.id].checkInTime || '' : '';
-    var tags = '';
-    if (g.area)     tags += '<span class="g-tag">' + g.area + '</span>';
-    if (g.referrer) tags += '<span class="g-tag">介：' + g.referrer + '</span>';
-    var tagsHtml = tags ? '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">' + tags + '</div>' : '';
-    var timeHtml = time ? '<div style="font-size:10px;color:var(--soft)">' + time + '</div>' : '';
-    var action = done
-      ? '<button class="btn-rose-xs" onclick="cancelCheckin(\'' + g.id + '\',\'' + g.name + '\')">↩ 取消</button>'
-      : '<button class="btn-lime-xs" onclick="doCheckin(\'' + g.id + '\',\'' + g.name + '\')">報到</button>';
-    html += '<div class="g-card ' + (done ? 'done' : 'todo') + '">' +
-      '<div class="g-badge ' + (done ? 'done' : 'todo') + '">' + (done ? '☑ 已報到' : '☐ 未報到') + '</div>' +
-      '<div style="font-size:13px;font-weight:700;color:var(--white)">' + g.name + '</div>' +
-      '<div style="font-size:10px;color:var(--muted)">' + g.id + (g.temple ? '・' + g.temple : '') + '</div>' +
-      tagsHtml + timeHtml +
-      '<div style="display:flex;gap:4px;margin-top:2px">' + action + '</div></div>';
+  var logMap={};allLogs.forEach(function(l){logMap[l.id]=l;});
+  var grid=document.getElementById('status-grid');
+  if(!filtered.length){grid.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無符合條件的貴賓</p>';return;}
+  var html='';
+  filtered.forEach(function(g){
+    var done=checkedIds.has(g.id);
+    var time=logMap[g.id]?logMap[g.id].checkInTime||'':'';
+    var tags='';
+    if(g.table) tags+='<span class="g-tag table">第'+g.table+'桌</span>';
+    if(g.area) tags+='<span class="g-tag area">'+g.area+'</span>';
+    var tagsHtml=tags?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:2px">'+tags+'</div>':'';
+    var timeHtml=time?'<div style="font-size:10px;color:var(--muted);margin-top:1px">'+time+'</div>':'';
+    var action=done
+      ?'<button class="btn-xs-red" onclick="cancelCheckin(\''+g.id+'\',\''+g.name+'\')">↩ 取消</button>'
+      :'<button class="btn-xs-green" onclick="doCheckin(\''+g.id+'\',\''+g.name+'\')">報到</button>';
+    html+='<div class="g-card '+(done?'done':'')+'">'
+      +'<div class="g-badge '+(done?'done':'todo')+'">'+(done?'☑ 已報到':'☐ 未報到')+'</div>'
+      +'<div style="font-size:13px;font-weight:700;color:var(--text)">'+g.name+'</div>'
+      +'<div style="font-size:10px;color:var(--muted)">'+g.id+(g.temple?'・'+g.temple:'')+'</div>'
+      +tagsHtml+timeHtml
+      +'<div style="display:flex;gap:4px;margin-top:4px">'+action+'</div></div>';
   });
-  grid.innerHTML = html;
+  grid.innerHTML=html;
 }
 
-function setFilter(f) {
-  statusFilter = f;
-  document.getElementById('fb-all').className     = 'filter-btn' + (f === 'all'     ? ' active'   : '');
-  document.getElementById('fb-checked').className = 'filter-btn' + (f === 'checked' ? ' active-c' : '');
-  document.getElementById('fb-pending').className = 'filter-btn' + (f === 'pending' ? ' active-p' : '');
+function setFilter(f){
+  statusFilter=f;
+  document.getElementById('fb-all').className='filter-btn'+(f==='all'?' fa':'');
+  document.getElementById('fb-checked').className='filter-btn'+(f==='checked'?' fc':'');
+  document.getElementById('fb-pending').className='filter-btn'+(f==='pending'?' fp':'');
   renderStatusGrid();
 }
 
 // ── QR grid ──
-function renderQRGrid() {
-  var q = (document.getElementById('qr-search') ? document.getElementById('qr-search').value : '').trim().toLowerCase();
-  var filtered = allGuests.filter(function(g) { return !q || (g.name || '').toLowerCase().includes(q) || (g.id || '').toLowerCase().includes(q); });
-  var grid = document.getElementById('qr-grid');
-  if (!filtered.length) { grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無資料</p>'; return; }
-  var html = '';
-  filtered.forEach(function(g) {
-    var done = checkedIds.has(g.id);
-    var url  = CHECKIN_BASE + '?id=' + g.id;
-    var qr   = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data=' + encodeURIComponent(url);
-    html += '<div class="qr-card ' + (done ? 'done' : '') + '">' +
-      (done ? '<div class="qr-done-badge">✓</div>' : '') +
-      '<div class="qr-img-wrap ' + (done ? 'done-b' : '') + '">' +
-      '<img src="' + qr + '" width="90" height="90" loading="lazy" style="display:block;border-radius:5px"/></div>' +
-      '<div style="font-size:12px;font-weight:700;color:var(--white);text-align:center;line-height:1.3">' + g.name + '</div>' +
-      '<div style="font-size:9px;color:var(--muted)">' + g.id + (g.temple ? '・' + g.temple : '') + '</div>' +
-      '<div style="display:flex;flex-direction:column;gap:4px;width:100%">' +
-      '<button class="qr-btn dl" onclick="dlQR(\'' + qr + '\',\'' + g.name + '\')">📥 下載 QR</button>' +
-      '<button class="qr-btn cp" id="cpbtn_' + g.id + '" onclick="copyLink(\'' + url + '\',\'' + g.id + '\')">🔗 複製連結</button>' +
-      '</div></div>';
+function renderQRGrid(){
+  var q=(document.getElementById('qr-search')?document.getElementById('qr-search').value:'').trim().toLowerCase();
+  var filtered=allGuests.filter(function(g){return !q||(g.name||'').toLowerCase().includes(q)||(g.id||'').toLowerCase().includes(q);});
+  var grid=document.getElementById('qr-grid');
+  if(!filtered.length){grid.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px;font-size:13px;grid-column:1/-1">查無資料</p>';return;}
+  var html='';
+  filtered.forEach(function(g){
+    var done=checkedIds.has(g.id);
+    var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
+    var url=qrData;
+    var qr='https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data='+encodeURIComponent(url);
+    html+='<div class="qr-card '+(done?'done':'')+'">'
+      +(done?'<div class="qr-done-badge">✓</div>':'')
+      +(g.table?'<div style="font-size:9px;font-weight:700;color:var(--primary);background:var(--primary-dim);padding:2px 6px;border-radius:4px">第'+g.table+'桌</div>':'')
+      +'<div class="qr-img-wrap '+(done?'done-b':'')+'">'
+      +'<img src="'+qr+'" width="90" height="90" loading="lazy" style="display:block;border-radius:5px"/></div>'
+      +'<div style="font-size:12px;font-weight:700;color:var(--text);text-align:center;line-height:1.3">'+g.name+'</div>'
+      +'<div style="font-size:9px;color:var(--muted)">'+g.id+(g.temple?'・'+g.temple:'')+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+      +'<button class="qr-btn dl" onclick="dlQR(\''+qr+'\',\''+g.name+'\')">📥 下載 QR</button>'
+      +'<button class="qr-btn cp" id="cpbtn_'+g.id+'" onclick="copyLink(\''+url+'\',\''+g.id+'\')">🔗 複製連結</button>'
+      +'</div></div>';
   });
-  grid.innerHTML = html;
+  grid.innerHTML=html;
 }
 
-function dlQR(src, name) {
-  var a = document.createElement('a');
-  a.href = src.replace('200x200', '400x400');
-  a.download = 'QR_' + name + '.png'; a.target = '_blank'; a.click();
+function dlQR(src,name){var a=document.createElement('a');a.href=src.replace('200x200','400x400');a.download='QR_'+name+'.png';a.target='_blank';a.click();}
+function copyLink(url,id){
+  var btn=document.getElementById('cpbtn_'+id);
+  navigator.clipboard.writeText(url).then(function(){
+    if(btn){btn.textContent='✓ 已複製！';btn.style.background='var(--green-dim)';btn.style.color='var(--green)';}
+    setTimeout(function(){if(btn){btn.textContent='🔗 複製連結';btn.style.background='';btn.style.color='';}},2000);
+  }).catch(function(){alert('請手動複製：'+url);});
 }
 
-function copyLink(url, id) {
-  var btn = document.getElementById('cpbtn_' + id);
-  navigator.clipboard.writeText(url).then(function() {
-    if (btn) { btn.textContent = '✓ 已複製！'; btn.style.background = 'var(--lime-dim)'; btn.style.color = 'var(--lime)'; }
-    setTimeout(function() { if (btn) { btn.textContent = '🔗 複製連結'; btn.style.background = ''; btn.style.color = ''; } }, 2000);
-  }).catch(function() { alert('請手動複製：' + url); });
-}
-
-function printAllQR() {
-  if (!allGuests.length) { alert('請先載入名單'); return; }
-  var win = window.open('', '_blank');
-  var cards = allGuests.map(function(g) {
-    var done = checkedIds.has(g.id);
-    var qr = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&ecc=M&data=' + encodeURIComponent(CHECKIN_BASE + '?id=' + g.id);
-    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;padding:10px;border:1.5px solid ' + (done ? '#4ac96e' : '#ccc') + ';border-radius:10px;background:' + (done ? '#f0fff4' : '#fff') + ';page-break-inside:avoid;font-family:sans-serif">' +
-      '<img src="' + qr + '" width="110" height="110" style="border-radius:5px"/>' +
-      '<b style="font-size:12px;color:#000">' + g.name + '</b>' +
-      '<span style="font-size:9px;color:#888">' + g.id + (g.temple ? '・' + g.temple : '') + '</span>' +
-      (done ? '<span style="font-size:9px;color:#2a7a3a;font-weight:700">✓ 已報到</span>' : '') + '</div>';
+function printAllQR(){
+  if(!allGuests.length){alert('請先載入名單');return;}
+  var win=window.open('','_blank');
+  var cards=allGuests.map(function(g){
+    var done=checkedIds.has(g.id);
+    var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
+    var qr='https://api.qrserver.com/v1/create-qr-code/?size=260x260&ecc=M&data='+encodeURIComponent(qrData);
+    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;padding:10px;border:1.5px solid '+(done?'#16a34a':'#e2e8f0')+';border-radius:10px;background:'+(done?'#f0fdf4':'#fff')+';page-break-inside:avoid;font-family:sans-serif">'
+      +'<img src="'+qr+'" width="110" height="110" style="border-radius:5px"/>'
+      +(g.table?'<span style="font-size:11px;font-weight:700;color:#3b82f6;background:#eff6ff;padding:2px 8px;border-radius:4px">第'+g.table+'桌</span>':'')
+      +'<b style="font-size:12px;color:#000">'+g.name+'</b>'
+      +'<span style="font-size:9px;color:#888">'+g.id+(g.temple?'・'+g.temple:'')+'</span>'
+      +(done?'<span style="font-size:9px;color:#16a34a;font-weight:700">✓ 已報到</span>':'')+'</div>';
   }).join('');
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">' + cards + '</div></body></html>');
-  win.document.close(); setTimeout(function() { win.print(); }, 800);
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">'+cards+'</div></body></html>');
+  win.document.close();setTimeout(function(){win.print();},800);
 }
-
-function downloadAllQR() {
+function downloadAllQR(){
   alert('將逐一開啟各貴賓的 QR Code 下載連結。');
-  allGuests.forEach(function(g, i) {
-    setTimeout(function() {
-      var a = document.createElement('a');
-      a.href = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data=' + encodeURIComponent(CHECKIN_BASE + '?id=' + g.id);
-      a.download = 'QR_' + g.id + '_' + g.name + '.png'; a.target = '_blank'; a.click();
-    }, i * 300);
+  allGuests.forEach(function(g,i){
+    setTimeout(function(){
+      var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
+      var a=document.createElement('a');
+      a.href='https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data='+encodeURIComponent(qrData);
+      a.download='QR_'+g.id+'_'+g.name+'.png';a.target='_blank';a.click();
+    },i*300);
   });
 }
 
 // ── Checkin / Cancel ──
-async function doCheckin(id, name) {
-  var existing = await fsGet('log', id);
-  if (existing) { alert('⚠ ' + name + ' 已於 ' + existing.checkInTime + ' 完成報到'); return; }
-  var t = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
-  var guest = allGuests.find(function(g) { return g.id === id; }) || {};
-  await fsSet('log', id, { id: id, name: name, temple: guest.temple || '', checkInTime: t, status: '已報到' });
+async function doCheckin(id,name){
+  var existing=await fsGet('log',id);
+  if(existing){alert('⚠ '+name+' 已於 '+existing.checkInTime+' 完成報到');return;}
+  var t=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}).replace(/\//g,'-');
+  var guest=allGuests.find(function(g){return g.id===id;})||{};
+  await fsSet('log',id,{id:id,name:name,temple:guest.temple||'',table:guest.table||'',checkInTime:t,status:'已報到'});
   checkedIds.add(id);
-  allLogs.push({ id: id, name: name, temple: guest.temple || '', checkInTime: t });
-  updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-  alert('✓ ' + name + ' 報到成功！\n時間：' + t);
+  allLogs.push({id:id,name:name,temple:guest.temple||'',table:guest.table||'',checkInTime:t});
+  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  alert('✓ '+name+' 報到成功！\n時間：'+t+(guest.table?'\n桌次：第'+guest.table+'桌':''));
+}
+async function cancelCheckin(id,name){
+  if(!confirm('確定取消「'+name+'」的報到記錄？')) return;
+  await fsDel('log',id);
+  checkedIds.delete(id);allLogs=allLogs.filter(function(l){return l.id!==id;});
+  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
 }
 
-async function cancelCheckin(id, name) {
-  if (!confirm('確定取消「' + name + '」的報到記錄？')) return;
-  await fsDel('log', id);
-  checkedIds.delete(id);
-  allLogs = allLogs.filter(function(l) { return l.id !== id; });
-  updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-  alert('已取消 ' + name + ' 的報到記錄');
-}
-
-// ── Scanner ──
-var qrScanner = null, scanning = false, busy = false;
-function staffToggle() { if (scanning) stopScanner(); else startScanner(); }
-function startScanner() {
-  qrScanner = new Html5Qrcode('qr-reader');
-  qrScanner.start({ facingMode: 'environment' },
-    { fps: 15, qrbox: { width: 200, height: 200 }, aspectRatio: 1.0, formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE] },
-    onScan, function() {})
-  .then(function() {
-    scanning = true;
-    document.getElementById('staff-idle').style.display = 'none';
-    document.getElementById('brackets').style.display = 'block';
-    document.getElementById('toggle-btn').textContent = '停止掃描';
-    setSt('掃描中…', '請將貴賓 QR Code 對準掃描框');
-  }).catch(function() {
-    document.getElementById('cam-err').style.display = 'block';
-    document.getElementById('toggle-btn').disabled = true;
-    setSt('相機錯誤', '請檢查相機權限');
+// ══ Scanner ════════════════════════
+var qrScanner=null,scanning=false,busy=false;
+function staffToggle(){if(scanning)stopScanner();else startScanner();}
+function startScanner(){
+  qrScanner=new Html5Qrcode('qr-reader');
+  qrScanner.start({facingMode:'environment'},{fps:15,qrbox:{width:200,height:200},aspectRatio:1.0,formatsToSupport:[Html5QrcodeSupportedFormats.QR_CODE]},onScan,function(){})
+  .then(function(){
+    scanning=true;
+    document.getElementById('staff-idle').style.display='none';
+    document.getElementById('brackets').style.display='block';
+    document.getElementById('toggle-btn').textContent='停止掃描';
+    setSt('掃描中…','請將貴賓 QR Code 對準掃描框');
+  }).catch(function(){
+    document.getElementById('cam-err').style.display='block';
+    document.getElementById('toggle-btn').disabled=true;
+    setSt('相機錯誤','請檢查相機權限');
   });
 }
-async function stopScanner() {
-  if (!qrScanner || !scanning) return;
-  try { await qrScanner.stop(); } catch(e) {}
-  scanning = false;
-  document.getElementById('brackets').style.display = 'none';
-  document.getElementById('staff-idle').style.display = 'flex';
-  document.getElementById('toggle-btn').textContent = '開始掃描';
-  setSt('已停止', '點擊按鈕重新掃描');
+async function stopScanner(){
+  if(!qrScanner||!scanning) return;
+  try{await qrScanner.stop();}catch(e){}
+  scanning=false;
+  document.getElementById('brackets').style.display='none';
+  document.getElementById('staff-idle').style.display='flex';
+  document.getElementById('toggle-btn').textContent='開始掃描';
+  setSt('已停止','點擊按鈕重新掃描');
 }
-async function onScan(decoded) {
-  if (busy) return; busy = true;
+async function onScan(decoded){
+  if(busy) return;busy=true;
   await stopScanner();
-  var id = null;
-  try { id = new URL(decoded).searchParams.get('id'); } catch(e) { id = decoded.trim() || null; }
-  if (!id) { scanResult('error', 'QR Code 無效', '找不到報到 ID', null); busy = false; return; }
-  document.getElementById('staff-loading').style.display = 'flex';
-  setSt('驗證中…', 'ID：' + id);
-  document.getElementById('toggle-btn').disabled = true;
-  try {
-    var guest = allGuests.find(function(g) { return g.id === id; }) || await fsGet('guests', id);
-    if (!guest) {
-      scanResult('error', '非受邀貴賓', '此 QR Code 不在貴賓名單中', null);
-    } else {
-      var logDoc = await fsGet('log', id);
-      if (logDoc) {
-        scanResult('warn', '您已完成報到，請勿重複掃描', '首次報到：' + logDoc.checkInTime, { id: id, name: guest.name });
-      } else {
-        var t = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', hour12: false }).replace(/\//g, '-');
-        await fsSet('log', id, { id: id, name: guest.name, temple: guest.temple || '', checkInTime: t, status: '已報到' });
+  var id=null,tableFromQR='';
+  try{
+    var u=new URL(decoded);
+    id=u.searchParams.get('id');
+    tableFromQR=u.searchParams.get('table')||'';
+  }catch(e){id=decoded.trim()||null;}
+  if(!id){scanResult('error','QR Code 無效','找不到報到 ID',null);busy=false;return;}
+  document.getElementById('staff-loading').style.display='flex';
+  setSt('驗證中…','ID：'+id);
+  document.getElementById('toggle-btn').disabled=true;
+  try{
+    var guest=allGuests.find(function(g){return g.id===id;})||await fsGet('guests',id);
+    if(!guest){scanResult('error','非受邀貴賓','此 QR Code 不在貴賓名單中',null);}
+    else{
+      var logDoc=await fsGet('log',id);
+      if(logDoc){
+        scanResult('warn','您已完成報到，請勿重複掃描','首次報到：'+logDoc.checkInTime,{id:id,name:guest.name,table:guest.table||tableFromQR});
+      }else{
+        var t=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}).replace(/\//g,'-');
+        var tbl=guest.table||tableFromQR||'';
+        await fsSet('log',id,{id:id,name:guest.name,temple:guest.temple||'',table:tbl,checkInTime:t,status:'已報到'});
         checkedIds.add(id);
-        allLogs.push({ id: id, name: guest.name, temple: guest.temple || '', checkInTime: t });
-        updateDash(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
-        scanResult('success', '歡迎光臨，' + guest.name + ' 先生/小姐', '報到時間：' + t, { id: id, name: guest.name });
+        allLogs.push({id:id,name:guest.name,temple:guest.temple||'',table:tbl,checkInTime:t});
+        updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+        scanResult('success','歡迎光臨，'+guest.name+' 先生/小姐','報到時間：'+t,{id:id,name:guest.name,table:tbl});
       }
     }
-  } catch(e) { scanResult('error', '連線失敗', e.message || '請確認網路後重試', null); }
-  document.getElementById('staff-loading').style.display = 'none';
-  document.getElementById('toggle-btn').disabled = false;
-  document.getElementById('toggle-btn').textContent = '開始掃描';
-  busy = false;
+  }catch(e){scanResult('error','連線失敗',e.message||'請確認網路後重試',null);}
+  document.getElementById('staff-loading').style.display='none';
+  document.getElementById('toggle-btn').disabled=false;
+  document.getElementById('toggle-btn').textContent='開始掃描';
+  busy=false;
 }
-
-var RS = {
-  success: { icon: '✓', bg: 'var(--lime-dim)', br: 'var(--lime-ring)', ic: 'var(--lime)', tc: 'var(--lime)' },
-  warn:    { icon: '!', bg: 'var(--amber-dim)', br: 'var(--amber-ring)', ic: 'var(--amber)', tc: 'var(--amber)' },
-  error:   { icon: '✕', bg: 'var(--rose-dim)', br: 'var(--rose-ring)', ic: 'var(--rose)', tc: 'var(--rose)' }
+var RS={
+  success:{icon:'✓',cls:'success',tc:'var(--green)'},
+  warn:   {icon:'!',cls:'warn',   tc:'var(--amber)'},
+  error:  {icon:'✕',cls:'error',  tc:'var(--red)'}
 };
-function scanResult(type, title, sub, data) {
-  var s = RS[type];
-  var rows = data ? '<div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;margin-top:10px">' +
-    (data.name ? '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">姓名</span><span style="font-size:13px;font-weight:700;color:var(--white)">' + data.name + '</span></div>' : '') +
-    '<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">ID</span><span style="font-size:12px;color:var(--light)">' + (data.id || '—') + '</span></div></div>' : '';
-  var el = document.getElementById('staff-result');
-  el.innerHTML = '<div style="border-radius:18px;border:1px solid ' + s.br + ';background:' + s.bg + ';padding:20px">' +
-    '<div style="text-align:center">' +
-    '<div style="width:48px;height:48px;border-radius:50%;background:' + s.bg + ';border:1px solid ' + s.br + ';display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:' + s.ic + ';margin:0 auto 10px">' + s.icon + '</div>' +
-    '<p style="font-weight:900;font-size:16px;color:' + s.tc + '">' + title + '</p>' +
-    '<p style="font-size:11px;color:var(--soft);margin-top:4px">' + sub + '</p></div>' + rows + '</div>' +
-    '<button class="btn-ghost" onclick="resetScan()" style="margin-top:7px">繼續掃下一位 →</button>';
-  el.style.display = 'block'; void el.offsetWidth; el.classList.add('rise');
-  setSt('掃描完成', '查看下方結果');
+function scanResult(type,title,sub,data){
+  var s=RS[type];
+  var rows=data?'<div style="background:rgba(0,0,0,.04);border-radius:8px;padding:10px;margin-top:10px;display:flex;flex-direction:column;gap:6px">'
+    +(data.name?'<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--soft)">姓名</span><span style="font-size:13px;font-weight:700;color:var(--text)">'+data.name+'</span></div>':'')
+    +(data.table?'<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--soft)">桌次</span><span style="font-size:16px;font-weight:900;color:var(--primary)">第 '+data.table+' 桌</span></div>':'')
+    +'<div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--soft)">ID</span><span style="font-size:12px;color:var(--text2)">'+(data.id||'—')+'</span></div></div>':'';
+  var el=document.getElementById('staff-result');
+  el.innerHTML='<div class="scan-result-box '+s.cls+'">'
+    +'<div style="text-align:center">'
+    +'<div style="width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:'+s.tc+';margin:0 auto 10px">'+s.icon+'</div>'
+    +'<p style="font-weight:900;font-size:15px;color:'+s.tc+'">'+title+'</p>'
+    +'<p style="font-size:11px;color:var(--soft);margin-top:3px">'+sub+'</p></div>'
+    +rows+'</div>'
+    +'<button class="btn btn-outline" onclick="resetScan()" style="margin-top:8px;width:100%">繼續掃下一位 →</button>';
+  el.style.display='block';void el.offsetWidth;el.classList.add('rise');
+  setSt('掃描完成','查看下方結果');
 }
-function resetScan() { document.getElementById('staff-result').style.display = 'none'; startScanner(); }
-function setSt(t, s) { document.getElementById('s-title').textContent = t; document.getElementById('s-sub').textContent = s; }
+function resetScan(){document.getElementById('staff-result').style.display='none';startScanner();}
+function setSt(t,s){document.getElementById('s-title').textContent=t;document.getElementById('s-sub').textContent=s;}
 
-// ── Log table ──
-function renderLogTable(logs) {
-  var html = '';
-  var rev = logs.slice().reverse();
-  rev.forEach(function(l) {
-    html += '<tr>' +
-      '<td style="font-size:10px;color:var(--muted)">' + l.id + '</td>' +
-      '<td style="font-weight:700;font-size:12px">' + (l.name || '—') + '</td>' +
-      '<td style="font-size:11px;color:var(--soft)">' + (l.checkInTime || '—') + '</td>' +
-      '<td><button class="btn-rose-xs" onclick="cancelCheckin(\'' + l.id + '\',\'' + (l.name || l.id) + '\')">取消</button></td></tr>';
+// ══ TABLE MODAL ═══════════════════════
+var tableEdits={};
+
+function openTableModal(){
+  tableEdits={};
+  var html='';
+  allGuests.forEach(function(g){
+    html+='<div class="table-row">'
+      +'<div class="name">'+g.name+'</div>'
+      +'<input type="number" id="tbl_'+g.id+'" value="'+(g.table||'')+'" min="1" max="999" placeholder="—" style="width:64px;text-align:center" oninput="tableEdits[\''+g.id+'\']=this.value"/>'
+      +'<span style="font-size:11px;color:var(--muted)">桌</span>'
+      +'</div>';
   });
-  document.getElementById('log-tbody').innerHTML = html || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">尚無報到記錄</td></tr>';
-}
-function filterLogTable() {
-  var q = document.getElementById('log-search').value.trim().toLowerCase();
-  renderLogTable(q ? allLogs.filter(function(l) { return (l.name || '').toLowerCase().includes(q) || (l.id || '').toLowerCase().includes(q); }) : allLogs);
+  document.getElementById('table-grid').innerHTML=html;
+  document.getElementById('table-modal').style.display='flex';
 }
 
-// ── Import ──
-var importData = [];
-// 欄位名稱對照表（中英文皆可）
-var COL_MAP = {
-  id:       ['id','ID','編號'],
-  name:     ['name','姓名'],
-  temple:   ['temple','所屬佛堂','佛堂'],
-  note:     ['note','備註'],
-  area:     ['area','區別'],
-  referrer: ['referrer','介紹人'],
-  status:   ['status','狀態']
-};
+function closeTableModal(){document.getElementById('table-modal').style.display='none';}
 
-function findCol(header, key) {
-  var targets = COL_MAP[key] || [key];
-  return header.findIndex(function(h) {
-    return targets.some(function(t) { return h === t || h === t.toLowerCase(); });
+function autoAssignTables(){
+  var perTable=parseInt(document.getElementById('auto-per-table').value)||10;
+  allGuests.forEach(function(g,i){
+    var tbl=Math.floor(i/perTable)+1;
+    var inp=document.getElementById('tbl_'+g.id);
+    if(inp){inp.value=tbl;tableEdits[g.id]=String(tbl);}
   });
 }
 
-function processRows(rows) {
-  // rows: array of arrays (first row = header)
-  if (rows.length < 2) { showImportMsg('檔案至少需要表頭和一筆資料'); return; }
-  var header = rows[0].map(function(h) { return String(h).trim(); });
-  console.log('偵測到表頭：', header);
-  var idIdx   = findCol(header, 'id');
-  var nameIdx = findCol(header, 'name');
-  console.log('idIdx:', idIdx, 'nameIdx:', nameIdx);
-  if (idIdx < 0 || nameIdx < 0) {
-    showImportMsg('找不到必要欄位。表頭為：' + header.join(', '));
-    return;
-  }
-  var tIdx = findCol(header, 'temple');
-  var nIdx = findCol(header, 'note');
-  var aIdx = findCol(header, 'area');
-  var rIdx = findCol(header, 'referrer');
-  importData = rows.slice(1).map(function(cols) {
-    return {
-      id:       String(cols[idIdx]   || '').trim(),
-      name:     String(cols[nameIdx] || '').trim(),
-      temple:   tIdx >= 0 ? String(cols[tIdx]   || '').trim() : '',
-      note:     nIdx >= 0 ? String(cols[nIdx]   || '').trim() : '',
-      area:     aIdx >= 0 ? String(cols[aIdx]   || '').trim() : '',
-      referrer: rIdx >= 0 ? String(cols[rIdx]   || '').trim() : ''
-    };
-  }).filter(function(r) { return r.id && r.name; });
+function clearAllTables(){
+  if(!confirm('確定清除所有桌次資料？')) return;
+  allGuests.forEach(function(g){
+    var inp=document.getElementById('tbl_'+g.id);
+    if(inp){inp.value='';tableEdits[g.id]='';}
+  });
+}
+
+async function saveTableData(){
+  var btn=document.querySelector('#table-modal .modal-footer .btn-green');
+  btn.disabled=true;btn.textContent='儲存中…';
+  try{
+    // 讀取所有輸入（包含沒有修改過的）
+    var updates=[];
+    allGuests.forEach(function(g){
+      var inp=document.getElementById('tbl_'+g.id);
+      var newVal=inp?inp.value.trim():'';
+      var oldVal=String(g.table||'');
+      if(newVal!==oldVal) updates.push({id:g.id,table:newVal});
+    });
+    if(!updates.length){closeTableModal();btn.disabled=false;btn.textContent='✓ 儲存';return;}
+    // 批次更新 Firestore
+    await Promise.all(updates.map(function(u){
+      var guest=allGuests.find(function(g){return g.id===u.id;})||{};
+      var data=Object.assign({},guest,{table:u.table});
+      return fsSet('guests',u.id,data);
+    }));
+    // 更新本地資料
+    updates.forEach(function(u){
+      var g=allGuests.find(function(g){return g.id===u.id;});
+      if(g) g.table=u.table;
+    });
+    guestCache=allGuests;
+    renderStatusGrid();renderQRGrid();
+    closeTableModal();
+    alert('✓ 桌次已儲存！共更新 '+updates.length+' 筆');
+  }catch(e){alert('儲存失敗：'+e.message);}
+  btn.disabled=false;btn.textContent='✓ 儲存';
+}
+
+// ══ Log ══════════════════════════════
+function renderLogTable(logs){
+  var html='';
+  logs.slice().reverse().forEach(function(l){
+    html+='<tr>'
+      +'<td style="font-size:10px;color:var(--muted)">'+l.id+'</td>'
+      +'<td style="font-weight:700;font-size:12px">'+( l.name||'—')+'</td>'
+      +'<td style="font-size:11px;color:var(--primary)">'+(l.table?'第'+l.table+'桌':'—')+'</td>'
+      +'<td style="font-size:11px;color:var(--soft)">'+(l.checkInTime||'—')+'</td>'
+      +'<td><button class="btn-xs-red" onclick="cancelCheckin(\''+l.id+'\',\''+(l.name||l.id)+'\')">取消</button></td></tr>';
+  });
+  document.getElementById('log-tbody').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:18px">尚無報到記錄</td></tr>';
+}
+function filterLogTable(){
+  var q=document.getElementById('log-search').value.trim().toLowerCase();
+  renderLogTable(q?allLogs.filter(function(l){return (l.name||'').toLowerCase().includes(q)||(l.id||'').toLowerCase().includes(q);}):allLogs);
+}
+
+// ══ Import ══════════════════════════
+var COL_MAP={id:['id','ID','編號'],name:['name','姓名'],temple:['temple','所屬佛堂','佛堂'],note:['note','備註'],area:['area','區別'],referrer:['referrer','介紹人'],table:['table','桌次']};
+function findCol(header,key){var ts=COL_MAP[key]||[key];return header.findIndex(function(h){return ts.some(function(t){return h===t||h===t.toLowerCase();});});}
+
+function processRows(rows){
+  if(rows.length<2){showImportMsg('檔案至少需要表頭和一筆資料');return;}
+  var header=rows[0].map(function(h){return String(h).trim();});
+  var idIdx=findCol(header,'id'),nameIdx=findCol(header,'name');
+  if(idIdx<0||nameIdx<0){showImportMsg('找不到必要欄位。偵測到：'+header.join(', '));return;}
+  var tIdx=findCol(header,'temple'),nIdx=findCol(header,'note'),aIdx=findCol(header,'area'),rIdx=findCol(header,'referrer'),tbIdx=findCol(header,'table');
+  importData=rows.slice(1).map(function(cols){
+    return{id:String(cols[idIdx]||'').trim(),name:String(cols[nameIdx]||'').trim(),temple:tIdx>=0?String(cols[tIdx]||'').trim():'',note:nIdx>=0?String(cols[nIdx]||'').trim():'',area:aIdx>=0?String(cols[aIdx]||'').trim():'',referrer:rIdx>=0?String(cols[rIdx]||'').trim():'',table:tbIdx>=0?String(cols[tbIdx]||'').trim():''};
+  }).filter(function(r){return r.id&&r.name;});
   showPreview();
 }
-
-function showPreview() {
-  var prev = document.getElementById('import-preview');
-  var previewRows = importData.slice(0, 8).map(function(r) {
-    return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px">' +
-      '<span>' + r.name + (r.area ? ' [' + r.area + ']' : '') + '</span>' +
-      '<span style="color:var(--muted)">' + r.id + '</span></div>';
+function showPreview(){
+  var prev=document.getElementById('import-preview');
+  var rows=importData.slice(0,8).map(function(r){
+    return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px">'+
+      '<span>'+r.name+(r.area?' ['+r.area+']':'')+(r.table?' 第'+r.table+'桌':'')+'</span>'+
+      '<span style="color:var(--muted)">'+r.id+'</span></div>';
   }).join('');
-  prev.innerHTML = '<div style="background:var(--panel);border:1px solid var(--sky-ring);border-radius:10px;padding:12px">' +
-    '<p style="font-size:12px;font-weight:700;color:var(--sky);margin-bottom:8px">預覽：共 ' + importData.length + ' 筆</p>' +
-    '<div style="max-height:150px;overflow-y:auto">' + previewRows +
-    (importData.length > 8 ? '<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 ' + (importData.length - 8) + ' 筆</p>' : '') +
-    '</div></div>';
-  prev.style.display = 'block';
-  document.getElementById('import-btn').style.display = 'block';
+  prev.innerHTML='<div style="background:var(--primary-dim);border:1px solid var(--primary-ring);border-radius:8px;padding:12px">'+
+    '<p style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px">預覽：共 '+importData.length+' 筆</p>'+
+    '<div style="max-height:150px;overflow-y:auto">'+rows+(importData.length>8?'<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">…還有 '+(importData.length-8)+' 筆</p>':'')+'</div></div>';
+  prev.style.display='block';
+  document.getElementById('import-btn').style.display='block';
 }
-
-function previewImport() {
-  var file = document.getElementById('import-file').files[0];
-  if (!file) { alert('請先選擇檔案'); return; }
-  var ext = file.name.split('.').pop().toLowerCase();
-
-  if (ext === 'xlsx' || ext === 'xls') {
-    // Excel 處理
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        var wb = XLSX.read(e.target.result, { type: 'array' });
-        var ws = wb.Sheets[wb.SheetNames[0]];
-        var rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-        processRows(rows);
-      } catch(err) { showImportMsg('Excel 讀取失敗：' + err.message); }
+var importData=[];
+function previewImport(){
+  var file=document.getElementById('import-file').files[0];if(!file){alert('請先選擇檔案');return;}
+  var ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){
+    var r=new FileReader();
+    r.onload=function(e){try{var wb=XLSX.read(e.target.result,{type:'array'});var ws=wb.Sheets[wb.SheetNames[0]];processRows(XLSX.utils.sheet_to_json(ws,{header:1,defval:''}));}catch(err){showImportMsg('Excel 讀取失敗：'+err.message);}};
+    r.readAsArrayBuffer(file);
+  }else{
+    var r2=new FileReader();
+    r2.onload=function(e){
+      var raw=e.target.result.replace(/^\uFEFF/,'');
+      var lines=raw.replace(/\r/g,'').split('\n').filter(function(l){return l.trim();});
+      processRows(lines.map(function(line){var cols=line.match(/("(?:[^"]|"")*"|[^,]*)/g)||[];return cols.map(function(c){return c.replace(/^"|"$/g,'').replace(/""/g,'"').trim();});}));
     };
-    reader.readAsArrayBuffer(file);
-  } else {
-    // CSV 處理
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var raw = e.target.result.replace(/^\uFEFF/, '');
-      var lines = raw.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
-      var rows = lines.map(function(line) {
-        var cols = line.match(/("(?:[^"]|"")*"|[^,]*)/g) || [];
-        return cols.map(function(c) { return c.replace(/^"|"$/g, '').replace(/""/g, '"').trim(); });
-      });
-      processRows(rows);
-    };
-    reader.readAsText(file, 'UTF-8');
+    r2.readAsText(file,'UTF-8');
   }
 }
-
-async function confirmImport() {
-  if (!importData.length) { alert('沒有可匯入的資料'); return; }
-  if (!confirm('確定匯入 ' + importData.length + ' 筆？相同 ID 將被覆蓋')) return;
-  var btn = document.getElementById('import-btn'); btn.disabled = true; btn.textContent = '匯入中…';
-  try {
-    await Promise.all(importData.map(function(g) { return fsSet('guests', g.id, g); }));
-    showMsg('import-msg', 'lime', '匯入完成', '成功寫入 ' + importData.length + ' 筆資料');
-    importData = [];
-    document.getElementById('import-preview').style.display = 'none';
-    document.getElementById('import-file').value = '';
-    btn.style.display = 'none';
-    setTimeout(function() { loadAll(); }, 800);
-  } catch(e) { showMsg('import-msg', 'rose', '匯入失敗', e.message); }
-  btn.disabled = false; btn.textContent = '確認匯入';
+async function confirmImport(){
+  if(!importData.length){alert('沒有可匯入的資料');return;}
+  if(!confirm('確定匯入 '+importData.length+' 筆？相同 ID 將被覆蓋')) return;
+  var btn=document.getElementById('import-btn');btn.disabled=true;btn.textContent='匯入中…';
+  try{
+    await Promise.all(importData.map(function(g){return fsSet('guests',g.id,g);}));
+    showMsg('import-msg','green','匯入完成','成功寫入 '+importData.length+' 筆資料');
+    importData=[];document.getElementById('import-preview').style.display='none';document.getElementById('import-file').value='';btn.style.display='none';
+    setTimeout(function(){loadAll();},800);
+  }catch(e){showMsg('import-msg','red','匯入失敗',e.message);}
+  btn.disabled=false;btn.textContent='確認匯入';
 }
+function showImportMsg(msg){var p=document.getElementById('import-preview');p.innerHTML='<div style="background:var(--red-dim);border:1px solid var(--red-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--red)">'+msg+'</div>';p.style.display='block';}
 
-function showImportMsg(msg) {
-  var p = document.getElementById('import-preview');
-  p.innerHTML = '<div style="background:var(--rose-dim);border:1px solid var(--rose-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--rose)">' + msg + '</div>';
-  p.style.display = 'block';
+// ══ Export ══════════════════════════
+function exportGuestExcel(){
+  if(!allGuests.length){alert('請先載入名單');return;}
+  var header=['ID','姓名','所屬佛堂','備註','區別','介紹人','桌次','狀態'];
+  var rows=allGuests.map(function(g){return[g.id,g.name,g.temple||'',g.note||'',g.area||'',g.referrer||'',g.table||'',checkedIds.has(g.id)?'已報到':'未報到'];});
+  dlXlsx([header].concat(rows),'貴賓名單_'+today()+'.xlsx');
 }
-
-function exportGuestCSV() {
-  if (!allGuests.length) { alert('請先載入名單'); return; }
-  var header = ['ID','姓名','所屬佛堂','備註','區別','介紹人','狀態'];
-  var rows = allGuests.map(function(g) {
-    return [g.id, g.name, g.temple||'', g.note||'', g.area||'', g.referrer||'', checkedIds.has(g.id)?'已報到':'未報到'];
-  });
-  dlXlsx([header].concat(rows), '貴賓名單_' + today() + '.xlsx');
+function exportLogExcel(){
+  if(!allLogs.length){alert('尚無報到記錄');return;}
+  var header=['ID','姓名','佛堂','桌次','報到時間'];
+  var rows=allLogs.map(function(l){return[l.id,l.name||'',l.temple||'',l.table||'',l.checkInTime||''];});
+  dlXlsx([header].concat(rows),'報到記錄_'+today()+'.xlsx');
 }
+function dlXlsx(data,filename){var ws=XLSX.utils.aoa_to_sheet(data);var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Sheet1');XLSX.writeFile(wb,filename);}
 
-function exportLogCSV() {
-  if (!allLogs.length) { alert('尚無報到記錄'); return; }
-  var header = ['ID','姓名','佛堂','報到時間'];
-  var rows = allLogs.map(function(l) { return [l.id, l.name||'', l.temple||'', l.checkInTime||'']; });
-  dlXlsx([header].concat(rows), '報到記錄_' + today() + '.xlsx');
-}
-
-function dlXlsx(data, filename) {
-  var ws = XLSX.utils.aoa_to_sheet(data);
-  var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  XLSX.writeFile(wb, filename);
-}
-
-// ── Utils ──
-function animShow(el) { el.style.display = 'block'; el.classList.remove('rise'); void el.offsetWidth; el.classList.add('rise'); }
-function dlCSV(c, f) { var a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(c); a.download = f; a.click(); }
-function today() { return new Date().toLocaleDateString('zh-TW'); }
-function showMsg(elId, color, title, sub) {
-  var cm = { sky: 'var(--sky)', lime: 'var(--lime)', rose: 'var(--rose)', violet: 'var(--violet)', amber: 'var(--amber)' };
-  var bm = { sky: 'var(--sky-dim)', lime: 'var(--lime-dim)', rose: 'var(--rose-dim)', violet: 'var(--violet-dim)', amber: 'var(--amber-dim)' };
-  var rm = { sky: 'var(--sky-ring)', lime: 'var(--lime-ring)', rose: 'var(--rose-ring)', violet: 'var(--violet-ring)', amber: 'var(--amber-ring)' };
-  var el = document.getElementById(elId); if (!el) return;
-  el.innerHTML = '<div style="border-radius:12px;border:1px solid ' + (rm[color] || 'var(--border)') + ';background:' + (bm[color] || 'var(--card)') + ';padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:' + (cm[color] || 'var(--light)') + '">' + title + '</p><p style="font-size:11px;color:var(--soft);margin-top:3px">' + sub + '</p></div>';
-  el.style.display = 'block';
+// ══ Utils ════════════════════════════
+function animShow(el){el.style.display='block';el.classList.remove('rise');void el.offsetWidth;el.classList.add('rise');}
+function today(){return new Date().toLocaleDateString('zh-TW');}
+function showMsg(elId,color,title,sub){
+  var cm={blue:'var(--primary)',green:'var(--green)',red:'var(--red)',amber:'var(--amber)'};
+  var bm={blue:'var(--primary-dim)',green:'var(--green-dim)',red:'var(--red-dim)',amber:'var(--amber-dim)'};
+  var rm={blue:'var(--primary-ring)',green:'var(--green-ring)',red:'var(--red-ring)',amber:'var(--amber-ring)'};
+  var el=document.getElementById(elId);if(!el)return;
+  el.innerHTML='<div style="border-radius:10px;border:1px solid '+(rm[color]||'var(--border)')+';background:'+(bm[color]||'#fff')+';padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:'+(cm[color]||'var(--text)')+'">'+title+'</p><p style="font-size:11px;color:var(--soft);margin-top:3px">'+sub+'</p></div>';
+  el.style.display='block';
 }
 </script>
 </body>
