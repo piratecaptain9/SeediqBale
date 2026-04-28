@@ -314,6 +314,10 @@
             </div>
           </div>
           <div id="filter-stats" style="display:none;font-size:11px;color:var(--soft)"></div>
+          <button id="bulk-checkin-btn" onclick="bulkCheckin()"
+            style="display:none;width:100%;padding:11px;border:none;border-radius:8px;font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 2px 8px rgba(5,150,105,.3);transition:all .2s">
+            ⚡ 一鍵報到（篩選中的人員）
+          </button>
         </div>
         <div id="status-grid" class="guest-grid"></div>
         <div id="status-msg" style="display:none"></div>
@@ -694,10 +698,30 @@ function renderStatusGrid(){
     return true;
   });
   var sEl=document.getElementById('filter-stats');
+  var bbtn=document.getElementById('bulk-checkin-btn');
+  var hasF=q||aF||rF;
   if(sEl){
-    var hasF=q||aF||rF||statusFilter!=='all';
-    if(hasF&&filtered.length){var chk=filtered.filter(function(g){return checkedIds.has(g.id);}).length;sEl.textContent='篩選結果：'+filtered.length+' 人（已報到 '+chk+' / 未報到 '+(filtered.length-chk)+'）';sEl.style.display='block';}
-    else sEl.style.display='none';
+    if(hasF&&filtered.length){
+      var chk=filtered.filter(function(g){return checkedIds.has(g.id);}).length;
+      var unchk=filtered.length-chk;
+      sEl.textContent='篩選結果：'+filtered.length+' 人（已報到 '+chk+' / 未報到 '+unchk+'）';
+      sEl.style.display='block';
+      // 顯示一鍵報到按鈕（只有在有未報到人員時）
+      if(bbtn){
+        if(unchk>0){
+          bbtn.style.display='block';
+          bbtn.textContent='⚡ 一鍵報到 '+unchk+' 位篩選人員';
+        } else {
+          bbtn.textContent='✓ 篩選人員已全部報到';
+          bbtn.style.background='linear-gradient(135deg,#6b7280,#9ca3af)';
+          bbtn.style.display='block';
+          bbtn.disabled=true;
+        }
+      }
+    } else {
+      sEl.style.display='none';
+      if(bbtn){bbtn.style.display='none';bbtn.disabled=false;bbtn.style.background='linear-gradient(135deg,#059669,#10b981)';}
+    }
   }
   var logMap={};allLogs.forEach(function(l){logMap[l.id]=l;});
   var grid=document.getElementById('status-grid');
@@ -722,6 +746,51 @@ function renderStatusGrid(){
       +'<div style="display:flex;gap:4px;margin-top:4px">'+action+'</div></div>';
   });
   grid.innerHTML=html;
+}
+
+// ── 一鍵報到 ──────────────────────────
+async function bulkCheckin(){
+  var q=(document.getElementById('status-search')?document.getElementById('status-search').value:'').trim().toLowerCase();
+  var aF=document.getElementById('filter-area')?document.getElementById('filter-area').value:'';
+  var rF=document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'';
+
+  // 取得未報到的篩選人員
+  var targets=allGuests.filter(function(g){
+    if(checkedIds.has(g.id)) return false; // 已報到跳過
+    if(q&&!(g.name||'').toLowerCase().includes(q)&&!(g.id||'').toLowerCase().includes(q)) return false;
+    if(statusFilter==='checked') return false;
+    if(aF&&g.area!==aF) return false;
+    if(rF&&g.referrer!==rF) return false;
+    return true;
+  });
+
+  if(!targets.length){alert('目前篩選範圍內無未報到人員');return;}
+  if(!confirm('確定要為以下 '+targets.length+' 位人員一鍵完成報到？\n\n'+targets.map(function(g){return g.name+(g.table?' (第'+g.table+'桌)':'');}).slice(0,10).join('、')+(targets.length>10?'…等'+targets.length+'人':''))){return;}
+
+  var btn=document.getElementById('bulk-checkin-btn');
+  btn.disabled=true;btn.textContent='報到中…';
+
+  var t=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}).replace(/\//g,'-');
+  var success=0,fail=0;
+
+  for(var i=0;i<targets.length;i++){
+    var g=targets[i];
+    try{
+      // 檢查是否已報到（防重複）
+      var existing=await fsGet('log',g.id);
+      if(!existing){
+        await fsSet('log',g.id,{id:g.id,name:g.name,temple:g.temple||'',table:g.table||'',checkInTime:t,status:'已報到'});
+        checkedIds.add(g.id);
+        allLogs.push({id:g.id,name:g.name,temple:g.temple||'',table:g.table||'',checkInTime:t});
+        success++;
+      }
+    }catch(e){fail++;}
+    // 每10人更新一次進度
+    if(i%10===0){btn.textContent='報到中… '+Math.round((i+1)/targets.length*100)+'%';}
+  }
+
+  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  alert('✓ 一鍵報到完成！\n成功：'+success+' 人'+(fail?' / 失敗：'+fail+' 人':''));
 }
 
 function setFilter(f){
