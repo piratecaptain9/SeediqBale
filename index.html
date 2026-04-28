@@ -29,6 +29,15 @@
     @keyframes spin{to{transform:rotate(360deg)}}.spinner{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--primary);animation:spin .7s linear infinite}
     @keyframes shimmer{0%{box-shadow:0 0 0 0 var(--gold-ring)}70%{box-shadow:0 0 0 12px rgba(180,83,9,0)}100%{box-shadow:0 0 0 0 rgba(180,83,9,0)}}.shimmer{animation:shimmer 1.4s ease-out 2}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.blink{animation:blink 2s ease-in-out infinite}
+    /* Numpad */
+    .numpad-btn{background:#fff;border:1px solid var(--border2);border-radius:10px;padding:14px 0;font-size:20px;font-weight:700;color:var(--text);cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .numpad-btn:hover{background:var(--primary-dim);border-color:var(--primary-ring);color:var(--primary)}
+    .numpad-btn:active{transform:scale(.93);background:var(--primary);color:#fff}
+    .numpad-clear{background:var(--red-dim);color:var(--red);border-color:var(--red-ring)}
+    .numpad-clear:hover{background:var(--red);color:#fff}
+    .numpad-del{background:var(--panel);color:var(--soft)}
+    .numpad-del:hover{background:var(--border2);color:var(--text)}
+
     /* Scanner */
     #qr-reader{width:100%!important}
     #qr-reader video{width:100%!important;height:100%!important;object-fit:cover!important}
@@ -66,7 +75,7 @@
     .card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06)}
     .mode-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:#fff;border:1px solid var(--border2);border-radius:100px;padding:4px;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.12)}
     .mode-pill{padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;background:transparent;color:var(--muted);font-family:'Noto Sans TC',sans-serif;white-space:nowrap}
-    .mode-pill.ag{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-ring)}
+    .mode-pill.ag{background:rgba(212,175,90,.2);color:#d4af5a;border:1px solid rgba(212,175,90,.5)}
     .mode-pill.as{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-ring)}
     /* Sub tabs */
     .sub-tabs{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px;overflow-x:auto}
@@ -117,10 +126,12 @@
     .log-table tr:last-child td{border-bottom:none}
     .log-table tr:hover td{background:var(--panel)}
     /* Name dropdown */
-    .name-dropdown{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--border2);border-radius:10px;overflow:hidden;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.12)}
-    .name-opt{padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;font-size:14px}
-    .name-opt:hover{background:var(--panel)}
-    .name-opt:not(:last-child){border-bottom:1px solid var(--border)}
+    .name-dropdown{position:absolute;left:0;right:0;top:calc(100% + 4px);background:rgba(20,10,0,.97);backdrop-filter:blur(16px);border:1px solid rgba(212,175,90,.5);border-radius:10px;overflow:hidden;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+    .name-opt{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;transition:background .15s;font-size:14px}
+    .name-opt .n-name{font-weight:700;color:#fff;font-size:15px}
+    .name-opt .n-meta{font-size:11px;color:#f5d87a;white-space:nowrap}
+    .name-opt:hover{background:rgba(212,175,90,.2)}
+    .name-opt:not(:last-child){border-bottom:1px solid rgba(212,175,90,.2)}
     /* TABLE MODAL */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
     .modal-box{background:#fff;border-radius:14px;width:100%;max-width:680px;max-height:90dvh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
@@ -142,26 +153,45 @@
 <body>
 
 <!-- ══════════ GUEST PAGE ══════════ -->
-<div id="page-guest" class="page" style="display:none;background:linear-gradient(135deg,#fefce8 0%,#fef9c3 50%,#fef3c7 100%)">
-  <div class="w-full max-w-sm flex flex-col gap-5">
-    <header class="text-center pt-2 space-y-2">
-      <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:100px;background:var(--gold-dim);border:1px solid var(--gold-ring)">
-        <span style="font-size:11px;font-weight:700;color:var(--gold)">貴賓查詢</span>
+<div id="page-guest" class="page" style="display:none;min-height:100dvh;padding:0;position:relative;overflow:hidden;background:#1a1200">
+  <!-- 背景圖 -->
+  <div style="position:absolute;inset:0;background-image:url('https://piratecaptain9.github.io/SeediqBale/bg.jpg');background-size:cover;background-position:center;opacity:0.55"></div>
+  <!-- 金色漸層覆蓋 -->
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(20,10,0,.7) 100%)"></div>
+
+  <!-- 內容 -->
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:32px 16px 90px;min-height:100dvh">
+    <div class="w-full max-w-sm flex flex-col gap-5">
+
+      <!-- 活動標題區 -->
+      <header class="text-center" style="padding-top:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.2em;color:#d4af5a;margin-bottom:10px;text-shadow:0 0 20px rgba(212,175,90,.5)">✦ 安東彌勒山 ✦</div>
+        <h1 style="font-size:38px;font-weight:900;color:#f5d87a;line-height:1.1;margin-bottom:4px;text-shadow:0 2px 20px rgba(245,216,122,.4),0 0 40px rgba(212,175,90,.3)">千人宴</h1>
+        <p style="font-size:13px;color:#d4af5a;letter-spacing:.15em;margin-bottom:4px">募款餐會</p>
+        <p style="font-size:11px;color:rgba(212,175,90,.7);letter-spacing:.1em">千人共善・福聚一堂</p>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,90,.6),transparent);margin:16px 0"></div>
+        <p style="font-size:13px;color:rgba(255,240,200,.8);line-height:1.6">輸入姓名取得您的專屬邀請碼</p>
+      </header>
+
+      <!-- 搜尋卡片 -->
+      <div style="background:rgba(255,248,220,.12);backdrop-filter:blur(16px);border:1px solid rgba(212,175,90,.35);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px">
+        <div style="position:relative" id="guest-wrap">
+          <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋姓名"
+                 oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off"
+                 style="background:rgba(255,248,220,.15);border:1px solid rgba(212,175,90,.4);color:#fff;border-radius:10px;padding:12px 42px 12px 14px;font-size:14px;width:100%;outline:none"
+          />
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">🔍</span>
+          <div id="name-dd" class="name-dropdown" style="display:none"></div>
+        </div>
+        <button id="guest-btn" onclick="searchByName()"
+                style="width:100%;padding:13px;border:none;border-radius:10px;font-family:'Noto Sans TC',sans-serif;font-weight:900;font-size:15px;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,#d4af5a,#f5d87a,#b8922a);color:#3d2000;letter-spacing:.05em;box-shadow:0 4px 20px rgba(212,175,90,.4)">
+          查詢 QR Code
+        </button>
       </div>
-      <h1 style="font-size:26px;font-weight:900;color:#1c1917;line-height:1.2">查詢您的<br><span style="color:var(--gold)">入場 QR Code</span></h1>
-      <p style="font-size:13px;color:#78716c;line-height:1.6">輸入姓名即可取得您的專屬邀請碼</p>
-    </header>
-    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-ring),transparent)"></div>
-    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">
-      <div style="position:relative" id="guest-wrap">
-        <input type="text" id="guest-input" placeholder="輸入任一字即可搜尋" oninput="onGuestType()" onkeydown="onGuestKey(event)" autocomplete="off" style="padding-right:40px"/>
-        <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none">🔍</span>
-        <div id="name-dd" class="name-dropdown" style="display:none"></div>
-      </div>
-      <button class="btn btn-primary" id="guest-btn" onclick="searchByName()" style="width:100%">查詢 QR Code</button>
+
+      <div id="guest-result" style="display:none"></div>
+      <p style="text-align:center;font-size:11px;color:rgba(212,175,90,.6)">若查無資料，請洽現場工作人員</p>
     </div>
-    <div id="guest-result" style="display:none"></div>
-    <p style="text-align:center;font-size:11px;color:#a8a29e">若查無資料，請洽現場工作人員</p>
   </div>
 </div>
 
@@ -175,7 +205,26 @@
         <div style="font-size:40px;margin-bottom:12px">🔐</div>
         <h2 style="font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px">工作人員入口</h2>
         <p style="font-size:13px;color:var(--soft);margin-bottom:20px">請輸入工作人員密碼</p>
-        <input type="password" id="staff-pw" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPW()" style="margin-bottom:10px"/>
+        <!-- 密碼顯示 -->
+        <div id="pw-display" style="border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center;font-size:24px;letter-spacing:8px;color:var(--text);background:#fff;min-height:52px;margin-bottom:4px">
+          <span id="pw-dots"></span>
+        </div>
+        <input type="password" id="staff-pw" placeholder="或直接輸入密碼" onkeydown="if(event.key==='Enter')checkPW()" style="margin-bottom:4px;font-size:13px;padding:8px 12px;text-align:center"/>
+        <!-- 數字鍵盤 -->
+        <div id="numpad" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px">
+          <button class="numpad-btn" onclick="numpadPress('1')">1</button>
+          <button class="numpad-btn" onclick="numpadPress('2')">2</button>
+          <button class="numpad-btn" onclick="numpadPress('3')">3</button>
+          <button class="numpad-btn" onclick="numpadPress('4')">4</button>
+          <button class="numpad-btn" onclick="numpadPress('5')">5</button>
+          <button class="numpad-btn" onclick="numpadPress('6')">6</button>
+          <button class="numpad-btn" onclick="numpadPress('7')">7</button>
+          <button class="numpad-btn" onclick="numpadPress('8')">8</button>
+          <button class="numpad-btn" onclick="numpadPress('9')">9</button>
+          <button class="numpad-btn numpad-clear" onclick="numpadClear()" style="font-size:12px">清除</button>
+          <button class="numpad-btn" onclick="numpadPress('0')">0</button>
+          <button class="numpad-btn numpad-del" onclick="numpadDel()">⌫</button>
+        </div>
         <button class="btn btn-green" onclick="checkPW()" style="width:100%">進入工作人員系統</button>
         <p id="pw-err" style="display:none;margin-top:8px;font-size:12px;color:var(--red)">密碼錯誤，請再試一次</p>
       </div>
@@ -286,12 +335,22 @@
         <div class="card" style="padding:16px">
           <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">📂 匯入貴賓名單</p>
           <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援 Excel (.xlsx) 和 CSV，欄位：ID/姓名/所屬佛堂/備註/區別/介紹人/桌次</p>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <input type="file" id="import-file" accept=".csv,.xlsx,.xls"/>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <button class="btn btn-primary" onclick="previewImport()" style="font-size:13px">預覽內容</button>
-              <button class="btn btn-red" onclick="confirmImport()" id="import-btn" style="display:none;font-size:13px">確認匯入</button>
-            </div>
+          <!-- 拖曳上傳區 -->
+          <div id="drop-zone"
+               ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='var(--primary-dim)'"
+               ondragleave="this.style.borderColor='var(--border2)';this.style.background='var(--panel)'"
+               ondrop="onFileDrop(event)"
+               onclick="document.getElementById('import-file').click()"
+               style="border:2px dashed var(--border2);border-radius:10px;background:var(--panel);padding:28px 16px;text-align:center;cursor:pointer;transition:all .2s">
+            <div style="font-size:32px;margin-bottom:8px">📂</div>
+            <p style="font-size:13px;font-weight:700;color:var(--text2)">點擊選擇或拖曳檔案至此</p>
+            <p style="font-size:11px;color:var(--muted);margin-top:4px">支援 .xlsx / .csv</p>
+            <p id="drop-filename" style="display:none;margin-top:8px;font-size:12px;font-weight:700;color:var(--primary)"></p>
+          </div>
+          <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileSelect(this)"/>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn btn-primary" onclick="previewImport()" style="font-size:13px">預覽內容</button>
+            <button class="btn btn-red" onclick="confirmImport()" id="import-btn" style="display:none;font-size:13px">確認匯入</button>
           </div>
           <div id="import-preview" style="display:none;margin-top:10px"></div>
         </div>
@@ -460,8 +519,8 @@ function showDd(guests){
   guests.slice(0,8).forEach(function(g,i){
     var key='_gdd'+i; window[key]=g;
     html+='<div class="name-opt" onclick="selectG(window[\''+key+'\'])">'+
-      '<span style="font-weight:700;color:var(--text)">'+g.name+'</span>'+
-      '<span style="font-size:11px;color:var(--muted)">'+g.id+(g.temple?'・'+g.temple:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
+      '<span class="n-name">'+g.name+'</span>'+
+      '<span class="n-meta">'+g.id+(g.temple?'・'+g.temple:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
   });
   if(guests.length>8) html+='<div style="padding:8px 14px;font-size:11px;color:var(--muted);text-align:center">…還有'+(guests.length-8)+'位符合</div>';
   dd.innerHTML=html; dd.style.display='block';
@@ -486,9 +545,9 @@ async function searchByName(){
 }
 function guestErr(t,s){
   var el=document.getElementById('guest-result');
-  el.innerHTML='<div style="border-radius:10px;border:1px solid var(--red-ring);background:var(--red-dim);padding:16px;text-align:center">'+
-    '<p style="font-weight:700;font-size:14px;color:var(--red)">'+t+'</p>'+
-    '<p style="font-size:12px;color:var(--soft);margin-top:4px">'+s+'</p></div>';
+  el.innerHTML='<div style="border-radius:12px;border:1px solid rgba(220,38,38,.4);background:rgba(220,38,38,.15);backdrop-filter:blur(8px);padding:16px;text-align:center">'+
+    '<p style="font-weight:700;font-size:14px;color:#fca5a5">'+t+'</p>'+
+    '<p style="font-size:12px;color:rgba(255,200,200,.7);margin-top:4px">'+s+'</p></div>';
   animShow(el);
 }
 function showQR(g){
@@ -516,17 +575,46 @@ function showQR(g){
 }
 function showGuestPick(guests){
   var el=document.getElementById('guest-result'),html='';
-  html='<p style="font-size:13px;color:var(--soft);text-align:center;margin-bottom:8px">找到'+guests.length+'位同名，請選擇：</p>';
+  html='<p style="font-size:13px;color:rgba(212,175,90,.8);text-align:center;margin-bottom:8px">找到'+guests.length+'位同名，請選擇：</p>';
   guests.forEach(function(g,i){
     var key='_gpick'+i; window[key]=g;
-    html+='<button onclick="showQR(window[\''+key+'\'])" style="width:100%;text-align:left;border-radius:10px;border:1px solid var(--border2);background:#fff;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.06)">'+
-      '<span style="color:var(--text);font-weight:700">'+g.name+'</span>'+
-      '<span style="font-size:11px;color:var(--muted)">'+g.id+(g.table?' · 第'+g.table+'桌':'')+'</span></button>';
+    html+='<button onclick="showQR(window[\''+key+'\'])" style="width:100%;text-align:left;border-radius:10px;border:1px solid rgba(212,175,90,.3);background:rgba(255,248,220,.1);backdrop-filter:blur(8px);padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+
+      '<span style="color:#f5d87a;font-weight:700">'+g.name+'</span>'+
+      '<span style="font-size:11px;color:rgba(212,175,90,.7)">'+g.id+(g.table?' · 第'+g.table+'桌':'')+'</span></button>';
   });
   el.innerHTML=html; animShow(el);
 }
 
 // ══ Staff auth ════════════════════════
+// ── Numpad ──
+var numpadValue = '';
+function numpadPress(n){
+  numpadValue += n;
+  document.getElementById('staff-pw').value = numpadValue;
+  updatePwDots();
+}
+function numpadDel(){
+  numpadValue = numpadValue.slice(0,-1);
+  document.getElementById('staff-pw').value = numpadValue;
+  updatePwDots();
+}
+function numpadClear(){
+  numpadValue = '';
+  document.getElementById('staff-pw').value = '';
+  updatePwDots();
+}
+function updatePwDots(){
+  var dots = document.getElementById('pw-dots');
+  if(dots) dots.textContent = '●'.repeat(numpadValue.length) || '';
+}
+// 同步手動輸入到 numpadValue
+document.addEventListener('input', function(e){
+  if(e.target && e.target.id==='staff-pw'){
+    numpadValue = e.target.value;
+    updatePwDots();
+  }
+});
+
 function checkPW(){
   if(document.getElementById('staff-pw').value===STAFF_PASSWORD){
     document.getElementById('staff-gate').style.display='none';
@@ -930,8 +1018,32 @@ function showPreview(){
   prev.style.display='block';
   document.getElementById('import-btn').style.display='block';
 }
-var importData=[];
+// ── 拖曳 / 選擇檔案處理 ──
+var importData=[], currentFile=null;
+
+function onFileSelect(input){
+  if(input.files[0]) setImportFile(input.files[0]);
+}
+
+function onFileDrop(event){
+  event.preventDefault();
+  var dz=document.getElementById('drop-zone');
+  dz.style.borderColor='var(--border2)';dz.style.background='var(--panel)';
+  var file=event.dataTransfer.files[0];
+  if(file) setImportFile(file);
+}
+
+function setImportFile(file){
+  currentFile=file;
+  var fn=document.getElementById('drop-filename');
+  fn.textContent='✓ 已選擇：'+file.name;
+  fn.style.display='block';
+  // 自動預覽
+  previewImport();
+}
+
 function previewImport(){
+  var file=currentFile||document.getElementById('import-file').files[0];
   var file=document.getElementById('import-file').files[0];if(!file){alert('請先選擇檔案');return;}
   var ext=file.name.split('.').pop().toLowerCase();
   if(ext==='xlsx'||ext==='xls'){
