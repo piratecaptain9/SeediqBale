@@ -791,6 +791,9 @@ async function bulkCheckin(){
 
   updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
   alert('✓ 一鍵報到完成！\n成功：'+success+' 人'+(fail?' / 失敗：'+fail+' 人':''));
+  // 重設按鈕狀態
+  btn.disabled=false;
+  btn.style.background='linear-gradient(135deg,#059669,#10b981)';
 }
 
 function setFilter(f){
