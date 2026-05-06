@@ -338,7 +338,7 @@
       <div id="panel-import" style="display:none;flex-direction:column;gap:10px">
         <div class="card" style="padding:16px">
           <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">📂 匯入貴賓名單</p>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援 Excel (.xlsx) 和 CSV，欄位：ID/姓名/所屬佛堂/備註/區別/介紹人/桌次</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">支援 Excel (.xlsx) 和 CSV，欄位：ID/姓名/電話/備註/區別/介紹人/桌次</p>
           <!-- 拖曳上傳區 -->
           <div id="drop-zone"
                ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='var(--primary-dim)'"
@@ -367,7 +367,7 @@
           <input type="text" id="log-search" placeholder="🔍 搜尋…" oninput="filterLogTable()" style="font-size:13px;margin-bottom:10px"/>
           <div id="log-wrap" style="display:none;border-radius:8px;overflow:hidden;border:1px solid var(--border);overflow-x:auto">
             <table class="log-table">
-              <thead><tr><th>ID</th><th>姓名</th><th>桌次</th><th>報到時間</th><th>操作</th></tr></thead>
+              <thead><tr><th>ID</th><th>姓名</th><th>電話</th><th>桌次</th><th>報到時間</th><th>操作</th></tr></thead>
               <tbody id="log-tbody"></tbody>
             </table>
           </div>
@@ -524,7 +524,7 @@ function showDd(guests){
     var key='_gdd'+i; window[key]=g;
     html+='<div class="name-opt" onclick="selectG(window[\''+key+'\'])">'+
       '<span class="n-name">'+g.name+'</span>'+
-      '<span class="n-meta">'+g.id+(g.temple?'・'+g.temple:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
+      '<span class="n-meta">'+g.id+(g.number?'・'+g.number:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
   });
   if(guests.length>8) html+='<div style="padding:8px 14px;font-size:11px;color:var(--muted);text-align:center">…還有'+(guests.length-8)+'位符合</div>';
   dd.innerHTML=html; dd.style.display='block';
@@ -741,7 +741,7 @@ function renderStatusGrid(){
     html+='<div class="g-card '+(done?'done':'')+'">'
       +'<div class="g-badge '+(done?'done':'todo')+'">'+(done?'☑ 已報到':'☐ 未報到')+'</div>'
       +'<div style="font-size:13px;font-weight:700;color:var(--text)">'+g.name+'</div>'
-      +'<div style="font-size:10px;color:var(--muted)">'+g.id+(g.temple?'・'+g.temple:'')+'</div>'
+      +'<div style="font-size:10px;color:var(--muted)">'+g.id+(g.number?'・'+g.number:'')+'</div>'
       +tagsHtml+timeHtml
       +'<div style="display:flex;gap:4px;margin-top:4px">'+action+'</div></div>';
   });
@@ -779,9 +779,9 @@ async function bulkCheckin(){
       // 檢查是否已報到（防重複）
       var existing=await fsGet('log',g.id);
       if(!existing){
-        await fsSet('log',g.id,{id:g.id,name:g.name,temple:g.temple||'',table:g.table||'',checkInTime:t,status:'已報到'});
+        await fsSet('log',g.id,{id:g.id,name:g.name,number:g.number||'',table:g.table||'',checkInTime:t,status:'已報到'});
         checkedIds.add(g.id);
-        allLogs.push({id:g.id,name:g.name,temple:g.temple||'',table:g.table||'',checkInTime:t});
+        allLogs.push({id:g.id,name:g.name,number:g.number||'',table:g.table||'',checkInTime:t});
         success++;
       }
     }catch(e){fail++;}
@@ -822,7 +822,7 @@ function renderQRGrid(){
       +'<div class="qr-img-wrap '+(done?'done-b':'')+'">'
       +'<img src="'+qr+'" width="90" height="90" loading="lazy" style="display:block;border-radius:5px"/></div>'
       +'<div style="font-size:12px;font-weight:700;color:var(--text);text-align:center;line-height:1.3">'+g.name+'</div>'
-      +'<div style="font-size:9px;color:var(--muted)">'+g.id+(g.temple?'・'+g.temple:'')+'</div>'
+      +'<div style="font-size:9px;color:var(--muted)">'+g.id+(g.number?'・'+g.number:'')+'</div>'
       +'<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
       +'<button class="qr-btn dl" onclick="dlQR(\''+qr+'\',\''+g.name+'\')">📥 下載 QR</button>'
       +'<button class="qr-btn cp" id="cpbtn_'+g.id+'" onclick="copyLink(\''+url+'\',\''+g.id+'\')">🔗 複製連結</button>'
@@ -851,7 +851,7 @@ function printAllQR(){
       +'<img src="'+qr+'" width="110" height="110" style="border-radius:5px"/>'
       +(g.table?'<span style="font-size:11px;font-weight:700;color:#3b82f6;background:#eff6ff;padding:2px 8px;border-radius:4px">第'+g.table+'桌</span>':'')
       +'<b style="font-size:12px;color:#000">'+g.name+'</b>'
-      +'<span style="font-size:9px;color:#888">'+g.id+(g.temple?'・'+g.temple:'')+'</span>'
+      +'<span style="font-size:9px;color:#888">'+g.id+(g.number?'・'+g.number:'')+'</span>'
       +(done?'<span style="font-size:9px;color:#16a34a;font-weight:700">✓ 已報到</span>':'')+'</div>';
   }).join('');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">'+cards+'</div></body></html>');
@@ -875,9 +875,9 @@ async function doCheckin(id,name){
   if(existing){alert('⚠ '+name+' 已於 '+existing.checkInTime+' 完成報到');return;}
   var t=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}).replace(/\//g,'-');
   var guest=allGuests.find(function(g){return g.id===id;})||{};
-  await fsSet('log',id,{id:id,name:name,temple:guest.temple||'',table:guest.table||'',checkInTime:t,status:'已報到'});
+  await fsSet('log',id,{id:id,name:name,number:guest.number||'',table:guest.table||'',checkInTime:t,status:'已報到'});
   checkedIds.add(id);
-  allLogs.push({id:id,name:name,temple:guest.temple||'',table:guest.table||'',checkInTime:t});
+  allLogs.push({id:id,name:name,number:guest.number||'',table:guest.table||'',checkInTime:t});
   updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
   alert('✓ '+name+' 報到成功！\n時間：'+t+(guest.table?'\n桌次：第'+guest.table+'桌':''));
 }
@@ -938,9 +938,9 @@ async function onScan(decoded){
       }else{
         var t=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}).replace(/\//g,'-');
         var tbl=guest.table||tableFromQR||'';
-        await fsSet('log',id,{id:id,name:guest.name,temple:guest.temple||'',table:tbl,checkInTime:t,status:'已報到'});
+        await fsSet('log',id,{id:id,name:guest.name,number:guest.number||'',table:tbl,checkInTime:t,status:'已報到'});
         checkedIds.add(id);
-        allLogs.push({id:id,name:guest.name,temple:guest.temple||'',table:tbl,checkInTime:t});
+        allLogs.push({id:id,name:guest.name,number:guest.number||'',table:tbl,checkInTime:t});
         updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
         scanResult('success','歡迎光臨，'+guest.name+' 先生/小姐','報到時間：'+t,{id:id,name:guest.name,table:tbl});
       }
@@ -1063,7 +1063,7 @@ function filterLogTable(){
 }
 
 // ══ Import ══════════════════════════
-var COL_MAP={id:['id','ID','編號'],name:['name','姓名'],temple:['temple','所屬佛堂','佛堂'],note:['note','備註'],area:['area','區別'],referrer:['referrer','介紹人'],table:['table','桌次']};
+var COL_MAP={id:['id','ID','編號'],name:['name','姓名'],number:['number','temple','電話','所屬佛堂','佛堂'],note:['note','備註'],area:['area','區別'],referrer:['referrer','介紹人'],table:['table','桌次']};
 function findCol(header,key){var ts=COL_MAP[key]||[key];return header.findIndex(function(h){return ts.some(function(t){return h===t||h===t.toLowerCase();});});}
 
 function processRows(rows){
@@ -1071,9 +1071,9 @@ function processRows(rows){
   var header=rows[0].map(function(h){return String(h).trim();});
   var idIdx=findCol(header,'id'),nameIdx=findCol(header,'name');
   if(idIdx<0||nameIdx<0){showImportMsg('找不到必要欄位。偵測到：'+header.join(', '));return;}
-  var tIdx=findCol(header,'temple'),nIdx=findCol(header,'note'),aIdx=findCol(header,'area'),rIdx=findCol(header,'referrer'),tbIdx=findCol(header,'table');
+  var tIdx=findCol(header,'number'),nIdx=findCol(header,'note'),aIdx=findCol(header,'area'),rIdx=findCol(header,'referrer'),tbIdx=findCol(header,'table');
   importData=rows.slice(1).map(function(cols){
-    return{id:String(cols[idIdx]||'').trim(),name:String(cols[nameIdx]||'').trim(),temple:tIdx>=0?String(cols[tIdx]||'').trim():'',note:nIdx>=0?String(cols[nIdx]||'').trim():'',area:aIdx>=0?String(cols[aIdx]||'').trim():'',referrer:rIdx>=0?String(cols[rIdx]||'').trim():'',table:tbIdx>=0?String(cols[tbIdx]||'').trim():''};
+    return{id:String(cols[idIdx]||'').trim(),name:String(cols[nameIdx]||'').trim(),number:tIdx>=0?String(cols[tIdx]||'').trim():'',note:nIdx>=0?String(cols[nIdx]||'').trim():'',area:aIdx>=0?String(cols[aIdx]||'').trim():'',referrer:rIdx>=0?String(cols[rIdx]||'').trim():'',table:tbIdx>=0?String(cols[tbIdx]||'').trim():''};
   }).filter(function(r){return r.id&&r.name;});
   showPreview();
 }
@@ -1149,14 +1149,14 @@ function showImportMsg(msg){var p=document.getElementById('import-preview');p.in
 // ══ Export ══════════════════════════
 function exportGuestExcel(){
   if(!allGuests.length){alert('請先載入名單');return;}
-  var header=['ID','姓名','所屬佛堂','備註','區別','介紹人','桌次','狀態'];
-  var rows=allGuests.map(function(g){return[g.id,g.name,g.temple||'',g.note||'',g.area||'',g.referrer||'',g.table||'',checkedIds.has(g.id)?'已報到':'未報到'];});
+  var header=['ID','姓名','電話','備註','區別','介紹人','桌次','狀態'];
+  var rows=allGuests.map(function(g){return[g.id,g.name,g.number||'',g.note||'',g.area||'',g.referrer||'',g.table||'',checkedIds.has(g.id)?'已報到':'未報到'];});
   dlXlsx([header].concat(rows),'貴賓名單_'+today()+'.xlsx');
 }
 function exportLogExcel(){
   if(!allLogs.length){alert('尚無報到記錄');return;}
-  var header=['ID','姓名','佛堂','桌次','報到時間'];
-  var rows=allLogs.map(function(l){return[l.id,l.name||'',l.temple||'',l.table||'',l.checkInTime||''];});
+  var header=['ID','姓名','電話','桌次','報到時間'];
+  var rows=allLogs.map(function(l){return[l.id,l.name||'',l.number||'',l.table||'',l.checkInTime||''];});
   dlXlsx([header].concat(rows),'報到記錄_'+today()+'.xlsx');
 }
 function dlXlsx(data,filename){var ws=XLSX.utils.aoa_to_sheet(data);var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Sheet1');XLSX.writeFile(wb,filename);}
