@@ -1063,7 +1063,7 @@ function filterLogTable(){
 }
 
 // ══ Import ══════════════════════════
-var COL_MAP={id:['id','ID','編號'],name:['name','姓名'],number:['number','temple','電話','所屬佛堂','佛堂'],note:['note','備註'],area:['area','區別'],referrer:['referrer','介紹人'],table:['table','桌次']};
+var COL_MAP={id:['id','ID','編號'],name:['name','姓名'],number:['number','電話'],note:['note','備註'],area:['area','區別'],referrer:['referrer','介紹人'],table:['table','桌次']};
 function findCol(header,key){var ts=COL_MAP[key]||[key];return header.findIndex(function(h){return ts.some(function(t){return h===t||h===t.toLowerCase();});});}
 
 function processRows(rows){
