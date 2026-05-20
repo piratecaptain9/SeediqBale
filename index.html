@@ -295,15 +295,28 @@
         <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
           <input type="text" id="status-search" placeholder="🔍 搜尋姓名或 ID…" oninput="renderStatusGrid()" style="font-size:13px"/>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div>
+            <div style="position:relative">
               <label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px">區別</label>
-              <select id="filter-area" onchange="renderStatusGrid()"><option value="">全部區別</option></select>
+              <input type="text" id="filter-area-input" placeholder="輸入或選擇區別…"
+                oninput="onFilterInput('area')" onfocus="openFilterDd('area')" autocomplete="off"
+                style="font-size:13px;padding:9px 30px 9px 12px"/>
+              <span onclick="clearFilter('area')" id="filter-area-clear"
+                style="display:none;position:absolute;right:8px;top:50%;margin-top:6px;transform:translateY(-50%);cursor:pointer;font-size:14px;color:var(--muted)">✕</span>
+              <div id="filter-area-dd" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);overflow:hidden;max-height:180px;overflow-y:auto"></div>
             </div>
-            <div>
+            <div style="position:relative">
               <label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px">介紹人</label>
-              <select id="filter-referrer" onchange="renderStatusGrid()"><option value="">全部介紹人</option></select>
+              <input type="text" id="filter-referrer-input" placeholder="輸入或選擇介紹人…"
+                oninput="onFilterInput('referrer')" onfocus="openFilterDd('referrer')" autocomplete="off"
+                style="font-size:13px;padding:9px 30px 9px 12px"/>
+              <span onclick="clearFilter('referrer')" id="filter-referrer-clear"
+                style="display:none;position:absolute;right:8px;top:50%;margin-top:6px;transform:translateY(-50%);cursor:pointer;font-size:14px;color:var(--muted)">✕</span>
+              <div id="filter-referrer-dd" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);overflow:hidden;max-height:180px;overflow-y:auto"></div>
             </div>
           </div>
+          <!-- hidden selects for backward compat -->
+          <select id="filter-area" style="display:none"></select>
+          <select id="filter-referrer" style="display:none"></select>
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
             <button class="filter-btn fa" id="fb-all"     onclick="setFilter('all')">全部</button>
             <button class="filter-btn"    id="fb-checked" onclick="setFilter('checked')">已報到</button>
@@ -672,23 +685,83 @@ function updateDash(){
   document.getElementById('dash-progress').style.display='block';
 }
 
+// Store all options for searchable dropdowns
+var allAreas=[], allReferrers=[];
+
 function buildDropdowns(){
-  var areas=[],refs=[];
+  allAreas=[]; allReferrers=[];
   allGuests.forEach(function(g){
-    if(g.area&&areas.indexOf(g.area)===-1) areas.push(g.area);
-    if(g.referrer&&refs.indexOf(g.referrer)===-1) refs.push(g.referrer);
+    if(g.area     && allAreas.indexOf(g.area)===-1)         allAreas.push(g.area);
+    if(g.referrer && allReferrers.indexOf(g.referrer)===-1) allReferrers.push(g.referrer);
   });
-  areas.sort();refs.sort();
-  var aEl=document.getElementById('filter-area'),rEl=document.getElementById('filter-referrer');
-  if(aEl){var av=aEl.value;aEl.innerHTML='<option value="">全部區別</option>'+areas.map(function(a){return '<option value="'+a+'">'+a+'</option>';}).join('');if(av)aEl.value=av;}
-  if(rEl){var rv=rEl.value;rEl.innerHTML='<option value="">全部介紹人</option>'+refs.map(function(r){return '<option value="'+r+'">'+r+'</option>';}).join('');if(rv)rEl.value=rv;}
+  allAreas.sort(); allReferrers.sort();
+  // Keep hidden selects in sync (used by renderStatusGrid via .value)
+  var aEl=document.getElementById('filter-area'), rEl=document.getElementById('filter-referrer');
+  if(aEl) aEl.innerHTML='<option value="">全部區別</option>'+allAreas.map(function(a){return '<option value="'+a+'">'+a+'</option>';}).join('');
+  if(rEl) rEl.innerHTML='<option value="">全部介紹人</option>'+allReferrers.map(function(r){return '<option value="'+r+'">'+r+'</option>';}).join('');
 }
+
+// ── Searchable filter dropdowns ──────
+function onFilterInput(type){
+  var val=document.getElementById('filter-'+type+'-input').value.trim();
+  // Sync hidden select
+  var sel=document.getElementById('filter-'+type);
+  if(sel) sel.value=val;
+  // Show/hide clear button
+  var clr=document.getElementById('filter-'+type+'-clear');
+  if(clr) clr.style.display=val?'block':'none';
+  openFilterDd(type);
+  renderStatusGrid();
+}
+
+function openFilterDd(type){
+  var val=(document.getElementById('filter-'+type+'-input').value||'').trim().toLowerCase();
+  var options=type==='area'?allAreas:allReferrers;
+  var filtered=val?options.filter(function(o){return o.toLowerCase().includes(val);}):options;
+  var dd=document.getElementById('filter-'+type+'-dd');
+  if(!dd||!filtered.length){if(dd)dd.style.display='none';return;}
+  dd.innerHTML=filtered.map(function(o){
+    return '<div onclick="selectFilterOption(''+type+'',''+o+'')" style="padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--panel)'" onmouseout="this.style.background=''">'+o+'</div>';
+  }).join('');
+  dd.style.display='block';
+}
+
+function selectFilterOption(type, val){
+  document.getElementById('filter-'+type+'-input').value=val;
+  var sel=document.getElementById('filter-'+type);
+  if(sel) sel.value=val;
+  var clr=document.getElementById('filter-'+type+'-clear');
+  if(clr) clr.style.display='block';
+  document.getElementById('filter-'+type+'-dd').style.display='none';
+  renderStatusGrid();
+}
+
+function clearFilter(type){
+  document.getElementById('filter-'+type+'-input').value='';
+  var sel=document.getElementById('filter-'+type);
+  if(sel) sel.value='';
+  var clr=document.getElementById('filter-'+type+'-clear');
+  if(clr) clr.style.display='none';
+  document.getElementById('filter-'+type+'-dd').style.display='none';
+  renderStatusGrid();
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click',function(e){
+  ['area','referrer'].forEach(function(type){
+    var wrap=document.getElementById('filter-'+type+'-input');
+    var dd=document.getElementById('filter-'+type+'-dd');
+    if(wrap&&dd&&!wrap.contains(e.target)&&!dd.contains(e.target)){
+      dd.style.display='none';
+    }
+  });
+});
 
 // ── Status grid ──
 function renderStatusGrid(){
   var q=(document.getElementById('status-search')?document.getElementById('status-search').value:'').trim().toLowerCase();
-  var aF=document.getElementById('filter-area')?document.getElementById('filter-area').value:'';
-  var rF=document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'';
+  var aF=(document.getElementById('filter-area-input')?document.getElementById('filter-area-input').value:document.getElementById('filter-area')?document.getElementById('filter-area').value:'').trim();
+  var rF=(document.getElementById('filter-referrer-input')?document.getElementById('filter-referrer-input').value:document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'').trim();
   var filtered=allGuests.filter(function(g){
     if(q&&!(g.name||'').toLowerCase().includes(q)&&!(g.id||'').toLowerCase().includes(q)) return false;
     if(statusFilter==='checked'&&!checkedIds.has(g.id)) return false;
@@ -699,7 +772,7 @@ function renderStatusGrid(){
   });
   var sEl=document.getElementById('filter-stats');
   var bbtn=document.getElementById('bulk-checkin-btn');
-  var hasF=q||aF||rF;
+  var hasF=q||aF||rF; // aF/rF already trimmed above
   if(sEl){
     if(hasF&&filtered.length){
       var chk=filtered.filter(function(g){return checkedIds.has(g.id);}).length;
@@ -753,8 +826,8 @@ function renderStatusGrid(){
 // ── 一鍵報到 ──────────────────────────
 async function bulkCheckin(){
   var q=(document.getElementById('status-search')?document.getElementById('status-search').value:'').trim().toLowerCase();
-  var aF=document.getElementById('filter-area')?document.getElementById('filter-area').value:'';
-  var rF=document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'';
+  var aF=(document.getElementById('filter-area-input')?document.getElementById('filter-area-input').value:document.getElementById('filter-area')?document.getElementById('filter-area').value:'').trim();
+  var rF=(document.getElementById('filter-referrer-input')?document.getElementById('filter-referrer-input').value:document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'').trim();
 
   // 取得未報到的篩選人員
   var targets=allGuests.filter(function(g){
