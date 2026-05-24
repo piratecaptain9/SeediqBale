@@ -789,7 +789,7 @@ function openFilterDd(type){
   var dd=document.getElementById('filter-'+type+'-dd');
   if(!dd||!filtered.length){if(dd)dd.style.display='none';return;}
   dd.innerHTML=filtered.map(function(o){
-    return '<div onclick="selectFilterOption(''+type+'',''+o+'')" style="padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--panel)'" onmouseout="this.style.background=''">'+o+'</div>';
+    return '<div onclick="selectFilterOption(\'' + type + '\',\'' + o + '\')" style="padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background=\'var(--panel)\'" onmouseout="this.style.background=\'\'">'+o+'</div>';
   }).join('');
   dd.style.display='block';
 }
