@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -726,6 +727,7 @@ function switchTab(tab){
   document.getElementById('tab-'+tab).className='sub-tab t-'+tab;
   if(tab!=='scan') stopScanner();
   if(tab==='rt') renderRoundTable();
+  if(tab==='qr' && dataLoaded) renderQRGrid();
   window._activeTab=tab;
 }
 
@@ -741,7 +743,8 @@ async function loadAll(){
     allLogs=results[1].sort(function(a,b){return (a.checkInTime||'').localeCompare(b.checkInTime||'');});
     checkedIds=new Set(allLogs.map(function(l){return l.id;}));
     guestCache=allGuests;
-    updateDash(); buildDropdowns(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+    updateDash(); buildDropdowns(); renderStatusGrid(); renderLogTable(allLogs);
+    if(window._activeTab==='qr') renderQRGrid();
     document.getElementById('log-wrap').style.display='block';
     document.getElementById('status-msg').style.display='none';
     document.getElementById('qr-msg').style.display='none';
@@ -950,7 +953,7 @@ async function bulkCheckin(){
     if(i%10===0){btn.textContent='報到中… '+Math.round((i+1)/targets.length*100)+'%';}
   }
 
-  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
   alert('✓ 一鍵報到完成！\n成功：'+success+' 人'+(fail?' / 失敗：'+fail+' 人':''));
   // 重設按鈕狀態
   btn.disabled=false;
@@ -992,7 +995,20 @@ function renderQRGrid(){
   grid.innerHTML=html;
 }
 
-function dlQR(src,name){var a=document.createElement('a');a.href=src.replace('200x200','400x400');a.download='QR_'+name+'.png';a.target='_blank';a.click();}
+async function dlQR(src,name){
+  var url=src.replace('200x200','400x400');
+  try{
+    var resp=await fetch(url);
+    var blob=await resp.blob();
+    var objUrl=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=objUrl;a.download='QR_'+name+'.png';a.click();
+    setTimeout(function(){URL.revokeObjectURL(objUrl);},1000);
+  }catch(e){
+    // fallback: open in new tab
+    window.open(url,'_blank');
+  }
+}
 function copyLink(url,id){
   var btn=document.getElementById('cpbtn_'+id);
   navigator.clipboard.writeText(url).then(function(){
@@ -1018,16 +1034,41 @@ function printAllQR(){
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">'+cards+'</div></body></html>');
   win.document.close();setTimeout(function(){win.print();},800);
 }
-function downloadAllQR(){
-  alert('將逐一開啟各貴賓的 QR Code 下載連結。');
-  allGuests.forEach(function(g,i){
-    setTimeout(function(){
+async function downloadAllQR(){
+  if(!allGuests.length){alert('請先載入名單');return;}
+  var btn=document.querySelector('[onclick="downloadAllQR()"]');
+  if(btn){btn.disabled=true;btn.textContent='打包中…';}
+  var zip=new JSZip();
+  var total=allGuests.length, done=0, fail=0;
+  // 每次並發 10 張，避免同時開太多連線
+  var BATCH=10;
+  for(var i=0;i<total;i+=BATCH){
+    var batch=allGuests.slice(i,i+BATCH);
+    await Promise.all(batch.map(async function(g){
       var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
-      var a=document.createElement('a');
-      a.href='https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data='+encodeURIComponent(qrData);
-      a.download='QR_'+g.id+'_'+g.name+'.png';a.target='_blank';a.click();
-    },i*300);
-  });
+      var url='https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data='+encodeURIComponent(qrData);
+      try{
+        var resp=await fetch(url);
+        var blob=await resp.blob();
+        var fname=(g.table?'第'+g.table+'桌_':'')+g.name+'_'+g.id+'.png';
+        zip.file(fname,blob);
+        done++;
+      }catch(e){fail++;}
+    }));
+    if(btn) btn.textContent='打包中 '+Math.min(i+BATCH,total)+'/'+total+'…';
+  }
+  try{
+    var zipBlob=await zip.generateAsync({type:'blob'});
+    var objUrl=URL.createObjectURL(zipBlob);
+    var a=document.createElement('a');
+    a.href=objUrl;a.download='QRCodes_全部.zip';a.click();
+    setTimeout(function(){URL.revokeObjectURL(objUrl);},2000);
+    if(btn){btn.disabled=false;btn.innerHTML='📥 下載全部';}
+    alert('完成！已打包 '+done+' 張 QR Code'+( fail?' （'+fail+' 張失敗）':'')+'\n下載檔案：QRCodes_全部.zip');
+  }catch(e){
+    if(btn){btn.disabled=false;btn.innerHTML='📥 下載全部';}
+    alert('打包失敗：'+e.message);
+  }
 }
 
 // ── Checkin / Cancel ──
@@ -1039,14 +1080,14 @@ async function doCheckin(id,name){
   await fsSet('log',id,{id:id,name:name,number:guest.number||'',table:guest.table||'',checkInTime:t,status:'已報到'});
   checkedIds.add(id);
   allLogs.push({id:id,name:name,number:guest.number||'',table:guest.table||'',checkInTime:t});
-  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
   alert('✓ '+name+' 報到成功！\n時間：'+t+(guest.table?'\n桌次：第'+guest.table+'桌':''));
 }
 async function cancelCheckin(id,name){
   if(!confirm('確定取消「'+name+'」的報到記錄？')) return;
   await fsDel('log',id);
   checkedIds.delete(id);allLogs=allLogs.filter(function(l){return l.id!==id;});
-  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
 }
 
 // ══ Scanner ════════════════════════
@@ -1102,7 +1143,7 @@ async function onScan(decoded){
         await fsSet('log',id,{id:id,name:guest.name,number:guest.number||'',table:tbl,checkInTime:t,status:'已報到'});
         checkedIds.add(id);
         allLogs.push({id:id,name:guest.name,number:guest.number||'',table:tbl,checkInTime:t});
-        updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+        updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
         scanResult('success','歡迎光臨，'+guest.name+' 先生/小姐','報到時間：'+t,{id:id,name:guest.name,table:tbl});
       }
     }
@@ -1198,7 +1239,7 @@ async function saveTableData(){
       if(g) g.table=u.table;
     });
     guestCache=allGuests;
-    renderStatusGrid();renderQRGrid();
+    renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();
     closeTableModal();
     alert('✓ 桌次已儲存！共更新 '+updates.length+' 筆');
   }catch(e){alert('儲存失敗：'+e.message);}
