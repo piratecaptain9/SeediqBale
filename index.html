@@ -1708,10 +1708,10 @@ function renderVacancyView(groups){
 
 // 圓桌視角也更新 dashboard
 var _origUpdateDash = updateDash;
-function updateDash(){
+updateDash = function(){
   _origUpdateDash();
   if(window._activeTab==='rt') renderRoundTable();
-}
+};
 
 </script>
 </body>
