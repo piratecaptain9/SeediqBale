@@ -471,7 +471,7 @@
     <div class="modal-body">
       <div style="background:var(--primary-dim);border:1px solid var(--primary-ring);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span style="font-size:12px;font-weight:700;color:var(--primary)">✏️ 自動分配：每桌</span>
-        <input type="number" id="auto-per-table" value="10" min="1" max="100" style="width:60px;padding:5px 8px;font-size:14px;font-weight:700;text-align:center"/>
+        <input type="number" id="auto-per-table" value="11" min="1" max="100" style="width:60px;padding:5px 8px;font-size:14px;font-weight:700;text-align:center"/>
         <span style="font-size:12px;font-weight:700;color:var(--primary)">人</span>
         <button class="btn btn-primary" onclick="autoAssignTables()" style="padding:6px 14px;font-size:12px">自動填入</button>
       </div>
@@ -988,26 +988,55 @@ function renderQRGrid(){
       +'<div style="font-size:12px;font-weight:700;color:var(--text);text-align:center;line-height:1.3">'+g.name+'</div>'
       +'<div style="font-size:9px;color:var(--muted)">'+g.id+(g.number?'・'+g.number:'')+'</div>'
       +'<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
-      +'<button class="qr-btn dl" onclick="dlQR(\''+qr+'\',\''+g.name+'\')">📥 下載 QR</button>'
+      +'<button class="qr-btn dl" onclick="dlQR(\''+qr+'\',\''+g.name+'\',\''+g.table+'\')">📥 下載 QR</button>'
       +'<button class="qr-btn cp" id="cpbtn_'+g.id+'" onclick="copyLink(\''+url+'\',\''+g.id+'\')">🔗 複製連結</button>'
       +'</div></div>';
   });
   grid.innerHTML=html;
 }
 
-async function dlQR(src,name){
-  var url=src.replace('200x200','400x400');
+async function makeQRCanvas(qrUrl, name, table){
+  var resp=await fetch(qrUrl);
+  var blob=await resp.blob();
+  var imgUrl=URL.createObjectURL(blob);
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    img.onload=function(){
+      var sz=400, pad=24, nameH=46, tblH=table?38:0;
+      var canvas=document.createElement('canvas');
+      canvas.width=sz+pad*2;
+      canvas.height=sz+pad*2+nameH+tblH;
+      var ctx=canvas.getContext('2d');
+      ctx.fillStyle='#ffffff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img,pad,pad,sz,sz);
+      URL.revokeObjectURL(imgUrl);
+      ctx.textAlign='center';
+      ctx.fillStyle='#1e293b';
+      ctx.font='bold 28px sans-serif';
+      ctx.fillText(name,canvas.width/2,sz+pad+34);
+      if(table){
+        ctx.fillStyle='#1d4ed8';
+        ctx.font='bold 22px sans-serif';
+        ctx.fillText('第 '+table+' 桌',canvas.width/2,sz+pad+nameH+26);
+      }
+      canvas.toBlob(function(b){resolve(b);},'image/png');
+    };
+    img.onerror=reject;
+    img.src=imgUrl;
+  });
+}
+async function dlQR(src,name,table){
+  var url=src.replace(/\d+x\d+/,'400x400');
   try{
-    var resp=await fetch(url);
-    var blob=await resp.blob();
+    var blob=await makeQRCanvas(url,name,table);
     var objUrl=URL.createObjectURL(blob);
     var a=document.createElement('a');
-    a.href=objUrl;a.download='QR_'+name+'.png';a.click();
+    a.href=objUrl;
+    a.download='QR_'+(table?'第'+table+'桌_':'')+name+'.png';
+    a.click();
     setTimeout(function(){URL.revokeObjectURL(objUrl);},1000);
-  }catch(e){
-    // fallback: open in new tab
-    window.open(url,'_blank');
-  }
+  }catch(e){window.open(url,'_blank');}
 }
 function copyLink(url,id){
   var btn=document.getElementById('cpbtn_'+id);
@@ -1048,8 +1077,7 @@ async function downloadAllQR(){
       var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
       var url='https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data='+encodeURIComponent(qrData);
       try{
-        var resp=await fetch(url);
-        var blob=await resp.blob();
+        var blob=await makeQRCanvas(url,g.name,g.table);
         var fname=(g.table?'第'+g.table+'桌_':'')+g.name+'_'+g.id+'.png';
         zip.file(fname,blob);
         done++;
@@ -1665,7 +1693,7 @@ function rtFpClick(tId){
 }
 
 function renderVacancyView(groups){
-  var TABLE_SIZE=10;
+  var TABLE_SIZE=11;
   var positions=getHallPositions();
   var tableData=positions.map(function(p){
     var tId=String(p.n);
