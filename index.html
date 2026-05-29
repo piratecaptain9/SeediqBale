@@ -521,6 +521,23 @@ async function fsDel(col, id) {
   var r = await fetch(FS+'/'+col+'/'+encodeURIComponent(id)+'?key='+FB_API_KEY,{method:'DELETE'});
   if (!r.ok && r.status!==404) throw new Error('DELETE failed: '+r.status);
 }
+// 批次寫入，每次最多 500 筆，使用 Firestore batchWrite API（僅 1 次請求）
+async function fsBatchSet(col, docs) {
+  var BASE='projects/'+FB_PROJECT+'/databases/(default)/documents';
+  var writes=docs.map(function(g){
+    return {update:{name:BASE+'/'+col+'/'+encodeURIComponent(g.id),fields:toFsFields(g)}};
+  });
+  var r=await fetch(FS+':batchWrite?key='+FB_API_KEY,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({writes:writes})
+  });
+  var d=await r.json();
+  if(d.error) throw new Error(d.error.message);
+  // 檢查每筆寫入的狀態
+  var failed=(d.writeResults||[]).filter(function(_,i){return d.status&&d.status[i]&&d.status[i].code&&d.status[i].code!==0;});
+  if(failed.length) throw new Error('部分寫入失敗：'+failed.length+' 筆');
+  return d;
+}
 async function fsList(col) {
   var docs=[], token=null;
   do {
@@ -1372,16 +1389,16 @@ async function confirmImport(){
   if(!importData.length){alert('沒有可匯入的資料');return;}
   if(!confirm('確定匯入 '+importData.length+' 筆？相同 ID 將被覆蓋')) return;
   var btn=document.getElementById('import-btn');btn.disabled=true;
-  var total=importData.length, done=0, fail=0;
-  var BATCH=20; // 每批最多 20 筆，避免連線資源耗盡
+  var total=importData.length, done=0;
+  var BATCH=500; // batchWrite 每次最多 500 筆，1432 筆只需 3 次請求
   try{
     for(var i=0;i<total;i+=BATCH){
       var batch=importData.slice(i,i+BATCH);
-      await Promise.all(batch.map(function(g){return fsSet('guests',g.id,g);}));
+      btn.textContent='匯入中 '+Math.min(i+BATCH,total)+'/'+total+'…';
+      await fsBatchSet('guests',batch);
       done+=batch.length;
-      btn.textContent='匯入中 '+done+'/'+total+'…';
     }
-    showMsg('import-msg','green','匯入完成','成功寫入 '+done+' 筆'+(fail?' （失敗 '+fail+' 筆）':''));
+    showMsg('import-msg','green','匯入完成','成功寫入 '+done+' 筆');
     importData=[];document.getElementById('import-preview').style.display='none';document.getElementById('import-file').value='';btn.style.display='none';
     setTimeout(function(){loadAll();},800);
   }catch(e){showMsg('import-msg','red','匯入失敗（第 '+done+' 筆後）',e.message);}
