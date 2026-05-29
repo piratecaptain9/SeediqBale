@@ -743,12 +743,18 @@ async function loadAll(){
     allLogs=results[1].sort(function(a,b){return (a.checkInTime||'').localeCompare(b.checkInTime||'');});
     checkedIds=new Set(allLogs.map(function(l){return l.id;}));
     guestCache=allGuests;
-    updateDash(); buildDropdowns(); renderStatusGrid(); renderLogTable(allLogs);
-    if(window._activeTab==='qr') renderQRGrid();
-    document.getElementById('log-wrap').style.display='block';
+    updateDash(); buildDropdowns();
+    dataLoaded=true;
     document.getElementById('status-msg').style.display='none';
     document.getElementById('qr-msg').style.display='none';
-    dataLoaded=true;
+    // 用 setTimeout(0) 讓 async call stack 先清空，再做大量 DOM 操作
+    // 避免 1000+ 筆資料在 async 繼續執行中觸發 Maximum call stack size exceeded
+    setTimeout(function(){
+      renderStatusGrid();
+      renderLogTable(allLogs);
+      document.getElementById('log-wrap').style.display='block';
+      if(window._activeTab==='qr') renderQRGrid();
+    },0);
   }catch(e){showMsg('status-msg','red','載入失敗',e.message);showMsg('qr-msg','red','載入失敗',e.message);}
 }
 
@@ -1365,13 +1371,20 @@ function previewImport(){
 async function confirmImport(){
   if(!importData.length){alert('沒有可匯入的資料');return;}
   if(!confirm('確定匯入 '+importData.length+' 筆？相同 ID 將被覆蓋')) return;
-  var btn=document.getElementById('import-btn');btn.disabled=true;btn.textContent='匯入中…';
+  var btn=document.getElementById('import-btn');btn.disabled=true;
+  var total=importData.length, done=0, fail=0;
+  var BATCH=20; // 每批最多 20 筆，避免連線資源耗盡
   try{
-    await Promise.all(importData.map(function(g){return fsSet('guests',g.id,g);}));
-    showMsg('import-msg','green','匯入完成','成功寫入 '+importData.length+' 筆資料');
+    for(var i=0;i<total;i+=BATCH){
+      var batch=importData.slice(i,i+BATCH);
+      await Promise.all(batch.map(function(g){return fsSet('guests',g.id,g);}));
+      done+=batch.length;
+      btn.textContent='匯入中 '+done+'/'+total+'…';
+    }
+    showMsg('import-msg','green','匯入完成','成功寫入 '+done+' 筆'+(fail?' （失敗 '+fail+' 筆）':''));
     importData=[];document.getElementById('import-preview').style.display='none';document.getElementById('import-file').value='';btn.style.display='none';
     setTimeout(function(){loadAll();},800);
-  }catch(e){showMsg('import-msg','red','匯入失敗',e.message);}
+  }catch(e){showMsg('import-msg','red','匯入失敗（第 '+done+' 筆後）',e.message);}
   btn.disabled=false;btn.textContent='確認匯入';
 }
 function showImportMsg(msg){var p=document.getElementById('import-preview');p.innerHTML='<div style="background:var(--red-dim);border:1px solid var(--red-ring);border-radius:8px;padding:10px;font-size:12px;color:var(--red)">'+msg+'</div>';p.style.display='block';}
