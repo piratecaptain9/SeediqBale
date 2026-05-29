@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -37,6 +38,63 @@
     .numpad-clear:hover{background:var(--red);color:#fff}
     .numpad-del{background:var(--panel);color:var(--soft)}
     .numpad-del:hover{background:var(--border2);color:var(--text)}
+
+
+    /* ── Round Table View ── */
+    .rt-stats-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+    .rt-stat-chip{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;text-align:center;flex:1;min-width:80px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+    .rt-stat-chip .n{font-size:1.6rem;font-weight:800;line-height:1}
+    .rt-stat-chip .l{font-size:.7rem;color:var(--muted);margin-top:2px}
+    .rt-legend{display:flex;gap:14px;align-items:center;margin-bottom:12px;flex-wrap:wrap;font-size:.75rem;color:var(--muted)}
+    .rt-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;display:inline-block}
+    .rt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+    .rt-section-wrap{margin:16px 0 4px}
+    .rt-section-label{font-size:.85rem;font-weight:800;color:#1e3a8a;padding:8px 14px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:10px;display:flex;align-items:center;gap:8px;border-left:4px solid var(--primary)}
+    .rt-table-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+    .rt-table-card.all-checked{border-color:var(--green-ring);background:linear-gradient(180deg,#f0fdf4 0%,#fff 100%)}
+    .rt-table-card.rt-drop-ok{border-color:#22c55e!important;background:linear-gradient(180deg,#f0fdf4,#fff)!important;box-shadow:0 0 0 3px rgba(34,197,94,.28)!important;transform:scale(1.018)}
+    .rt-table-card.rt-drop-full{border-color:#ef4444!important;background:linear-gradient(180deg,#fef2f2,#fff)!important;box-shadow:0 0 0 3px rgba(239,68,68,.2)!important}
+    .rt-card-head{padding:10px 14px 2px;text-align:center}
+    .rt-card-title{font-size:.95rem;font-weight:700;color:#1e3a8a}
+    .rt-card-stats{display:flex;justify-content:center;gap:12px;font-size:.75rem;padding:6px 14px 10px;border-top:1px solid #f0f4f8;margin-top:2px;flex-wrap:wrap}
+    .rt-detail{border-top:1.5px solid var(--border);padding:10px 14px;background:#f8faff;display:none}
+    .rt-detail.open{display:block}
+    .rt-detail-title{font-size:.78rem;font-weight:700;color:#1e3a8a;margin-bottom:8px}
+    .rt-seat-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:5px}
+    .rt-seat-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:7px;border:1px solid var(--border);font-size:.75rem;background:#fff;cursor:pointer;transition:all .15s}
+    .rt-seat-item:hover{border-color:var(--primary);background:#eff6ff;transform:translateX(1px)}
+    .rt-seat-item.checked{background:#f0fdf4;border-color:var(--green-ring)}
+    .rt-seat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .rt-vacancy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+    .rt-vacancy-cell{background:#fff;border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+    .rt-vacancy-cell:hover{border-color:var(--primary);transform:translateY(-1px);box-shadow:0 3px 10px rgba(37,99,235,.15)}
+    .rt-vacancy-cell.vc-full{background:#f0fdf4;border-color:var(--green-ring);cursor:default}
+    .rt-vacancy-cell.vc-hot{border-color:#fde68a;background:#fefce8}
+    .rt-vacancy-cell.vc-open{border-color:#93c5fd;background:#eff6ff}
+    .vc-tname{font-size:.8rem;font-weight:800;color:#1e3a8a;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .vc-avail{font-size:1.6rem;font-weight:900;line-height:1.1}
+    .vc-label{font-size:.64rem;color:var(--muted);margin-top:2px}
+    .vc-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
+    .vc-bar{height:100%;border-radius:2px;transition:width .3s}
+    .rt-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;padding:0 2px}
+    .rt-view-btn{padding:7px 16px;border-radius:9px;border:1.5px solid var(--border2);background:#fff;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Noto Sans TC',sans-serif;color:var(--text2);transition:all .15s;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .rt-view-btn.active{background:#1e3a8a;border-color:#1e3a8a;color:#fff}
+    .rt-view-btn:hover:not(.active){background:#f0f4ff;border-color:var(--primary);color:#1e3a8a}
+    .rt-fp-wrap{overflow:hidden;border-radius:12px;border:1.5px solid var(--border);background:#f0f4f8;padding:6px;width:100%;max-width:100%;box-sizing:border-box}
+    .rt-fp-detail{background:#fff;border:2px solid var(--primary);border-radius:14px;padding:16px;margin-top:12px}
+    .rt-fp-detail-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .rt-fp-detail-title{font-size:1rem;font-weight:800;color:#1e3a8a}
+    .rt-fp-close{background:var(--panel);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;font-size:.8rem;font-family:'Noto Sans TC',sans-serif;color:var(--text2)}
+    .rt-move-btn{background:#eff6ff;border:1.5px solid #93c5fd;border-radius:8px;padding:4px 10px;font-size:.72rem;cursor:pointer;color:#1d4ed8;margin-left:4px;line-height:1.3;flex-shrink:0;font-family:'Noto Sans TC',sans-serif;font-weight:700;min-height:28px}
+    .mt-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto}
+    .mt-row{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif;text-align:left;width:100%}
+    .mt-row:hover:not([disabled]){border-color:var(--primary);background:#eff6ff}
+    .mt-row.mt-same-ref{border-color:var(--green-ring);background:#f0fdf4}
+    .mt-row.mt-full{opacity:.45;cursor:not-allowed}
+    .mt-seat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .mt-empty-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px;margin-top:8px}
+    .mt-empty-btn{background:var(--panel);border:1.5px solid var(--border2);border-radius:8px;padding:8px 4px;font-size:.82rem;font-weight:700;color:var(--text2);cursor:pointer;font-family:'Noto Sans TC',sans-serif;text-align:center;min-height:40px;transition:all .15s}
+    .mt-empty-btn:hover{border-color:var(--primary);background:#eff6ff;color:#1d4ed8}
 
     /* Scanner */
     #qr-reader{width:100%!important}
@@ -84,6 +142,7 @@
     .sub-tab.t-status{background:#fff;color:var(--primary);border:1px solid var(--primary-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
     .sub-tab.t-qr{background:#fff;color:var(--violet);border:1px solid var(--violet-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
     .sub-tab.t-import{background:#fff;color:var(--amber);border:1px solid var(--amber-ring);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .sub-tab.t-rt{background:#fff;color:#1e3a8a;border:1px solid rgba(30,58,138,.3);box-shadow:0 1px 3px rgba(0,0,0,.08)}
     /* Dashboard stats */
     .dash-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
     .stat-card{background:#fff;border-radius:12px;padding:14px 12px;text-align:center;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -251,6 +310,7 @@
       <div class="sub-tabs">
         <button class="sub-tab" id="tab-scan"   onclick="switchTab('scan')">📷 掃碼報到</button>
         <button class="sub-tab" id="tab-status" onclick="switchTab('status')">📋 名單狀況</button>
+        <button class="sub-tab" id="tab-rt"     onclick="switchTab('rt')">🪑 圓桌視角</button>
         <button class="sub-tab" id="tab-qr"     onclick="switchTab('qr')">🔲 QR 碼管理</button>
         <button class="sub-tab" id="tab-import" onclick="switchTab('import')">📂 匯入管理</button>
       </div>
@@ -295,15 +355,28 @@
         <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
           <input type="text" id="status-search" placeholder="🔍 搜尋姓名或 ID…" oninput="renderStatusGrid()" style="font-size:13px"/>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div>
+            <div style="position:relative">
               <label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px">區別</label>
-              <select id="filter-area" onchange="renderStatusGrid()"><option value="">全部區別</option></select>
+              <input type="text" id="filter-area-input" placeholder="輸入或選擇區別…"
+                oninput="onFilterInput('area')" onfocus="openFilterDd('area')" autocomplete="off"
+                style="font-size:13px;padding:9px 30px 9px 12px"/>
+              <span onclick="clearFilter('area')" id="filter-area-clear"
+                style="display:none;position:absolute;right:8px;top:50%;margin-top:6px;transform:translateY(-50%);cursor:pointer;font-size:14px;color:var(--muted)">✕</span>
+              <div id="filter-area-dd" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);overflow:hidden;max-height:180px;overflow-y:auto"></div>
             </div>
-            <div>
+            <div style="position:relative">
               <label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px">介紹人</label>
-              <select id="filter-referrer" onchange="renderStatusGrid()"><option value="">全部介紹人</option></select>
+              <input type="text" id="filter-referrer-input" placeholder="輸入或選擇介紹人…"
+                oninput="onFilterInput('referrer')" onfocus="openFilterDd('referrer')" autocomplete="off"
+                style="font-size:13px;padding:9px 30px 9px 12px"/>
+              <span onclick="clearFilter('referrer')" id="filter-referrer-clear"
+                style="display:none;position:absolute;right:8px;top:50%;margin-top:6px;transform:translateY(-50%);cursor:pointer;font-size:14px;color:var(--muted)">✕</span>
+              <div id="filter-referrer-dd" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);overflow:hidden;max-height:180px;overflow-y:auto"></div>
             </div>
           </div>
+          <!-- hidden selects for backward compat -->
+          <select id="filter-area" style="display:none"></select>
+          <select id="filter-referrer" style="display:none"></select>
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
             <button class="filter-btn fa" id="fb-all"     onclick="setFilter('all')">全部</button>
             <button class="filter-btn"    id="fb-checked" onclick="setFilter('checked')">已報到</button>
@@ -332,6 +405,13 @@
         </div>
         <div id="qr-grid" class="qr-grid"></div>
         <div id="qr-msg" style="display:none"></div>
+      </div>
+
+      <!-- ── 圓桌視角 ── -->
+      <div id="panel-rt" style="display:none;flex-direction:column;gap:10px">
+        <div id="rt-container" style="min-height:200px">
+          <div style="text-align:center;color:var(--muted);padding:40px;font-size:.85rem">請先載入名單後查看圓桌視角</div>
+        </div>
       </div>
 
       <!-- ── 匯入管理 ── -->
@@ -391,7 +471,7 @@
     <div class="modal-body">
       <div style="background:var(--primary-dim);border:1px solid var(--primary-ring);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span style="font-size:12px;font-weight:700;color:var(--primary)">✏️ 自動分配：每桌</span>
-        <input type="number" id="auto-per-table" value="10" min="1" max="100" style="width:60px;padding:5px 8px;font-size:14px;font-weight:700;text-align:center"/>
+        <input type="number" id="auto-per-table" value="11" min="1" max="100" style="width:60px;padding:5px 8px;font-size:14px;font-weight:700;text-align:center"/>
         <span style="font-size:12px;font-weight:700;color:var(--primary)">人</span>
         <button class="btn btn-primary" onclick="autoAssignTables()" style="padding:6px 14px;font-size:12px">自動填入</button>
       </div>
@@ -490,8 +570,8 @@ function renderMode(m){
   document.getElementById('page-staff').style.display=m==='staff'?'flex':'none';
   document.getElementById('nav-guest').className='mode-pill'+(m==='guest'?' ag':'');
   document.getElementById('nav-staff').className='mode-pill'+(m==='staff'?' as':'');
-  if(m!=='staff') stopScanner();
-  if(m==='guest') closeDd();
+  if(m!=='staff' && typeof stopScanner==='function') stopScanner();
+  if(m==='guest' && typeof closeDd==='function') closeDd();
 }
 
 // ══ Guest search (on-demand) ══════════
@@ -520,14 +600,19 @@ async function queryKw(val){
 }
 function showDd(guests){
   var dd=document.getElementById('name-dd'),html='';
-  guests.slice(0,8).forEach(function(g,i){
+  var shown=guests.slice(0,8);
+  shown.forEach(function(g,i){
     var key='_gdd'+i; window[key]=g;
-    html+='<div class="name-opt" onclick="selectG(window[\''+key+'\'])">'+
-      '<span class="n-name">'+g.name+'</span>'+
-      '<span class="n-meta">'+g.id+(g.number?'・'+g.number:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
+    html+='<div class="name-opt" data-gkey="'+key+'">'
+      +'<span class="n-name">'+g.name+'</span>'
+      +'<span class="n-meta">'+g.id+(g.number?'・'+g.number:'')+(g.table?' 第'+g.table+'桌':'')+'</span></div>';
   });
   if(guests.length>8) html+='<div style="padding:8px 14px;font-size:11px;color:var(--muted);text-align:center">…還有'+(guests.length-8)+'位符合</div>';
-  dd.innerHTML=html; dd.style.display='block';
+  dd.innerHTML=html;
+  dd.querySelectorAll('[data-gkey]').forEach(function(el){
+    el.addEventListener('click',function(){selectG(window[el.getAttribute('data-gkey')]);});
+  });
+  dd.style.display='block';
 }
 function closeDd(){document.getElementById('name-dd').style.display='none';}
 function selectG(g){document.getElementById('guest-input').value=g.name;closeDd();showQR(g);}
@@ -582,11 +667,15 @@ function showGuestPick(guests){
   html='<p style="font-size:13px;color:rgba(212,175,90,.8);text-align:center;margin-bottom:8px">找到'+guests.length+'位同名，請選擇：</p>';
   guests.forEach(function(g,i){
     var key='_gpick'+i; window[key]=g;
-    html+='<button onclick="showQR(window[\''+key+'\'])" style="width:100%;text-align:left;border-radius:10px;border:1px solid rgba(212,175,90,.3);background:rgba(255,248,220,.1);backdrop-filter:blur(8px);padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+
-      '<span style="color:#f5d87a;font-weight:700">'+g.name+'</span>'+
-      '<span style="font-size:11px;color:rgba(212,175,90,.7)">'+g.id+(g.table?' · 第'+g.table+'桌':'')+'</span></button>';
+    html+='<button data-pkey="'+key+'" style="width:100%;text-align:left;border-radius:10px;border:1px solid rgba(212,175,90,.3);background:rgba(255,248,220,.1);padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      +'<span style="color:#f5d87a;font-weight:700">'+g.name+'</span>'
+      +'<span style="font-size:11px;color:rgba(212,175,90,.7)">'+g.id+(g.table?' · 第'+g.table+'桌':'')+'</span></button>';
   });
-  el.innerHTML=html; animShow(el);
+  el.innerHTML=html;
+  el.querySelectorAll('[data-pkey]').forEach(function(btn){
+    btn.addEventListener('click',function(){showQR(window[btn.getAttribute('data-pkey')]);});
+  });
+  animShow(el);
 }
 
 // ══ Staff auth ════════════════════════
@@ -631,12 +720,15 @@ function checkPW(){
   }
 }
 
-var TABS=['scan','status','qr','import'];
+var TABS=['scan','status','rt','qr','import'];
 function switchTab(tab){
   TABS.forEach(function(t){document.getElementById('panel-'+t).style.display='none';document.getElementById('tab-'+t).className='sub-tab';});
   document.getElementById('panel-'+tab).style.display='flex';
   document.getElementById('tab-'+tab).className='sub-tab t-'+tab;
   if(tab!=='scan') stopScanner();
+  if(tab==='rt') renderRoundTable();
+  if(tab==='qr' && dataLoaded) renderQRGrid();
+  window._activeTab=tab;
 }
 
 // ══ Data ════════════════════════════
@@ -651,7 +743,8 @@ async function loadAll(){
     allLogs=results[1].sort(function(a,b){return (a.checkInTime||'').localeCompare(b.checkInTime||'');});
     checkedIds=new Set(allLogs.map(function(l){return l.id;}));
     guestCache=allGuests;
-    updateDash(); buildDropdowns(); renderStatusGrid(); renderQRGrid(); renderLogTable(allLogs);
+    updateDash(); buildDropdowns(); renderStatusGrid(); renderLogTable(allLogs);
+    if(window._activeTab==='qr') renderQRGrid();
     document.getElementById('log-wrap').style.display='block';
     document.getElementById('status-msg').style.display='none';
     document.getElementById('qr-msg').style.display='none';
@@ -672,23 +765,92 @@ function updateDash(){
   document.getElementById('dash-progress').style.display='block';
 }
 
+// Store all options for searchable dropdowns
+var allAreas=[], allReferrers=[];
+
 function buildDropdowns(){
-  var areas=[],refs=[];
+  allAreas=[]; allReferrers=[];
   allGuests.forEach(function(g){
-    if(g.area&&areas.indexOf(g.area)===-1) areas.push(g.area);
-    if(g.referrer&&refs.indexOf(g.referrer)===-1) refs.push(g.referrer);
+    if(g.area     && allAreas.indexOf(g.area)===-1)         allAreas.push(g.area);
+    if(g.referrer && allReferrers.indexOf(g.referrer)===-1) allReferrers.push(g.referrer);
   });
-  areas.sort();refs.sort();
-  var aEl=document.getElementById('filter-area'),rEl=document.getElementById('filter-referrer');
-  if(aEl){var av=aEl.value;aEl.innerHTML='<option value="">全部區別</option>'+areas.map(function(a){return '<option value="'+a+'">'+a+'</option>';}).join('');if(av)aEl.value=av;}
-  if(rEl){var rv=rEl.value;rEl.innerHTML='<option value="">全部介紹人</option>'+refs.map(function(r){return '<option value="'+r+'">'+r+'</option>';}).join('');if(rv)rEl.value=rv;}
+  allAreas.sort(); allReferrers.sort();
+  // Keep hidden selects in sync (used by renderStatusGrid via .value)
+  var aEl=document.getElementById('filter-area'), rEl=document.getElementById('filter-referrer');
+  if(aEl) aEl.innerHTML='<option value="">全部區別</option>'+allAreas.map(function(a){return '<option value="'+a+'">'+a+'</option>';}).join('');
+  if(rEl) rEl.innerHTML='<option value="">全部介紹人</option>'+allReferrers.map(function(r){return '<option value="'+r+'">'+r+'</option>';}).join('');
 }
+
+// ── Searchable filter dropdowns ──────
+function onFilterInput(type){
+  var val=document.getElementById('filter-'+type+'-input').value.trim();
+  // Sync hidden select
+  var sel=document.getElementById('filter-'+type);
+  if(sel) sel.value=val;
+  // Show/hide clear button
+  var clr=document.getElementById('filter-'+type+'-clear');
+  if(clr) clr.style.display=val?'block':'none';
+  openFilterDd(type);
+  renderStatusGrid();
+}
+
+function openFilterDd(type){
+  var val=(document.getElementById('filter-'+type+'-input').value||'').trim().toLowerCase();
+  var options=type==='area'?allAreas:allReferrers;
+  var filtered=val?options.filter(function(o){return o.toLowerCase().includes(val);}):options;
+  var dd=document.getElementById('filter-'+type+'-dd');
+  if(!dd||!filtered.length){if(dd)dd.style.display='none';return;}
+  var ddHtml='';
+  filtered.forEach(function(o,idx){
+    var key='_fopt_'+type+'_'+idx;
+    window[key]=o;
+    ddHtml+='<div data-key="'+key+'" style="padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);transition:background .15s">'+o+'</div>';
+  });
+  dd.innerHTML=ddHtml;
+  dd.querySelectorAll('div').forEach(function(el){
+    el.addEventListener('click',function(){selectFilterOption(type,window[el.dataset.key]);});
+    el.addEventListener('mouseover',function(){el.style.background='var(--panel)';});
+    el.addEventListener('mouseout',function(){el.style.background='';});
+  });
+  dd.style.display='block';
+}
+
+function selectFilterOption(type, val){
+  document.getElementById('filter-'+type+'-input').value=val;
+  var sel=document.getElementById('filter-'+type);
+  if(sel) sel.value=val;
+  var clr=document.getElementById('filter-'+type+'-clear');
+  if(clr) clr.style.display='block';
+  document.getElementById('filter-'+type+'-dd').style.display='none';
+  renderStatusGrid();
+}
+
+function clearFilter(type){
+  document.getElementById('filter-'+type+'-input').value='';
+  var sel=document.getElementById('filter-'+type);
+  if(sel) sel.value='';
+  var clr=document.getElementById('filter-'+type+'-clear');
+  if(clr) clr.style.display='none';
+  document.getElementById('filter-'+type+'-dd').style.display='none';
+  renderStatusGrid();
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click',function(e){
+  ['area','referrer'].forEach(function(type){
+    var wrap=document.getElementById('filter-'+type+'-input');
+    var dd=document.getElementById('filter-'+type+'-dd');
+    if(wrap&&dd&&!wrap.contains(e.target)&&!dd.contains(e.target)){
+      dd.style.display='none';
+    }
+  });
+});
 
 // ── Status grid ──
 function renderStatusGrid(){
   var q=(document.getElementById('status-search')?document.getElementById('status-search').value:'').trim().toLowerCase();
-  var aF=document.getElementById('filter-area')?document.getElementById('filter-area').value:'';
-  var rF=document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'';
+  var aF=(document.getElementById('filter-area-input')?document.getElementById('filter-area-input').value:document.getElementById('filter-area')?document.getElementById('filter-area').value:'').trim();
+  var rF=(document.getElementById('filter-referrer-input')?document.getElementById('filter-referrer-input').value:document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'').trim();
   var filtered=allGuests.filter(function(g){
     if(q&&!(g.name||'').toLowerCase().includes(q)&&!(g.id||'').toLowerCase().includes(q)) return false;
     if(statusFilter==='checked'&&!checkedIds.has(g.id)) return false;
@@ -699,7 +861,7 @@ function renderStatusGrid(){
   });
   var sEl=document.getElementById('filter-stats');
   var bbtn=document.getElementById('bulk-checkin-btn');
-  var hasF=q||aF||rF;
+  var hasF=q||aF||rF; // aF/rF already trimmed above
   if(sEl){
     if(hasF&&filtered.length){
       var chk=filtered.filter(function(g){return checkedIds.has(g.id);}).length;
@@ -753,8 +915,8 @@ function renderStatusGrid(){
 // ── 一鍵報到 ──────────────────────────
 async function bulkCheckin(){
   var q=(document.getElementById('status-search')?document.getElementById('status-search').value:'').trim().toLowerCase();
-  var aF=document.getElementById('filter-area')?document.getElementById('filter-area').value:'';
-  var rF=document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'';
+  var aF=(document.getElementById('filter-area-input')?document.getElementById('filter-area-input').value:document.getElementById('filter-area')?document.getElementById('filter-area').value:'').trim();
+  var rF=(document.getElementById('filter-referrer-input')?document.getElementById('filter-referrer-input').value:document.getElementById('filter-referrer')?document.getElementById('filter-referrer').value:'').trim();
 
   // 取得未報到的篩選人員
   var targets=allGuests.filter(function(g){
@@ -791,7 +953,7 @@ async function bulkCheckin(){
     if(i%10===0){btn.textContent='報到中… '+Math.round((i+1)/targets.length*100)+'%';}
   }
 
-  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
   alert('✓ 一鍵報到完成！\n成功：'+success+' 人'+(fail?' / 失敗：'+fail+' 人':''));
   // 重設按鈕狀態
   btn.disabled=false;
@@ -826,14 +988,56 @@ function renderQRGrid(){
       +'<div style="font-size:12px;font-weight:700;color:var(--text);text-align:center;line-height:1.3">'+g.name+'</div>'
       +'<div style="font-size:9px;color:var(--muted)">'+g.id+(g.number?'・'+g.number:'')+'</div>'
       +'<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
-      +'<button class="qr-btn dl" onclick="dlQR(\''+qr+'\',\''+g.name+'\')">📥 下載 QR</button>'
+      +'<button class="qr-btn dl" onclick="dlQR(\''+qr+'\',\''+g.name+'\',\''+g.table+'\')">📥 下載 QR</button>'
       +'<button class="qr-btn cp" id="cpbtn_'+g.id+'" onclick="copyLink(\''+url+'\',\''+g.id+'\')">🔗 複製連結</button>'
       +'</div></div>';
   });
   grid.innerHTML=html;
 }
 
-function dlQR(src,name){var a=document.createElement('a');a.href=src.replace('200x200','400x400');a.download='QR_'+name+'.png';a.target='_blank';a.click();}
+async function makeQRCanvas(qrUrl, name, table){
+  var resp=await fetch(qrUrl);
+  var blob=await resp.blob();
+  var imgUrl=URL.createObjectURL(blob);
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    img.onload=function(){
+      var sz=400, pad=24, nameH=46, tblH=table?38:0;
+      var canvas=document.createElement('canvas');
+      canvas.width=sz+pad*2;
+      canvas.height=sz+pad*2+nameH+tblH;
+      var ctx=canvas.getContext('2d');
+      ctx.fillStyle='#ffffff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img,pad,pad,sz,sz);
+      URL.revokeObjectURL(imgUrl);
+      ctx.textAlign='center';
+      ctx.fillStyle='#1e293b';
+      ctx.font='bold 28px sans-serif';
+      ctx.fillText(name,canvas.width/2,sz+pad+34);
+      if(table){
+        ctx.fillStyle='#1d4ed8';
+        ctx.font='bold 22px sans-serif';
+        ctx.fillText('第 '+table+' 桌',canvas.width/2,sz+pad+nameH+26);
+      }
+      canvas.toBlob(function(b){resolve(b);},'image/png');
+    };
+    img.onerror=reject;
+    img.src=imgUrl;
+  });
+}
+async function dlQR(src,name,table){
+  var url=src.replace(/\d+x\d+/,'400x400');
+  try{
+    var blob=await makeQRCanvas(url,name,table);
+    var objUrl=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=objUrl;
+    a.download='QR_'+(table?'第'+table+'桌_':'')+name+'.png';
+    a.click();
+    setTimeout(function(){URL.revokeObjectURL(objUrl);},1000);
+  }catch(e){window.open(url,'_blank');}
+}
 function copyLink(url,id){
   var btn=document.getElementById('cpbtn_'+id);
   navigator.clipboard.writeText(url).then(function(){
@@ -859,16 +1063,40 @@ function printAllQR(){
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QR Code 名單</title><style>body{padding:12px;background:#fff}#g{display:flex;flex-wrap:wrap;gap:6px}@media print{@page{margin:8mm}}</style></head><body><h2 style="margin-bottom:10px;font-family:sans-serif">貴賓 QR Code 名單</h2><div id="g">'+cards+'</div></body></html>');
   win.document.close();setTimeout(function(){win.print();},800);
 }
-function downloadAllQR(){
-  alert('將逐一開啟各貴賓的 QR Code 下載連結。');
-  allGuests.forEach(function(g,i){
-    setTimeout(function(){
+async function downloadAllQR(){
+  if(!allGuests.length){alert('請先載入名單');return;}
+  var btn=document.querySelector('[onclick="downloadAllQR()"]');
+  if(btn){btn.disabled=true;btn.textContent='打包中…';}
+  var zip=new JSZip();
+  var total=allGuests.length, done=0, fail=0;
+  // 每次並發 10 張，避免同時開太多連線
+  var BATCH=10;
+  for(var i=0;i<total;i+=BATCH){
+    var batch=allGuests.slice(i,i+BATCH);
+    await Promise.all(batch.map(async function(g){
       var qrData=CHECKIN_BASE+'?id='+g.id+(g.table?'&table='+g.table:'');
-      var a=document.createElement('a');
-      a.href='https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data='+encodeURIComponent(qrData);
-      a.download='QR_'+g.id+'_'+g.name+'.png';a.target='_blank';a.click();
-    },i*300);
-  });
+      var url='https://api.qrserver.com/v1/create-qr-code/?size=400x400&ecc=M&data='+encodeURIComponent(qrData);
+      try{
+        var blob=await makeQRCanvas(url,g.name,g.table);
+        var fname=(g.table?'第'+g.table+'桌_':'')+g.name+'_'+g.id+'.png';
+        zip.file(fname,blob);
+        done++;
+      }catch(e){fail++;}
+    }));
+    if(btn) btn.textContent='打包中 '+Math.min(i+BATCH,total)+'/'+total+'…';
+  }
+  try{
+    var zipBlob=await zip.generateAsync({type:'blob'});
+    var objUrl=URL.createObjectURL(zipBlob);
+    var a=document.createElement('a');
+    a.href=objUrl;a.download='QRCodes_全部.zip';a.click();
+    setTimeout(function(){URL.revokeObjectURL(objUrl);},2000);
+    if(btn){btn.disabled=false;btn.innerHTML='📥 下載全部';}
+    alert('完成！已打包 '+done+' 張 QR Code'+( fail?' （'+fail+' 張失敗）':'')+'\n下載檔案：QRCodes_全部.zip');
+  }catch(e){
+    if(btn){btn.disabled=false;btn.innerHTML='📥 下載全部';}
+    alert('打包失敗：'+e.message);
+  }
 }
 
 // ── Checkin / Cancel ──
@@ -880,14 +1108,14 @@ async function doCheckin(id,name){
   await fsSet('log',id,{id:id,name:name,number:guest.number||'',table:guest.table||'',checkInTime:t,status:'已報到'});
   checkedIds.add(id);
   allLogs.push({id:id,name:name,number:guest.number||'',table:guest.table||'',checkInTime:t});
-  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
   alert('✓ '+name+' 報到成功！\n時間：'+t+(guest.table?'\n桌次：第'+guest.table+'桌':''));
 }
 async function cancelCheckin(id,name){
   if(!confirm('確定取消「'+name+'」的報到記錄？')) return;
   await fsDel('log',id);
   checkedIds.delete(id);allLogs=allLogs.filter(function(l){return l.id!==id;});
-  updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+  updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
 }
 
 // ══ Scanner ════════════════════════
@@ -943,7 +1171,7 @@ async function onScan(decoded){
         await fsSet('log',id,{id:id,name:guest.name,number:guest.number||'',table:tbl,checkInTime:t,status:'已報到'});
         checkedIds.add(id);
         allLogs.push({id:id,name:guest.name,number:guest.number||'',table:tbl,checkInTime:t});
-        updateDash();renderStatusGrid();renderQRGrid();renderLogTable(allLogs);
+        updateDash();renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();renderLogTable(allLogs);
         scanResult('success','歡迎光臨，'+guest.name+' 先生/小姐','報到時間：'+t,{id:id,name:guest.name,table:tbl});
       }
     }
@@ -1039,7 +1267,7 @@ async function saveTableData(){
       if(g) g.table=u.table;
     });
     guestCache=allGuests;
-    renderStatusGrid();renderQRGrid();
+    renderStatusGrid();if(window._activeTab==='qr')renderQRGrid();
     closeTableModal();
     alert('✓ 桌次已儲存！共更新 '+updates.length+' 筆');
   }catch(e){alert('儲存失敗：'+e.message);}
@@ -1174,6 +1402,345 @@ function showMsg(elId,color,title,sub){
   el.innerHTML='<div style="border-radius:10px;border:1px solid '+(rm[color]||'var(--border)')+';background:'+(bm[color]||'#fff')+';padding:14px;text-align:center"><p style="font-weight:700;font-size:13px;color:'+(cm[color]||'var(--text)')+'">'+title+'</p><p style="font-size:11px;color:var(--soft);margin-top:3px">'+sub+'</p></div>';
   el.style.display='block';
 }
+// ══════════════════════════════════════
+// ROUND TABLE VIEW
+// ══════════════════════════════════════
+var rtOpenTable=null, rtViewMode='floorplan', rtFpSelected=null;
+
+function getHallPositions(){
+  var pos=[];
+  function add(x,y){pos.push({n:pos.length+1,x:x,y:y});}
+  add(450,118);
+  [135,228,321].forEach(function(x){add(x,178);}); [579,672,765].forEach(function(x){add(x,178);});
+  [135,228,321].forEach(function(x){add(x,236);}); [579,672,765].forEach(function(x){add(x,236);});
+  var lx=[80,175,270,365], rx=[535,625,715,810];
+  for(var r=0;r<10;r++){
+    var y=300+r*62;
+    lx.concat(rx).forEach(function(x){add(x,y);});
+  }
+  [80,175,270,365,625,715,810].forEach(function(x){add(x,948);});
+  [80,162,244,328,408,492,566,648,730,810].forEach(function(x){add(x,1010);});
+  return pos;
+}
+
+function rtGetTableDisplay(tId){
+  return tId==='未分配'?'未分配桌':('第'+tId+'桌');
+}
+
+function renderRoundTable(){
+  var container=document.getElementById('rt-container');
+  if(!container) return;
+  if(!allGuests.length){
+    container.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;font-size:.85rem">請先載入名單後查看圓桌視角</div>';
+    return;
+  }
+  var groups={};
+  allGuests.forEach(function(g){
+    var tId=g.table||'未分配';
+    if(!groups[tId]) groups[tId]=[];
+    groups[tId].push(g);
+  });
+  var tableOrder=Object.keys(groups).sort(function(a,b){
+    var na=parseInt(a),nb=parseInt(b);
+    if(!isNaN(na)&&!isNaN(nb)) return na-nb;
+    if(a==='未分配') return 1;
+    if(b==='未分配') return -1;
+    return a.localeCompare(b);
+  });
+  var totalPax=allGuests.length;
+  var checkedTotal=allGuests.filter(function(g){return checkedIds.has(g.id);}).length;
+  var assignedTables=tableOrder.filter(function(t){return t!=='未分配';}).length;
+
+  var statsHtml='<div class="rt-stats-bar">'
+    +'<div class="rt-stat-chip"><div class="n" style="color:#1e40af">'+assignedTables+'</div><div class="l">已用桌數</div></div>'
+    +'<div class="rt-stat-chip"><div class="n" style="color:var(--green)">'+checkedTotal+'</div><div class="l">已報到</div></div>'
+    +'<div class="rt-stat-chip"><div class="n" style="color:var(--red)">'+(totalPax-checkedTotal)+'</div><div class="l">未報到</div></div>'
+    +'<div class="rt-stat-chip"><div class="n" style="color:var(--text)">'+totalPax+'</div><div class="l">總人數</div></div>'
+    +'</div>';
+
+    var vm=rtViewMode;
+  var toolbarHtml='<div class="rt-toolbar" id="rt-toolbar">'
+    +'<button class="rt-view-btn '+(vm==='floorplan'?'active':'')+'" data-view="floorplan">🗺 廳房平面圖</button>'
+    +'<button class="rt-view-btn '+(vm==='cards'?'active':'')+'" data-view="cards">📋 圓桌卡片</button>'
+    +'<button class="rt-view-btn '+(vm==='vacancy'?'active':'')+'" data-view="vacancy" style="'+(vm==='vacancy'?'':'background:#f0fdf4;border-color:var(--green-ring);color:var(--green)')+'">🟢 空位模式</button>'
+    +'</div>';
+
+  var legendHtml='<div class="rt-legend">'
+    +'<span><span class="rt-legend-dot" style="background:#dcfce7;border:1.5px solid var(--green);margin-right:4px"></span>全員到齊</span>'
+    +'<span><span class="rt-legend-dot" style="background:#fef9c3;border:1.5px solid #ca8a04;margin-right:4px"></span>部分報到</span>'
+    +'<span><span class="rt-legend-dot" style="background:#eff6ff;border:1.5px solid var(--primary);margin-right:4px"></span>尚未報到</span>'
+    +'<span><span class="rt-legend-dot" style="background:var(--border);border:1.5px solid var(--muted);margin-right:4px"></span>未配置</span>'
+    +'</div>';
+
+  var bodyHtml='';
+  if(rtViewMode==='floorplan'){
+    bodyHtml=renderFloorPlanView(groups);
+  } else if(rtViewMode==='vacancy'){
+    bodyHtml=renderVacancyView(groups);
+  } else {
+    tableOrder.forEach(function(tId){
+      if(tId==='未分配'){
+        bodyHtml+='<div class="rt-section-wrap"><div class="rt-section-label">未分配桌次</div></div><div class="rt-grid">';
+        bodyHtml+=renderRtTableCard(tId,groups[tId]);
+        bodyHtml+='</div>';
+      } else {
+        bodyHtml+=renderRtTableCard(tId,groups[tId]);
+      }
+    });
+    if(bodyHtml && !bodyHtml.includes('rt-grid')) {
+      bodyHtml='<div class="rt-grid">'+bodyHtml+'</div>';
+    }
+  }
+  container.innerHTML=statsHtml+toolbarHtml+legendHtml+bodyHtml;
+  // Bind toolbar buttons via event delegation (avoid onclick string issues)
+  var tb=document.getElementById('rt-toolbar');
+  if(tb){
+    tb.addEventListener('click',function(e){
+      var btn=e.target.closest('button[data-view]');
+      if(btn) rtSetView(btn.getAttribute('data-view'));
+    });
+  }
+  // Bind vacancy cells
+  container.querySelectorAll('[data-tbl]').forEach(function(el){
+    el.addEventListener('click',function(){
+      rtFpSelected=el.getAttribute('data-tbl');
+      rtSetView('floorplan');
+    });
+  });
+}
+
+function rtSetView(mode){
+  rtViewMode=mode; rtFpSelected=null;
+  renderRoundTable();
+}
+
+function renderRtTableCard(tId,seats){
+  if(!seats||!seats.length){
+    return '<div class="rt-table-card" style="opacity:.3"><div class="rt-card-head"><div class="rt-card-title">'+rtGetTableDisplay(tId)+'</div></div>'
+      +'<div style="text-align:center;color:var(--muted);padding:16px;font-size:.8rem">空桌</div></div>';
+  }
+  var checkedCount=seats.filter(function(g){return checkedIds.has(g.id);}).length;
+  var n=seats.length, tName=rtGetTableDisplay(tId);
+  var allDone=checkedCount===n;
+  var isOpen=rtOpenTable===tId;
+  var sz=280, cx=sz/2, cy=sz/2, tr=96, sr=28;
+  var seatsSvg='';
+  seats.forEach(function(g,i){
+    var a=(2*Math.PI/n)*i-Math.PI/2;
+    var x=(cx+tr*Math.cos(a)).toFixed(1);
+    var y=(cy+tr*Math.sin(a)).toFixed(1);
+    var done=checkedIds.has(g.id);
+    var fill=done?'#16a34a':'#fee2e2', stk=done?'#15803d':'#dc2626';
+    var nm=g.name?(g.name.length<=3?g.name:g.name.slice(0,3)):'?';
+    var fs=nm.length<=1?18:nm.length<=2?13:10;
+    var tc=done?'#fff':'#991b1b';
+    seatsSvg+='<circle cx="'+x+'" cy="'+y+'" r="'+sr+'" fill="'+fill+'" stroke="'+stk+'" stroke-width="2" style="cursor:pointer" onclick="rtSeatClick(\''+g.id+'\')"/>'
+      +'<text x="'+x+'" y="'+y+'" text-anchor="middle" dominant-baseline="central" font-size="'+fs+'" font-weight="600" fill="'+tc+'" font-family="sans-serif" style="pointer-events:none">'+nm+'</text>';
+  });
+  var cColor=allDone?'#15803d':checkedCount>0?'#b45309':'#dc2626';
+  var cLabel=allDone?'全員到齊':(checkedCount+'/'+n);
+  var seatListHtml=seats.map(function(g){
+    var done=checkedIds.has(g.id);
+    var logEntry=allLogs.find(function(l){return l.id===g.id;});
+    var timeStr=logEntry?logEntry.checkInTime||'':'';
+    return '<div class="rt-seat-item '+(done?'checked':'')+'">'
+      +'<div class="rt-seat-dot" style="background:'+(done?'#16a34a':'#f87171')+'" onclick="rtSeatClick(\''+g.id+'\')"></div>'
+      +'<span style="flex:1;word-break:break-all;line-height:1.4" onclick="rtSeatClick(\''+g.id+'\')">'+g.name+'</span>'
+      +'<span style="font-size:.65rem;color:'+(done?'#15803d':'#9ca3af')+'">'+(done?timeStr:'未到')+'</span>'
+      +'</div>';
+  }).join('');
+
+  return '<div class="rt-table-card '+(allDone?'all-checked':'')+'" onclick="rtToggleDetail(\''+tId+'\')">'+
+    '<div class="rt-card-head"><div class="rt-card-title">'+tName+'</div></div>'+
+    '<svg width="100%" viewBox="0 0 '+sz+' '+sz+'" style="display:block;max-width:'+sz+'px;margin:0 auto">'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="46" fill="#f0f4f8" stroke="#cbd5e1" stroke-width="2"/>'+
+    '<text x="'+cx+'" y="'+(cy-8)+'" text-anchor="middle" font-size="18" fill="#1e3a8a" font-family="sans-serif" font-weight="700">'+checkedCount+'/'+n+'</text>'+
+    '<text x="'+cx+'" y="'+(cy+13)+'" text-anchor="middle" font-size="11" fill="'+cColor+'" font-family="sans-serif">'+cLabel+'</text>'+
+    seatsSvg+'</svg>'+
+    '<div class="rt-card-stats">'+
+    '<span style="color:var(--green)">✅ '+checkedCount+' 已到</span>'+
+    (n-checkedCount>0?'<span style="color:var(--red)">⏳ '+(n-checkedCount)+' 未到</span>':'')+
+    '<span style="color:var(--muted);font-size:.68rem">'+(isOpen?'▲ 收合':'▼ 展開')+'</span>'+
+    '</div>'+
+    '<div class="rt-detail '+(isOpen?'open':'')+'" id="rtdetail-'+tId+'" onclick="event.stopPropagation()">'+
+    '<div class="rt-detail-title">📋 '+tName+'座位名單</div>'+
+    '<div class="rt-seat-list">'+seatListHtml+'</div>'+
+    '</div></div>';
+}
+
+function rtToggleDetail(tId){
+  rtOpenTable=(rtOpenTable===tId)?null:tId;
+  renderRoundTable();
+  if(rtOpenTable){
+    setTimeout(function(){
+      var el=document.getElementById('rtdetail-'+rtOpenTable);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },50);
+  }
+}
+
+function rtSeatClick(gid){
+  var g=allGuests.find(function(x){return x.id===gid;});
+  if(!g) return;
+  var done=checkedIds.has(gid);
+  var old=document.getElementById('rt-seat-menu');
+  if(old) old.remove();
+  var menu=document.createElement('div');
+  menu.id='rt-seat-menu';
+  menu.style.cssText='position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;padding:0 0 20px';
+  var statusLine=done?'已報到':'未報到';
+  var inner=document.createElement('div');
+  inner.style.cssText='background:#fff;border-radius:18px 18px 14px 14px;width:100%;max-width:480px;overflow:hidden;box-shadow:0 -4px 30px rgba(0,0,0,.2)';
+  var head=document.createElement('div');
+  head.style.cssText='padding:14px 20px 10px;border-bottom:1px solid var(--border)';
+  head.innerHTML='<div style="font-size:1rem;font-weight:800;color:var(--text)">'+g.name+'</div>'
+    +'<div style="font-size:.78rem;color:var(--muted);margin-top:2px">'+statusLine+(g.table?' · 第'+g.table+'桌':'')+'</div>';
+  inner.appendChild(head);
+  var body=document.createElement('div');
+  var actionBtn=document.createElement('button');
+  actionBtn.style.cssText="display:flex;align-items:center;gap:12px;padding:14px 20px;background:none;border:none;border-bottom:1px solid var(--border);font-family:'Noto Sans TC',sans-serif;font-size:.95rem;cursor:pointer;text-align:left;width:100%";
+  if(done){
+    actionBtn.style.color='var(--red)';
+    actionBtn.innerHTML='<span>↩</span> 取消報到';
+    actionBtn.addEventListener('click',function(){menu.remove();cancelCheckin(gid,g.name);});
+  } else {
+    actionBtn.style.color='var(--green)';
+    actionBtn.innerHTML='<span>✅</span> 報到';
+    actionBtn.addEventListener('click',function(){menu.remove();doCheckin(gid,g.name);});
+  }
+  body.appendChild(actionBtn);
+  var closeBtn=document.createElement('button');
+  closeBtn.style.cssText="padding:14px 20px;background:none;border:none;font-family:'Noto Sans TC',sans-serif;font-size:.9rem;cursor:pointer;color:var(--muted);width:100%";
+  closeBtn.textContent='取消';
+  closeBtn.addEventListener('click',function(){menu.remove();});
+  body.appendChild(closeBtn);
+  inner.appendChild(body);
+  menu.appendChild(inner);
+  menu.addEventListener('click',function(e){if(e.target===menu)menu.remove();});
+  document.body.appendChild(menu);
+}
+
+function renderFloorPlanView(groups){
+  var positions=getHallPositions();
+  var W=900,H=1090;
+  var container=document.getElementById('rt-container');
+  var availW=Math.min(W,(container?container.clientWidth:0)||(window.innerWidth-28));
+  var availH=Math.round(H*availW/W);
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+availW+'" height="'+availH+'" viewBox="0 0 '+W+' '+H+'" style="display:block;max-width:100%">';
+  svg+='<rect x="22" y="16" width="'+(W-44)+'" height="'+(H-36)+'" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>';
+  svg+='<rect x="275" y="24" width="350" height="56" rx="8" fill="#1e3a8a"/>';
+  svg+='<text x="450" y="58" text-anchor="middle" font-size="16" fill="white" font-weight="800" font-family="sans-serif">舞台 STAGE</text>';
+  svg+='<line x1="450" y1="92" x2="450" y2="912" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6 4"/>';
+  svg+='<text x="450" y="'+(H-14)+'" text-anchor="middle" font-size="13" fill="#9ca3af" font-family="sans-serif">↑ 入場大門</text>';
+  positions.forEach(function(p){
+    var tId=String(p.n);
+    var seats=groups[tId]||[];
+    var total=seats.length;
+    var checked=seats.filter(function(g){return checkedIds.has(g.id);}).length;
+    var isSelected=rtFpSelected===tId;
+    var fill,stroke,textFill;
+    if(total===0){fill='#e2e8f0';stroke='#94a3b8';textFill='#94a3b8';}
+    else if(checked===total&&total>0){fill='#dcfce7';stroke='#16a34a';textFill='#15803d';}
+    else if(checked>0){fill='#fef9c3';stroke='#ca8a04';textFill='#854d0e';}
+    else{fill='#eff6ff';stroke='#2563eb';textFill='#1d4ed8';}
+    if(isSelected){stroke='#7c3aed';fill=fill==='#e2e8f0'?'#f3e8ff':fill;}
+    var r=p.n===1?32:26, sw=isSelected?3.5:(total>0?2.5:1.5);
+    svg+='<g onclick="rtFpClick(\''+tId+'\')" style="cursor:pointer">';
+    svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'"/>';
+    if(total>0){
+      svg+='<text x="'+p.x+'" y="'+(p.y-7)+'" text-anchor="middle" font-size="'+(p.n===1?13:11)+'" font-weight="800" fill="'+textFill+'" font-family="sans-serif">'+(p.n===1?'主桌':tId)+'</text>';
+      svg+='<text x="'+p.x+'" y="'+(p.y+9)+'" text-anchor="middle" font-size="10" fill="'+textFill+'" font-family="sans-serif">'+checked+'/'+total+'</text>';
+    } else {
+      svg+='<text x="'+p.x+'" y="'+p.y+'" text-anchor="middle" dominant-baseline="central" font-size="10" fill="'+textFill+'" font-family="sans-serif">'+(p.n===1?'主桌':tId)+'</text>';
+    }
+    svg+='</g>';
+  });
+  svg+='</svg>';
+  var detailHtml='';
+  if(rtFpSelected){
+    var seats=groups[rtFpSelected]||[];
+    var tName=rtGetTableDisplay(rtFpSelected);
+    var checked=seats.filter(function(g){return checkedIds.has(g.id);}).length;
+    var seatList=seats.map(function(g){
+      var done=checkedIds.has(g.id);
+      var logEntry=allLogs.find(function(l){return l.id===g.id;});
+      var t=logEntry?logEntry.checkInTime||'':'';
+      return '<div class="rt-seat-item '+(done?'checked':'')+'">'
+        +'<div class="rt-seat-dot" style="background:'+(done?'#16a34a':'#f87171')+'" onclick="rtSeatClick(\''+g.id+'\')"></div>'
+        +'<span style="flex:1;word-break:break-all" onclick="rtSeatClick(\''+g.id+'\')">'+g.name+'</span>'
+        +'<span style="font-size:.65rem;color:'+(done?'#15803d':'#9ca3af')+'">'+(done?t:'未到')+'</span>'
+        +'</div>';
+    }).join('');
+    detailHtml='<div class="rt-fp-detail" id="rt-fp-detail">'
+      +'<div class="rt-fp-detail-head">'
+      +'<div class="rt-fp-detail-title">🪑 '+tName+'　✅'+checked+'/'+seats.length+' 人</div>'
+      +'<button class="rt-fp-close" onclick="rtFpClick(null)">✕ 關閉</button></div>'
+      +(seats.length>0?'<div class="rt-seat-list">'+seatList+'</div>':'<div style="font-size:.8rem;color:var(--muted);text-align:center;padding:16px">此桌尚未分配賓客</div>')
+      +'</div>';
+  }
+  return '<div class="rt-fp-wrap">'+svg+'</div>'+detailHtml;
+}
+
+function rtFpClick(tId){
+  rtFpSelected=(rtFpSelected===tId)?null:tId;
+  renderRoundTable();
+  if(rtFpSelected){
+    setTimeout(function(){
+      var el=document.getElementById('rt-fp-detail');
+      if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },80);
+  }
+}
+
+function renderVacancyView(groups){
+  var TABLE_SIZE=11;
+  var positions=getHallPositions();
+  var tableData=positions.map(function(p){
+    var tId=String(p.n);
+    var seats=groups[tId]||[];
+    var total=seats.length;
+    var checked=seats.filter(function(g){return checkedIds.has(g.id);}).length;
+    var avail=TABLE_SIZE-total;
+    return{tId:tId,seats:seats,total:total,checked:checked,avail:avail};
+  });
+  var assigned=tableData.filter(function(t){return t.total>0;});
+  var totalAvail=tableData.reduce(function(s,t){return s+Math.max(0,TABLE_SIZE-t.total);},0);
+  var withSpace=assigned.filter(function(t){return t.avail>0;}).sort(function(a,b){return b.avail-a.avail||parseInt(a.tId)-parseInt(b.tId);});
+  var fullTables=assigned.filter(function(t){return t.avail<=0;}).sort(function(a,b){return parseInt(a.tId)-parseInt(b.tId);});
+  var sorted=withSpace.concat(fullTables);
+  var html='<div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid var(--green-ring);border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">'
+    +'<div style="text-align:center"><div style="font-size:2.2rem;font-weight:900;color:var(--green);line-height:1">'+totalAvail+'</div><div style="font-size:.72rem;color:var(--green);font-weight:700;margin-top:1px">總空位數</div></div>'
+    +'<div style="text-align:center"><div style="font-size:2.2rem;font-weight:900;color:var(--primary);line-height:1">'+assigned.length+'</div><div style="font-size:.72rem;color:var(--primary);font-weight:700;margin-top:1px">已用桌數</div></div>'
+    +'<div style="text-align:center"><div style="font-size:2.2rem;font-weight:900;color:var(--amber);line-height:1">'+withSpace.length+'</div><div style="font-size:.72rem;color:var(--amber);font-weight:700;margin-top:1px">有空位桌數</div></div>'
+    +'</div>';
+  if(!sorted.length){html+='<div style="text-align:center;color:var(--muted);padding:40px;font-size:.88rem">尚無桌次分配</div>';return html;}
+  html+='<div class="rt-vacancy-grid">';
+  sorted.forEach(function(t){
+    var tName=rtGetTableDisplay(t.tId);
+    var fillPct=Math.round(t.total/TABLE_SIZE*100);
+    var cellClass='rt-vacancy-cell', availColor, barColor;
+    if(t.avail<=0){cellClass+=' vc-full';availColor='#9ca3af';barColor='#86efac';}
+    else if(t.avail<=2){cellClass+=' vc-hot';availColor='#b45309';barColor='#fbbf24';}
+    else{cellClass+=' vc-open';availColor='#1d4ed8';barColor='#60a5fa';}
+    var clickFn=t.avail>0?'data-tbl="'+t.tId+'"':'';
+    html+='<div class="'+cellClass+'" '+clickFn+'>'
+      +'<div class="vc-tname">'+tName+'</div>'
+      +'<div class="vc-avail" style="color:'+availColor+'">'+(t.avail<=0?'滿':t.avail)+'</div>'
+      +'<div class="vc-label">'+t.total+'/'+TABLE_SIZE+'</div>'
+      +'<div class="vc-bar-wrap"><div class="vc-bar" style="width:'+fillPct+'%;background:'+barColor+'"></div></div>'
+      +'</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+// 圓桌視角也更新 dashboard
+var _origUpdateDash = updateDash;
+updateDash = function(){
+  _origUpdateDash();
+  if(window._activeTab==='rt') renderRoundTable();
+};
+
 </script>
 </body>
 </html>
