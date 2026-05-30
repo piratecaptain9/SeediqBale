@@ -383,7 +383,7 @@
             <button class="filter-btn"    id="fb-pending" onclick="setFilter('pending')">未報到</button>
             <div style="margin-left:auto;display:flex;gap:6px">
               <button class="btn btn-outline" onclick="openTableModal()" style="padding:6px 12px;font-size:11px;display:flex;align-items:center;gap:4px"><span>🪑</span> 設定桌次</button>
-              <button class="btn btn-outline" onclick="loadAll(true)" style="padding:6px 12px;font-size:11px">🔄 重新載入</button>
+              <button class="btn btn-outline" onclick="loadAll()" style="padding:6px 12px;font-size:11px">🔄 重新載入</button>
             </div>
           </div>
           <div id="filter-stats" style="display:none;font-size:11px;color:var(--soft)"></div>
@@ -499,22 +499,6 @@ var FB_API_KEY     = 'AIzaSyD01TAFTe8-X6U_X0SPxBWZ_5vUBy2sLlk';
 var CHECKIN_BASE   = 'https://piratecaptain9.github.io/SeediqBale';
 var STAFF_PASSWORD = '0531';
 var FS = 'https://firestore.googleapis.com/v1/projects/' + FB_PROJECT + '/databases/(default)/documents';
-
-// ══ 貴賓名單快取（localStorage）══════════
-// 貴賓名單不常變動，存在本機可省下大量 Firestore 讀取（1417筆 = 1417次reads）
-var GUEST_CACHE_KEY = 'guestCache_' + FB_PROJECT;
-function saveGuestCache(guests){
-  try{localStorage.setItem(GUEST_CACHE_KEY,JSON.stringify({ts:Date.now(),data:guests}));}catch(e){}
-}
-function loadGuestCache(){
-  try{
-    var raw=localStorage.getItem(GUEST_CACHE_KEY);
-    if(!raw) return null;
-    var obj=JSON.parse(raw);
-    return obj.data||null; // 不設時效，由使用者按「重新載入」手動更新
-  }catch(e){return null;}
-}
-function clearGuestCache(){try{localStorage.removeItem(GUEST_CACHE_KEY);}catch(e){}}
 
 // ══ Firestore API ══════════════════════
 async function fsGet(col, id) {
@@ -767,38 +751,21 @@ function switchTab(tab){
 // ══ Data ════════════════════════════
 var allGuests=[], checkedIds=new Set(), allLogs=[], dataLoaded=false, statusFilter='all';
 
-// forceRefresh=true 時重新從 Firestore 抓貴賓名單並更新快取
-async function loadAll(forceRefresh){
-  var cached=loadGuestCache();
-  var hasCache=!!cached;
-  if(hasCache && !forceRefresh){
-    showMsg('status-msg','blue','載入中…','讀取報到記錄…（名單使用本機快取）');
-    showMsg('qr-msg','blue','載入中…','讀取報到記錄…（名單使用本機快取）');
-  } else {
-    showMsg('status-msg','blue','載入中…','從 Firestore 讀取完整名單…');
-    showMsg('qr-msg','blue','載入中…','從 Firestore 讀取完整名單…');
-  }
+async function loadAll(){
+  showMsg('status-msg','blue','載入中…','直接從 Firestore 讀取');
+  showMsg('qr-msg','blue','載入中…','直接從 Firestore 讀取');
   try{
-    var guestList, logList;
-    if(hasCache && !forceRefresh){
-      // 只抓報到 log（通常很少），名單用快取 → 節省 1417 次 reads
-      logList=await fsList('log');
-      guestList=cached;
-    } else {
-      // 強制重新整理：同時抓名單＋log，並更新快取
-      var results=await Promise.all([fsList('guests'),fsList('log')]);
-      guestList=results[0];
-      logList=results[1];
-      saveGuestCache(guestList);
-    }
-    allGuests=guestList.sort(function(a,b){return (a.id||'').localeCompare(b.id||'');});
-    allLogs=logList.sort(function(a,b){return (a.checkInTime||'').localeCompare(b.checkInTime||'');});
+    var results=await Promise.all([fsList('guests'),fsList('log')]);
+    allGuests=results[0].sort(function(a,b){return (a.id||'').localeCompare(b.id||'');});
+    allLogs=results[1].sort(function(a,b){return (a.checkInTime||'').localeCompare(b.checkInTime||'');});
     checkedIds=new Set(allLogs.map(function(l){return l.id;}));
     guestCache=allGuests;
     updateDash(); buildDropdowns();
     dataLoaded=true;
     document.getElementById('status-msg').style.display='none';
     document.getElementById('qr-msg').style.display='none';
+    // 用 setTimeout(0) 讓 async call stack 先清空，再做大量 DOM 操作
+    // 避免 1000+ 筆資料在 async 繼續執行中觸發 Maximum call stack size exceeded
     setTimeout(function(){
       renderStatusGrid();
       renderLogTable(allLogs);
@@ -1433,8 +1400,7 @@ async function confirmImport(){
     }
     showMsg('import-msg','green','匯入完成','成功寫入 '+done+' 筆');
     importData=[];document.getElementById('import-preview').style.display='none';document.getElementById('import-file').value='';btn.style.display='none';
-    clearGuestCache(); // 名單有更新，清除快取強制重抓
-    setTimeout(function(){loadAll(true);},800);
+    setTimeout(function(){loadAll();},800);
   }catch(e){showMsg('import-msg','red','匯入失敗（第 '+done+' 筆後）',e.message);}
   btn.disabled=false;btn.textContent='確認匯入';
 }
